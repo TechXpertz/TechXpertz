@@ -1,29 +1,29 @@
-const router = require('express').Router();
+const router = require('express-promise-router')();
 const pool = require('../db');
+const passport = require('passport');
+require('../passport-setup');
+
+const UsersController = require('../controllers/auth');
+const { signUp, logIn, failed, logOut } = UsersController;
+
+// router.route('/signup').post(signUp);
+
+// router.route('/login').post(logIn);
+
+router.route('/failed').get(failed);
+
+router.route('/logout').get(logOut);
+
+router.route('/google')
+    .get(passport.authenticate('google', {
+        scope: ['profile', 'email']
+    }));
+
+router.route('/google/callback')
+    .get(passport.authenticate('google', { failureRedirect: '/failed' }),
+        function (req, res) {
+            res.redirect('/user/dashboard');
+        });
+
 
 module.exports = router;
-
-// local sign up
-
-router.post("/", async (req, res) => {
-    try {
-
-        const { name, username, email, password } = req.body;
-        const user = await pool query('SELECT * FROM local_users WHERE ')
-
-        // 2. check if user exists
-
-
-
-        // 3. Brcypt password
-
-        // 4. Save user in database
-
-        // 5. generate JWT
-
-
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
