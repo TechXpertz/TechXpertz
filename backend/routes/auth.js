@@ -1,29 +1,12 @@
 const router = require('express-promise-router')();
-const pool = require('../db');
-const passport = require('passport');
-require('../passport-setup');
+const { checkJwt, signUp } = require('../controllers/middleware');
 
-const UsersController = require('../controllers/auth');
-const { signUp, logIn, failed, logOut } = UsersController;
+router.route('/signup').get(checkJwt, signUp, (req, res) => {
+    res.send(req.user);
+})
 
-// router.route('/signup').post(signUp);
-
-// router.route('/login').post(logIn);
-
-router.route('/failed').get(failed);
-
-router.route('/logout').get(logOut);
-
-router.route('/google')
-    .get(passport.authenticate('google', {
-        scope: ['profile', 'email']
-    }));
-
-router.route('/google/callback')
-    .get(passport.authenticate('google', { failureRedirect: '/failed' }),
-        function (req, res) {
-            res.redirect('/user/dashboard');
-        });
-
+router.route('/callback').get((req, res) => {
+    res.send('callback called');
+});
 
 module.exports = router;
