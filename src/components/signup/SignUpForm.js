@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '../../react-auth0-spa';
 import Divider from '../Divider';
 
 const SignUpForm = () => {
+    //cosnt 
+
     return (
         <div className="ui right aligned grid">
             <div
@@ -54,7 +57,7 @@ const SignUpForm = () => {
                     Already have an account?
                     <Link to="/login" style={{ marginLeft: "4px" }}>
                         Log in
-                    </Link>
+                    </Link> 
                 </div>
             </div>
         </div>
