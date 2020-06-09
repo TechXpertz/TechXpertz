@@ -1,11 +1,11 @@
 import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import LandingPage from './landingpage/LandingPage';
-import LogIn from './login/LogIn';
-import SignUpPage from './signup/SignUpPage';
 import About from './about/About';
 import history from '../history';
 import FAQ from './faq/FAQ';
+import Profile from './userprofile/Profile';
+import UserDashboard from './dashboard/UserDashboard';
 
 const App = () => {
     return (
@@ -13,11 +13,11 @@ const App = () => {
             <Router history={history}>
                 <div>
                     <Switch>
-                        <Route path="/" exact component={LandingPage} />
+                        <Route exact path="/" component={LandingPage} />
                         <Route path="/about" component={About} />
                         <Route path="/FAQ" component={FAQ} />
-                        <Route path="/login" component={LogIn} />
-                        <Route path="/signup" component={SignUpPage} />
+                        <Route path="/profile" component={Profile} />
+                        <Route path="/dashboard" component={UserDashboard} />
                     </Switch>
                 </div>
             </Router>

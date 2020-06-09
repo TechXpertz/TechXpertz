@@ -1,9 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Divider from '../Divider';
+import { useAuth0 } from "../../react-auth0-spa";
 import "./Login.css"
 
 const LoginForm = () => {
+    const{ isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+    console.log(isAuthenticated);
+
     return (
         <div className="ui right aligned grid">
             <div
@@ -26,24 +31,29 @@ const LoginForm = () => {
                             <label>Password</label>
                             <input type="text" name="password" placeholder="Password" />
                         </div>
-                        <button class="ui primary large fluid button" type="submit">Log in</button>
+                        <button className="ui primary large fluid button" type="submit">Log in</button>
                     </div>
                     <div className="field">
-                        <Link>
+                        <Link to="/signup">
                             <h5>Forgot your password?</h5>
                         </Link>
                     </div>
                 </form>
                 <Divider text="or" />
-                <button
+                <div>
+                { !isAuthenticated && (
+                    <button
                     className="ui red google large fluid button"
                     style={{
                         marginTop: "10px",
                     }}
+                    onClick={() => loginWithRedirect({})}
                 >
                     <i className="google icon" />
                     Continue with Google
                 </button>
+                )}
+                </div>
                 <div className="ui message">
                     Don't have an account?
                     <Link to="/signup" style={{ marginLeft: "4px" }}>

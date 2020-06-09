@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '../../react-auth0-spa';
 import '../Image.css';
 
 const DescriptionBox = () => {
+    const { isAuthenticated, loginWithRedirect, loading } = useAuth0();
+
     return (
         <div className="ui text container">
             <div className="description-box">
@@ -19,17 +22,20 @@ const DescriptionBox = () => {
                     At your own time. At your own convenience.
                 </h3>
             </div>
-            <Link to={"/login"}
-                className="ui primary button"
-                style={
-                    {
-                        position: 'relative',
-                        top: '1em',
-                        right: '18em',
-                        width: '22em',
-                    }}>
-                Start Practicing!
-            </Link>
+            <div className="aaaaa">
+                {!isAuthenticated && (
+                    <button onClick={() => loginWithRedirect({})} 
+                    className="ui primary button" >
+                    Start Practicing!
+                </button>)}
+
+                {isAuthenticated && 
+                <Link to="/dashboard" className="bbbbb">
+                        <button className="ui primary button">
+                            You are already logged in. Proceed to dashboard!
+                        </button>
+                </Link>}
+            </div>
         </div >
     );
 }
