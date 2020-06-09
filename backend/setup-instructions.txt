@@ -1,6 +1,10 @@
 1. create new file .env and copy the .sample-env file
 2. fill out all the fields
 3. install all dependencies
-4. run npm start 
+4. run npm server
 
-https://techxpertz.auth0.com/authorize?response_type=token&client_id=72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm&connection=google-oauth2&redirect_uri=http://localhost:5000/auth/callback&audience=http://localhost:5000/auth/signup
+database:
+1. use postgres to execute everything in database.sql
+
+to get token for testing, run this in browser:
+https://techxpertz.auth0.com/authorize?response_type=token&client_id=CLIENT_ID&connection=google-oauth2&redirect_uri=http://localhost:5000/auth/callback&audience=techxpertz/api&scope=openid%20profile%20email
