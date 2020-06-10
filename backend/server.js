@@ -16,7 +16,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
 
 // Register and login routes
-const { port, db_user, auth_config } = require('./config');
+const { port } = require('./config');
 
 
 // Start server 
