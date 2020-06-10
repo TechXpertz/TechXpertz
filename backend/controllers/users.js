@@ -4,7 +4,7 @@ const dashboard = (req, res) => {
     res.send(`private info!`);
 }
 
-const isExpert = async (user) => {
+const is_expert = async (user) => {
     const sub = user.sub;
     try {
         const is_expert =
