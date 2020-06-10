@@ -17,6 +17,9 @@ const checkJwt = jwt({
 });
 
 const create_or_find = async (user, is_expert) => {
+    if (!req.user) {
+        return res.sendStatus(403);
+    };
 
     const sub = user.sub;
     const users = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
