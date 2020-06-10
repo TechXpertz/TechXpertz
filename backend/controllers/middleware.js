@@ -16,7 +16,9 @@ const checkJwt = jwt({
     algorithms: ['RS256']
 });
 
-const signUp = async (req, res, next) => {
+const register = async (req, res, next) => {
+    console.log('register called');
+
     if (!req.user) {
         return res.sendStatus(403);
     };
@@ -24,11 +26,9 @@ const signUp = async (req, res, next) => {
     const sub = req.user.sub;
     const user = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
 
-    if (user.rows.length !== 0) {
-        return res.status(401).send("User already exists");
+    if (user.rows.length === 0) {
+        await pool.query("INSERT INTO users (auth0_id) VALUES ($1)", [sub]);
     }
-
-    await pool.query("INSERT INTO users (auth0_id) VALUES ($1)", [sub]);
 
     console.log(req.user.sub);
     next();
@@ -36,5 +36,5 @@ const signUp = async (req, res, next) => {
 
 module.exports = {
     checkJwt,
-    signUp,
+    register
 }

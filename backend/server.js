@@ -3,6 +3,10 @@ const app = express();
 const cors = require('cors');
 const { port } = require('./config');
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 // middleware
 app.use(express.json());
 app.use(cors());
@@ -18,3 +22,5 @@ app.use('/user', require('./routes/user'));
 app.listen(port, () => {
     console.log(`App is running on port ${port}`);
 });
+
+console.log(process.env.NODE_ENV);
