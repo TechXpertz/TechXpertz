@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useAuth0 } from "../react-auth0-spa";
 
-const ExternalApi = url => {
-    const [apiMessage, setApiMessage] = useState("");
+const BackendApi = url => {
     const { getTokenSilently } = useAuth0();
 
     const callApi = async () => {
@@ -16,14 +15,14 @@ const ExternalApi = url => {
             });
 
             const responseData = await response.json();
+            return responseData;
 
-            setApiMessage(responseData);
         } catch (error) {
             console.error(error);
         }
     };
 
-    return apiMessage;
+    return callApi;
 };
 
-export default ExternalApi;
+export default BackendApi;
