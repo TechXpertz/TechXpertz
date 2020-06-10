@@ -6,6 +6,7 @@ import history from '../history';
 import FAQ from './faq/FAQ';
 import Profile from './userprofile/Profile';
 import UserDashboard from './dashboard/UserDashboard';
+import Callback from './callback';
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                         <Route path="/FAQ" component={FAQ} />
                         <Route path="/profile" component={Profile} />
                         <Route path="/dashboard" component={UserDashboard} />
+                        <Route path="/callback" component={Callback} />
                     </Switch>
                 </div>
             </Router>

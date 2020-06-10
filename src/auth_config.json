@@ -1,4 +1,6 @@
 {
   "domain": "techxpertz.auth0.com",
-  "clientId": "72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm"
+  "clientId": "72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm",
+  "audience": "techxpertz/api",
+  "redirect_uri": "http://localhost:3000/callback"
 }
