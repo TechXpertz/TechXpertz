@@ -1,7 +1,7 @@
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const { auth_config } = require('../config');
 const pool = require('../db');
+const { auth_config } = require('../config');
 
 // validate token from front-end
 const checkJwt = jwt({
@@ -16,25 +16,37 @@ const checkJwt = jwt({
     algorithms: ['RS256']
 });
 
-const register = async (req, res, next) => {
-    console.log('register called');
+const create_or_find = async (user, is_expert) => {
 
-    if (!req.user) {
-        return res.sendStatus(403);
-    };
+    const sub = user.sub;
+    const users = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
 
-    const sub = req.user.sub;
-    const user = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
-
-    if (user.rows.length === 0) {
-        await pool.query("INSERT INTO users (auth0_id) VALUES ($1)", [sub]);
+    if (users.rows.length === 0) {
+        await pool.query("INSERT INTO users (auth0_id, is_expert) VALUES ($1, $2)",
+            [sub, is_expert]);
     }
 
-    console.log(req.user.sub);
+    console.log(user.sub);
+}
+
+const register_normal = async (req, res, next) => {
+    if (!req.user) {
+        return res.sendStatus(403);
+    }
+    await create_or_find(req.user, false);
+    next();
+}
+
+const register_expert = async (req, res, next) => {
+    if (!req.user) {
+        return res.sendStatus(403);
+    }
+    await create_or_find(req.user, true);
     next();
 }
 
 module.exports = {
     checkJwt,
-    register
+    register_normal,
+    register_expert
 }
