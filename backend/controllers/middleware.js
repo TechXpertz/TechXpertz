@@ -16,10 +16,7 @@ const checkJwt = jwt({
     algorithms: ['RS256']
 });
 
-const create_or_find = async (user, is_expert) => {
-    if (!req.user) {
-        return res.sendStatus(403);
-    };
+const createOrFindUser = async (user, is_expert) => {
 
     const sub = user.sub;
     const users = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
@@ -32,24 +29,24 @@ const create_or_find = async (user, is_expert) => {
     console.log(user.sub);
 }
 
-const register_normal = async (req, res, next) => {
+const registerNormal = async (req, res, next) => {
     if (!req.user) {
         return res.sendStatus(403);
     }
-    await create_or_find(req.user, false);
+    await createOrFindUser(req.user, false);
     next();
 }
 
-const register_expert = async (req, res, next) => {
+const registerExpert = async (req, res, next) => {
     if (!req.user) {
         return res.sendStatus(403);
     }
-    await create_or_find(req.user, true);
+    await createOrFindUser(req.user, true);
     next();
 }
 
 module.exports = {
     checkJwt,
-    register_normal,
-    register_expert
+    registerNormal,
+    registerExpert
 }

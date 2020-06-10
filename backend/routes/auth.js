@@ -1,13 +1,9 @@
 const router = require('express-promise-router')();
-const { checkJwt, register_normal } = require('../controllers/middleware');
+const { checkJwt, registerNormal } = require('../controllers/middleware');
 
 
-router.route('/register').get(checkJwt, register_normal, (req, res) => {
+router.route('/register').get(checkJwt, registerNormal, (req, res) => {
     res.send('success');
-});
-
-router.route('/login').get(checkJwt, (req, res) => {
-    res.send('login success!');
 });
 
 router.route('/callback').get((req, res) => {

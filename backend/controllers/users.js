@@ -4,7 +4,7 @@ const dashboard = (req, res) => {
     res.send(`private info!`);
 }
 
-const is_expert = async (user) => {
+const isExpert = async (user) => {
     const sub = user.sub;
     try {
         const is_expert =
@@ -17,5 +17,5 @@ const is_expert = async (user) => {
 
 module.exports = {
     dashboard,
-    is_expert
+    isExpert
 }
