@@ -7,8 +7,8 @@ module.exports = {
     db_host: process.env.DB_HOST,
     db_port: process.env.DB_PORT,
     db_name: process.env.DB_NAME,
-    auth0_config: {
-        domain: "techxpertz.auth0.com",
-        audience: "techxpertz/api"
+    auth_config: {
+        domain: process.env.DOMAIN,
+        audience: process.env.API_IDENTIFIER
     }
 };

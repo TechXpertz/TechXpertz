@@ -1,25 +1,24 @@
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const { auth0_config } = require('../config');
+const { auth_config } = require('../config');
 const pool = require('../db');
 
-
-// to validate token from front-end
-checkJwt = jwt({
+// validate token from front-end
+const checkJwt = jwt({
     secret: jwksRsa.expressJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://${auth0_config.domain}/.well-known/jwks.json`
+        jwksUri: `https://${auth_config.domain}/.well-known/jwks.json`
     }),
-    audience: auth0_config.audience,
-    issuer: `https://${auth0_config.domain}/`,
+    audience: auth_config.audience,
+    issuer: `https://${auth_config.domain}/`,
     algorithms: ['RS256']
 });
 
-// 
-register = async (req, res, next) => {
+const register = async (req, res, next) => {
     console.log('register called');
+
     if (!req.user) {
         return res.sendStatus(403);
     };
