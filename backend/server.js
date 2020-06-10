@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { port } = require('./config');
 
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+    require('dotenv').config({ path: 'backend/.env' });
 }
 
 // middleware
@@ -17,10 +16,10 @@ app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
 
 // Register and login routes
+const { port, db_user, auth_config } = require('./config');
+
 
 // Start server 
 app.listen(port, () => {
     console.log(`App is running on port ${port}`);
 });
-
-console.log(process.env.NODE_ENV);
