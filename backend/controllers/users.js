@@ -18,6 +18,10 @@ const isExpert = async (user) => {
   }
 };
 
+const submitAccountType = async (req, res) => {
+
+}
+
 module.exports = {
   dashboard,
   isExpert,
