@@ -20,9 +20,33 @@ const isExpert = async (user) => {
 
 const submitAccountType = async (req, res) => {
 
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const sub = req.user.sub;
+  const accountType = req.body.accountType;
+  console.log(req.body);
+
+  if (accountType === 'normal') {
+    await pool.query(
+      'UPDATE users SET is_expert = $1 WHERE auth0_id = $2',
+      [false, sub]
+    );
+    res.sendStatus(200);
+  } else if (accountType === 'expert') {
+    await pool.query(
+      'UPDATE users SET is_expert = $1 WHERE auth0_id = $2',
+      [true, sub]
+    );
+    res.sendStatus(200);
+  } else {
+    return res.sendStatus(400);
+  }
+
 }
 
 module.exports = {
   dashboard,
-  isExpert,
+  submitAccountType
 };

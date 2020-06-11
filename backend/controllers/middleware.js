@@ -28,9 +28,9 @@ const register = async (req, res) => {
 
     if (user.rows.length === 0) {
         await pool.query('INSERT INTO users (auth0_id) VALUES ($1)', [sub]);
-        res.send("signup");
+        res.json("signup");
     } else {
-        res.send("login");
+        res.json('login');
     }
 };
 
