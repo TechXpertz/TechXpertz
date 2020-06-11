@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users(
 );  
 
 CREATE TABLE IF NOT EXISTS prog_languages(
-    prog_language_id SERIAL PRIMARY KEY,
-    prog_language VARCHAR(255) UNIQUE NOT NULL 
+    prog_id SERIAL PRIMARY KEY,
+    prog_name VARCHAR(255) UNIQUE NOT NULL 
 );
 
 CREATE TABLE IF NOT EXISTS topics(
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS topics(
 );
 
 -- prepoulating prog_languages table
-INSERT INTO prog_languages (prog_language) VALUES ('Java');
-INSERT INTO prog_languages (prog_language) VALUES ('JavaScript');
-INSERT INTO prog_languages (prog_language) VALUES ('C++');
-INSERT INTO prog_languages (prog_language) VALUES ('Python');
+INSERT INTO prog_languages (prog_name) VALUES ('Java');
+INSERT INTO prog_languages (prog_name) VALUES ('JavaScript');
+INSERT INTO prog_languages (prog_name) VALUES ('C++');
+INSERT INTO prog_languages (prog_name) VALUES ('Python');
 
 -- prepopulating topics table
 INSERT INTO topics (topic) VALUES ('topic 1');
