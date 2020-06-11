@@ -8,14 +8,14 @@ const domain = process.env.DOMAIN;
 const audience = process.env.AUDIENCE;
 
 module.exports = {
-    port,
-    db_user,
-    db_password,
-    db_host,
-    db_port,
-    db_name,
-    auth_config: {
-        domain,
-        audience
-    }
-}
+  port,
+  db_user,
+  db_password,
+  db_host,
+  db_port,
+  db_name,
+  auth_config: {
+    domain,
+    audience,
+  },
+};

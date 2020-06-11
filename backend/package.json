@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,5 +20,9 @@
     "jwks-rsa": "^1.8.0",
     "pg": "^8.2.1",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-strongloop": "^2.1.0"
   }
 }

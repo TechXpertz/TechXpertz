@@ -3,11 +3,11 @@ const { checkJwt, register } = require('../controllers/middleware');
 
 
 router.route('/register').get(checkJwt, register, (req, res) => {
-    res.send('success');
+  res.send('success');
 });
 
 router.route('/callback').get((req, res) => {
-    res.send('callback called');
+  res.send('callback called');
 });
 
 module.exports = router;
