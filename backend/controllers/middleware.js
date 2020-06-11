@@ -16,37 +16,21 @@ const checkJwt = jwt({
     algorithms: ['RS256']
 });
 
-const createOrFindUser = async (user, is_expert) => {
-
-    const sub = user.sub;
-    const users = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
-
-    if (users.rows.length === 0) {
-        await pool.query("INSERT INTO users (auth0_id, is_expert) VALUES ($1, $2)",
-            [sub, is_expert]);
-    }
-
-    console.log(user.sub);
-}
-
-const registerNormal = async (req, res, next) => {
+const register = async (req, res, next) => {
     if (!req.user) {
         return res.sendStatus(403);
     }
-    await createOrFindUser(req.user, false);
-    next();
-}
 
-const registerExpert = async (req, res, next) => {
-    if (!req.user) {
-        return res.sendStatus(403);
+    const sub = req.user.sub;
+    const user = await pool.query("SELECT * FROM users WHERE auth0_id = $1", [sub]);
+
+    if (user.rows.length === 0) {
+        await pool.query("INSERT INTO users (auth0_id) VALUES ($1)", [sub]);
     }
-    await createOrFindUser(req.user, true);
     next();
 }
 
 module.exports = {
     checkJwt,
-    registerNormal,
-    registerExpert
+    register
 }

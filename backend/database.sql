@@ -5,7 +5,7 @@ create extension if not exists "uuid-ossp";
 CREATE TABLE IF NOT EXISTS users(
     user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     auth0_id VARCHAR(255) UNIQUE NOT NULL,
-    is_expert BOOLEAN NOT NULL
+    is_expert BOOLEAN
 );  
 
 CREATE TABLE IF NOT EXISTS prog_languages(
