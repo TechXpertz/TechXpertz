@@ -30,3 +30,22 @@ INSERT INTO topics (topic) VALUES ('topic 2');
 INSERT INTO topics (topic) VALUES ('topic 3');
 INSERT INTO topics (topic) VALUES ('topic 4');
 INSERT INTO topics (topic) VALUES ('topic 5');
+
+CREATE TABLE IF NOT EXISTS user_topics(
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    topic_id INTEGER REFERENCES topics(topic_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, topic_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_prog_languages(
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+    prog_id INTEGER REFERENCES prog_languages(prog_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, prog_id)
+);
+
+CREATE TABLE IF NOT EXISTS normal_backgrounds(
+    user_id uuid PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+    education VARCHAR(255) NOT NULL,
+    has_experience BOOLEAN NOT NULL,
+    interview_level INTEGER NOT NULL CHECK(interview_level BETWEEN 0 AND 5)
+);
