@@ -32,10 +32,10 @@ const submitAccountType = (req, res) => {
 
   if (accountType === 'normal') {
     setAccountType(sub, false);
-    res.sendStatus(200);
+    res.sendStatus(201);
   } else if (accountType === 'expert') {
     setAccountType(sub, true);
-    res.sendStatus(200);
+    res.sendStatus(201);
   } else {
     return res.sendStatus(400);
   }
@@ -111,7 +111,7 @@ const submitNormalBackground = async (req, res) => {
   addNormalBackground(userId, education, hasExperience, interviewLevel);
   addUserProgLanguages(userId, progLanguages)
   addUserTopics(userId, topics)
-  return res.sendStatus(200);
+  return res.sendStatus(201);
 
 };
 

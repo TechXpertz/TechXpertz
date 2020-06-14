@@ -23,6 +23,9 @@
   },
   "devDependencies": {
     "eslint": "^7.2.0",
-    "eslint-config-strongloop": "^2.1.0"
+    "eslint-config-strongloop": "^2.1.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.0.1"
   }
 }

@@ -14,7 +14,7 @@ app.use(cors());
 app.use('/', require('./routes/general'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
-app.use('/query', require('./routes/query'));
+app.use('/info', require('./routes/info'));
 
 // Register and login routes
 const { port } = require('./config');
