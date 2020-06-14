@@ -3,7 +3,7 @@ const { dashboard, submitAccountType, submitNormalBackground } = require('../con
 const { checkJwt } = require('../controllers/middleware');
 
 router.route('/dashboard').get(checkJwt, dashboard);
-router.route('/submit-account-type').post(checkJwt, submitAccountType);
-router.route('/submit-normal-background').post(checkJwt, submitNormalBackground);
+router.route('/account-type').post(checkJwt, submitAccountType);
+router.route('/normal-background').post(checkJwt, submitNormalBackground);
 
 module.exports = router;

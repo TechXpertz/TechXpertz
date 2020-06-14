@@ -18,7 +18,7 @@ const checkJwt = jwt({
 
 const register = async (req, res) => {
     if (!req.user) {
-        return res.sendStatus(403);
+        return res.sendStatus(401);
     }
 
     const sub = req.user.sub;
@@ -28,9 +28,9 @@ const register = async (req, res) => {
 
     if (user.rows.length === 0) {
         await pool.query('INSERT INTO users (auth0_id) VALUES ($1)', [sub]);
-        res.json("signup");
+        res.status(201).json("signup");
     } else {
-        res.json('login');
+        res.status(200).json('login');
     }
 };
 
