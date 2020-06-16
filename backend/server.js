@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({ path: 'backend/.env' });
+  require('dotenv').config({ path: 'backend/.env' });
 }
 
 // middleware
@@ -14,12 +14,13 @@ app.use(cors());
 app.use('/', require('./routes/general'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
+app.use('/info', require('./routes/info'));
 
 // Register and login routes
 const { port } = require('./config');
 
 
-// Start server 
+// Start server
 app.listen(port, () => {
-    console.log(`App is running on port ${port}`);
+  console.log(`App is running on port ${port}`);
 });

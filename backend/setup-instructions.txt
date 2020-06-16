@@ -4,4 +4,5 @@
 4. run npm server
 
 to get token for testing, run this in browser:
-https://techxpertz.auth0.com/authorize?response_type=token&client_id=72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm&connection=google-oauth2&redirect_uri=http://localhost:5000/auth/callback&audience=techxpertz/api
+https://techxpertz.auth0.com/authorize?response_type=token&client_id=72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm&connection=google-oauth2&redirect_uri=http://localhost:5000/auth/callback&audience=techxpertz/api&scope=email%20openid%20profile
+https://techxpertz.auth0.com/authorize?response_type=token&client_id=72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm&connection=Username-Password-Authentication&redirect_uri=http://localhost:5000/auth/callback&audience=techxpertz/api&scope=email%20openid%20profile&emal=testtest@gmail.com&password=Password1
