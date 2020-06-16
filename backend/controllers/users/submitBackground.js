@@ -43,9 +43,17 @@ const addUserTopics = async (userId, topics) => {
 
 const addNormalBackground = async (userId, education, hasExperience, interviewLevel) => {
   await pool.query(
-    'INSERT INTO normal_backgrounds (user_id, education, has_experience, interview_level) VALUES ($1, $2, $3, $4)',
+    'INSERT INTO normal_backgrounds (user_id, education, has_experience, interview_level) '
+    + 'VALUES ($1, $2, $3, $4)',
     [userId, education, hasExperience, interviewLevel]
   );
+};
+
+const addExpertBackground = async (userId, company, companyRole, workingExp) => {
+  await pool.query(
+    'INSERT INTO expert_backgrounds (user_id, company, company_role, working_exp) '
+    + 'VALUES ($1, $2, $3, $4)',
+    [userId, company, companyRole, workingExp]);
 };
 
 const submitNormalBackground = async (req, res) => {
@@ -68,6 +76,27 @@ const submitNormalBackground = async (req, res) => {
 
 };
 
+const submitExpertBackground = async (req, res) => {
+
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const { company, companyRole, workingExp, topics, progLanguages } = req.body;
+  if (!company || !companyRole || !workingExp || !topics || !progLanguages) {
+    return res.sendStatus(400);
+  }
+
+  const userId = await getUserId(req.user);
+
+  addExpertBackground(userId, company, companyRole, workingExp);
+  addUserProgLanguages(userId, progLanguages);
+  addUserTopics(userId, topics);
+  return res.sendStatus(201);
+
+};
+
 module.exports = {
-  submitNormalBackground
+  submitNormalBackground,
+  submitExpertBackground
 }

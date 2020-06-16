@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS normal_backgrounds(
 
 CREATE TABLE IF NOT EXISTS expert_backgrounds(
     user_id uuid PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
-    is_verified BOOLEAN NOT NULL,
+    is_verified BOOLEAN NOT NULL DEFAULT false,
     company TEXT NOT NULL,
     company_role TEXT NOT NULL,
     working_exp INTEGER NOT NULL CHECK (working_exp BETWEEN 0 AND 10)
