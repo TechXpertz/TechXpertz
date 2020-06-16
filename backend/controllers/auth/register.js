@@ -1,7 +1,7 @@
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const pool = require('../db');
-const { auth_config } = require('../config');
+const pool = require('../../db');
+const { auth_config } = require('../../config');
 
 // validate token from front-end
 const checkJwt = jwt({

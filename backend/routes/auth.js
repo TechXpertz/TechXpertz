@@ -1,5 +1,5 @@
 const router = require('express-promise-router')();
-const { checkJwt, register } = require('../controllers/middleware');
+const { checkJwt, register } = require('../controllers/auth/register');
 
 
 router.route('/register').post(checkJwt, register);

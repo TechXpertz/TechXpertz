@@ -1,5 +1,5 @@
-const pool = require('../db');
-const { getUserId } = require('./users');
+const pool = require('../../db');
+const { getUserId } = require('../users/helper');
 
 const createBooking = async (req, res) => {
 
