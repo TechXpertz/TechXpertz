@@ -63,3 +63,10 @@ CREATE TABLE IF NOT EXISTS booking_prog_languages(
     prog_id INTEGER REFERENCES prog_languages(prog_id) NOT NULL,
     PRIMARY KEY(booking_id, prog_id)
 );
+
+CREATE TABLE IF NOT EXISTS timeslots(
+    booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    date_col DATE NOT NULL,
+    time_start TIME NOT NULL,
+    PRIMARY KEY(booking_id, date_col, time_start)
+);
