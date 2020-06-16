@@ -14,7 +14,8 @@ const Callback = () => {
             const response = await fetch(register, {
                 headers: {
                     Authorization: `Bearer ${token}`
-                }
+                },
+                method: 'POST'
             });
 
             const responseData = await response.json();

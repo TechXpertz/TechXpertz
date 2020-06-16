@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS prog_languages(
 
 CREATE TABLE IF NOT EXISTS topics(
     topic_id SERIAL PRIMARY KEY,
-    topic VARCHAR(255) UNIQUE NOT NULL
+    topic_name VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- prepoulating prog_languages table
@@ -25,11 +25,11 @@ INSERT INTO prog_languages (prog_name) VALUES ('C++');
 INSERT INTO prog_languages (prog_name) VALUES ('Python');
 
 -- prepopulating topics table
-INSERT INTO topics (topic) VALUES ('topic 1');
-INSERT INTO topics (topic) VALUES ('topic 2');
-INSERT INTO topics (topic) VALUES ('topic 3');
-INSERT INTO topics (topic) VALUES ('topic 4');
-INSERT INTO topics (topic) VALUES ('topic 5');
+INSERT INTO topics (topic_name) VALUES ('topic 1');
+INSERT INTO topics (topic_name) VALUES ('topic 2');
+INSERT INTO topics (topic_name) VALUES ('topic 3');
+INSERT INTO topics (topic_name) VALUES ('topic 4');
+INSERT INTO topics (topic_name) VALUES ('topic 5');
 
 CREATE TABLE IF NOT EXISTS user_topics(
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
@@ -48,4 +48,25 @@ CREATE TABLE IF NOT EXISTS normal_backgrounds(
     education VARCHAR(255) NOT NULL,
     has_experience BOOLEAN NOT NULL,
     interview_level INTEGER NOT NULL CHECK(interview_level BETWEEN 0 AND 5)
+);
+
+CREATE TABLE IF NOT EXISTS bookings(
+    booking_id SERIAL PRIMARY KEY,
+    user_id uuid REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
+    topic_id INTEGER REFERENCES topics(topic_id) NOT NULL,
+    other_is_expert BOOLEAN NOT NULL,
+    other_booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS booking_prog_languages(
+    booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    prog_id INTEGER REFERENCES prog_languages(prog_id) NOT NULL,
+    PRIMARY KEY(booking_id, prog_id)
+);
+
+CREATE TABLE IF NOT EXISTS timeslots(
+    booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    date_col DATE NOT NULL,
+    time_start TIME NOT NULL,
+    PRIMARY KEY(booking_id, date_col, time_start)
 );

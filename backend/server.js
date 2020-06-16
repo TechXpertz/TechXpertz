@@ -15,6 +15,7 @@ app.use('/', require('./routes/general'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
 app.use('/info', require('./routes/info'));
+app.use('/bookings', require('./routes/bookings'));
 
 // Register and login routes
 const { port } = require('./config');

@@ -9,7 +9,7 @@ const getProgLanguages = async (req, res) => {
 
 const getTopics = async (req, res) => {
   const topics = await pool
-    .query('SELECT JSON_AGG(JSON_BUILD_OBJECT(topic_id, topic)) FROM topics');
+    .query('SELECT JSON_AGG(JSON_BUILD_OBJECT(topic_id, topic_name)) FROM topics');
 
   res.json(topics.rows[0]);
 };

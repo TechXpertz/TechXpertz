@@ -5,6 +5,16 @@ const dashboard = (req, res) => {
   res.send('private info!');
 };
 
+const getUserId = async (user) => {
+  const sub = user.sub;
+  const result = await pool.query(
+    'SELECT user_id FROM users WHERE auth0_id = $1',
+    [sub]
+  );
+
+  return result.rows[0].user_id;
+};
+
 const isExpert = async (user) => {
   const sub = user.sub;
   const is_expert =
@@ -69,7 +79,7 @@ const addUserTopics = async (userId, topics) => {
 
     const topicName = topic.topicName;
     const topicIdRes = await pool.query(
-      'SELECT topic_id FROM topics WHERE topic = $1',
+      'SELECT topic_id FROM topics WHERE topic_name = $1',
       [topicName]
     );
 
@@ -100,13 +110,8 @@ const submitNormalBackground = async (req, res) => {
     return res.sendStatus(400);
   }
 
-  const sub = req.user.sub;
-  const result = await pool.query(
-    'SELECT user_id FROM users WHERE auth0_id = $1',
-    [sub]
-  );
-
-  const userId = result.rows[0].user_id;
+  const userId = await getUserId(req.user);
+  console.log('userId: ', userId);
 
   addNormalBackground(userId, education, hasExperience, interviewLevel);
   addUserProgLanguages(userId, progLanguages)
@@ -116,6 +121,7 @@ const submitNormalBackground = async (req, res) => {
 };
 
 module.exports = {
+  getUserId,
   dashboard,
   submitAccountType,
   submitNormalBackground
