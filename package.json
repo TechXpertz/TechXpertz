@@ -20,7 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:backend": "mocha",
+    "test:backend": "mocha --timeout 10000 ./backend",
     "eject": "react-scripts eject",
     "server": "nodemon ./backend/server.js",
     "dev": "concurrently \"npm run server\" \"npm run start\""
