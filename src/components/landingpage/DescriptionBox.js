@@ -23,11 +23,15 @@ const DescriptionBox = () => {
                 </h3>
             </div>
             <div className="aaaaa">
-                {!isAuthenticated && (
+                {!isAuthenticated && !loading && (
                     <button onClick={() => loginWithRedirect({})} 
                     className="ui primary button" >
                     Start Practicing!
                 </button>)}
+
+                {loading && (
+                    <button className="ui primary loading button" style={{ width: '22em' }} />
+                )}
 
                 {isAuthenticated && 
                 <Link to="/dashboard" className="bbbbb">

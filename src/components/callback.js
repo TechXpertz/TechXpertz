@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Redirect } from "react-router-dom";
 import { useAuth0 } from "../react-auth0-spa";
 import { register } from "../api_callers/apis.json";

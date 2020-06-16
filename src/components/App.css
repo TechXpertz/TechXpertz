@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
 
 body #fonts {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .hr-sect {
@@ -15,11 +15,23 @@ body #fonts {
 
 .hr-sect::before,
 .hr-sect::after {
-  content: "";
+  content: '';
   flex-grow: 1;
   background: rgba(0, 0, 0, 0.35);
   height: 1px;
   font-size: 0px;
   line-height: 0px;
   margin: 0px 16px;
+}
+
+.star-rating-filled {
+  fill: gold;
+}
+
+.star-rating-blank {
+  fill: #d8d8d8;
+}
+
+.star-rating-box {
+  display: flexbox !important;
 }
