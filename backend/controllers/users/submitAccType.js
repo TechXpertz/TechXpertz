@@ -12,17 +12,21 @@ const submitAccountType = (req, res) => {
     return res.sendStatus(401);
   }
 
-  const sub = req.user.sub;
-  const accountType = req.body.accountType;
+  if (!req.body.accountType) {
+    return res.sendStatus(400);
+  }
 
-  if (accountType === 'Normal') {
+  const sub = req.user.sub;
+  const accountType = req.body.accountType.toLowerCase();
+
+  if (accountType === 'normal') {
     setAccountType(sub, false);
     res.sendStatus(201);
-  } else if (accountType === 'Expert') {
+  } else if (accountType === 'expert') {
     setAccountType(sub, true);
     res.sendStatus(201);
   } else {
-    return res.sendStatus(400);
+    return res.sendStatus(422);
   }
 
 };

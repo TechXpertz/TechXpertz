@@ -67,9 +67,16 @@ const submitNormalBackground = async (req, res) => {
     return res.sendStatus(400);
   }
 
+  const hasExperienceLowerCase = hasExperience.toLowerCase();
+  if (hasExperienceLowerCase !== 'yes' && hasExperienceLowerCase !== 'no') {
+    return res.sendStatus(422);
+  }
+
+  const hasExperienceBool = hasExperienceLowerCase === 'yes' ? true : false;
+
   const userId = await getUserId(req.user);
 
-  addNormalBackground(userId, education, hasExperience, interviewLevel);
+  addNormalBackground(userId, education, hasExperienceBool, interviewLevel);
   addUserProgLanguages(userId, progLanguages)
   addUserTopics(userId, topics)
   return res.sendStatus(201);
