@@ -4,7 +4,7 @@ import Select from 'react-select';
 const DropdownMenu = (props) => {
     const [inputValue, setInputValue] = useState([]);
     
-    //console.log(inputValue);
+    console.log(inputValue);
 
     if(props.multi){
         return (

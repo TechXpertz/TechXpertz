@@ -11,6 +11,7 @@
     "axois": "0.0.1-security",
     "concurrently": "^5.2.0",
     "find-config": "^1.0.0",
+    "moment": "^2.26.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icon": "^1.0.0",

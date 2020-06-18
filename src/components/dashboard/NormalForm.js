@@ -7,6 +7,7 @@ import DropdownMenu from '../DropdownMenu';
 const NormalForm = (props) => {
     const [rating, setRating] = useState(0);
     const [hoverState, setHoverState] = useState(0);
+    const [check, setCheck] = useState('');
     const stars= [1,2,3,4,5]; 
 
     const educationArray = [
@@ -34,7 +35,7 @@ const NormalForm = (props) => {
     const action = (
         <>
         <div className="ui center aligned container">
-            <button className="ui button">Cancel</button>
+            <button className="ui button">Back</button>
             <button className="ui primary button">Submit</button>
         </div>
         </>
@@ -75,13 +76,21 @@ const NormalForm = (props) => {
             <div className="three wide column" style={{ top:"12px" }}>
                 <div className="row">
                     <div className="ui checkbox">
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox" 
+                            onClick={() => check ? setCheck('') : setCheck('Yes')}
+                            disabled={check && check !== 'Yes' ? "disabled" : null}
+                        />
                         <label style={{ fontSize: '16px'}}>Yes</label>
                     </div>
                 </div>
                 <div className='row'>
                     <div className="ui checkbox">
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox"
+                            onClick={() => check ? setCheck('') : setCheck('No')}
+                            disabled={check && check !== 'No' ? "disabled" : null} 
+                        />
                         <label style={{ fontSize: '16px'}}>No</label>
                     </div>
                 </div>

@@ -6,6 +6,7 @@ import history from '../history';
 import FAQ from './faq/FAQ';
 import Profile from './userprofile/Profile';
 import UserDashboard from './dashboard/UserDashboard';
+import InterviewRequestForm from './InterviewRequestForm/InterviewRequestForm';
 import Callback from './callback';
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
                         <Route path="/profile" component={Profile} />
                         <Route path="/dashboard" component={UserDashboard} />
                         <Route path="/callback" component={Callback} />
+                        <Route path="/booking" component={InterviewRequestForm} />
                     </Switch>
                 </div>
             </Router>
