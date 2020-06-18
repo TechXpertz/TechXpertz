@@ -106,5 +106,5 @@ describe('preprocess bookings', () => {
 
   });
 
-})
+});
 
