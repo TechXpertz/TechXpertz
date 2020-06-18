@@ -1,56 +1,5 @@
-const pool = require('../db');
-const assert = require('assert');
-
-const dashboard = (req, res) => {
-  res.send('private info!');
-};
-
-const getUserId = async (user) => {
-  const sub = user.sub;
-  const result = await pool.query(
-    'SELECT user_id FROM users WHERE auth0_id = $1',
-    [sub]
-  );
-
-  return result.rows[0].user_id;
-};
-
-const isExpert = async (user) => {
-  const sub = user.sub;
-  const is_expert =
-    (await pool
-      .query('SELECT is_expert FROM users WHERE auth0_id = $1', [sub])).rows[0].is_expert;
-  assert(is_expert !== null, 'is_expert is null. Cannot call function here.');
-  return is_expert;
-};
-
-const setAccountType = async (sub, isExpert) => {
-  await pool.query(
-    'UPDATE users SET is_expert = $1 WHERE auth0_id = $2',
-    [isExpert, sub]
-  );
-};
-
-const submitAccountType = (req, res) => {
-
-  if (!req.user) {
-    return res.sendStatus(401);
-  }
-
-  const sub = req.user.sub;
-  const accountType = req.body.accountType;
-
-  if (accountType === 'normal') {
-    setAccountType(sub, false);
-    res.sendStatus(201);
-  } else if (accountType === 'expert') {
-    setAccountType(sub, true);
-    res.sendStatus(201);
-  } else {
-    return res.sendStatus(400);
-  }
-
-};
+const pool = require('../../db');
+const { getUserId } = require('./helper');
 
 const addUserProgLanguages = (userId, progLanguages) => {
 
@@ -94,9 +43,17 @@ const addUserTopics = async (userId, topics) => {
 
 const addNormalBackground = async (userId, education, hasExperience, interviewLevel) => {
   await pool.query(
-    'INSERT INTO normal_backgrounds (user_id, education, has_experience, interview_level) VALUES ($1, $2, $3, $4)',
+    'INSERT INTO normal_backgrounds (user_id, education, has_experience, interview_level) '
+    + 'VALUES ($1, $2, $3, $4)',
     [userId, education, hasExperience, interviewLevel]
   );
+};
+
+const addExpertBackground = async (userId, company, companyRole, workingExp) => {
+  await pool.query(
+    'INSERT INTO expert_backgrounds (user_id, company, company_role, working_exp) '
+    + 'VALUES ($1, $2, $3, $4)',
+    [userId, company, companyRole, workingExp]);
 };
 
 const submitNormalBackground = async (req, res) => {
@@ -110,19 +67,43 @@ const submitNormalBackground = async (req, res) => {
     return res.sendStatus(400);
   }
 
-  const userId = await getUserId(req.user);
-  console.log('userId: ', userId);
+  const hasExperienceLowerCase = hasExperience.toLowerCase();
+  if (hasExperienceLowerCase !== 'yes' && hasExperienceLowerCase !== 'no') {
+    return res.sendStatus(422);
+  }
 
-  addNormalBackground(userId, education, hasExperience, interviewLevel);
+  const hasExperienceBool = hasExperienceLowerCase === 'yes' ? true : false;
+
+  const userId = await getUserId(req.user);
+
+  addNormalBackground(userId, education, hasExperienceBool, interviewLevel);
   addUserProgLanguages(userId, progLanguages)
   addUserTopics(userId, topics)
   return res.sendStatus(201);
 
 };
 
-module.exports = {
-  getUserId,
-  dashboard,
-  submitAccountType,
-  submitNormalBackground
+const submitExpertBackground = async (req, res) => {
+
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const { company, companyRole, workingExp, topics, progLanguages } = req.body;
+  if (!company || !companyRole || !workingExp || !topics || !progLanguages) {
+    return res.sendStatus(400);
+  }
+
+  const userId = await getUserId(req.user);
+
+  addExpertBackground(userId, company, companyRole, workingExp);
+  addUserProgLanguages(userId, progLanguages);
+  addUserTopics(userId, topics);
+  return res.sendStatus(201);
+
 };
+
+module.exports = {
+  submitNormalBackground,
+  submitExpertBackground
+}
