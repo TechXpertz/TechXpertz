@@ -1,51 +1,33 @@
 require('../../../config');
 const pool = require('../../../db');
 const chai = require('chai');
-const expect = chai.expect;
+// const expect = chai.expect;
 const { normalNormalMatching } = require('../matching');
+const { getResetVal,
+  insertTestUsers,
+  insertUnmatchedBooking,
+  cleanUp } = require('./helper');
 
 describe('normal-normal matching', async () => {
 
-  const userIds = [];
+  let userIds = [];
   const bookingIds = [];
   let resetVal;
+  const auth0Ids = [];
+  for (let i = 0; i < 10; i++) {
+    auth0Ids.push('user' + i.toString());
+  }
 
   before(async () => {
 
-    const auth0Ids = [];
-    for (let i = 0; i < 10; i++) {
-      auth0Ids.push('user' + i.toString());
-    }
-
     console.log('inserting users');
-    for (const auth0Id of auth0Ids) {
-      const userId = (await pool.query(
-        'INSERT INTO users (auth0_id) VALUES ($1) RETURNING user_id',
-        [auth0Id]
-      ))
-        .rows[0]
-        .user_id;
-      userIds.push(userId);
-    }
-
-    const insertBooking = async (userId, topicId) => {
-      const bookingId = (await pool.query(
-        'INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, $2, false) '
-        + 'RETURNING booking_id',
-        [userId, topicId]
-      ))
-        .rows[0]
-        .booking_id;
-      return bookingId;
-    }
+    userIds = await insertTestUsers(auth0Ids);
 
     console.log('inserting bookings');
-    const max = await pool.query('SELECT MAX(booking_id) FROM bookings');
-    resetVal = max.rowCount === 0 ? 1 : max.rows[0].max + 1;
+    resetVal = await getResetVal();
     const topicIds = [3, 2, 2, 2, 1, 4, 4, 4, 4, 4];
-
     for (let i = 0; i < 10; i++) {
-      bookingIds.push(await insertBooking(userIds[i], topicIds[i]));
+      bookingIds.push(await insertUnmatchedBooking(userIds[i], topicIds[i], false));
     }
 
     const insertBookingProgLang = async (bookingId, progIds) => {
@@ -67,27 +49,13 @@ describe('normal-normal matching', async () => {
 
   it('do normal-normal matching', async () => {
 
-    normalNormalMatching(bookingIds);
+    await normalNormalMatching(bookingIds);
 
   });
 
   after(async () => {
 
-    for (const userId of userIds) {
-      await pool.query(
-        'DELETE FROM users WHERE user_id = $1',
-        [userId]
-      );
-    }
-
-    await pool.query("SELECT SETVAL((SELECT pg_get_serial_sequence('bookings', 'booking_id')), $1, false)",
-      [resetVal]);
+    await cleanUp(auth0Ids, resetVal);
 
   });
-
-
-
-
-
 });
-

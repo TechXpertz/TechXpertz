@@ -1,15 +1,19 @@
 require('../../../config');
-const pool = require('../../../db');
 const chai = require('chai');
 const expect = chai.expect;
 const { preprocessBookings } = require('../preprocess');
+const { getResetVal,
+  insertTestUsers,
+  insertBooking,
+  insertUnmatchedBooking,
+  insertSameTimeslots,
+  cleanUp } = require('./helper');
 
 describe('preprocess bookings', () => {
 
   const auth0Ids = ['auth0 | 1', 'auth0 | 2', 'auth0 | 3', 'auth0 | 4', 'auth0 | 5'];
   const date = '2020-06-17';
   const time = '6:00 PM';
-  const bookings = [];
   const expected = {
     normalNormals: [],
     normalExperts: []
@@ -18,68 +22,41 @@ describe('preprocess bookings', () => {
 
   before(async () => {
 
-    // determine expected response
-    const max = await pool.query('SELECT MAX(booking_id) FROM bookings');
-    const start = max.rowCount === 0 ? 1 : max.rows[0].max + 1;
-    resetVal = start;
-    for (i = 1; i < 5; i++) {
-      expected.normalNormals.push(start + i);
-    }
-    expected.normalExperts.push(start + 5);
+    resetVal = await getResetVal();
 
-    // insert test users
-    const userIds = [];
-    for (index in auth0Ids) {
-      const auth0Id = auth0Ids[index];
-      const userId = (await pool
-        .query('INSERT INTO users (auth0_id) VALUES ($1) RETURNING user_id',
-          [auth0Id]))
-        .rows[0].user_id;
-      userIds.push(userId);
+    // determine expected response
+    // user 1 - booking0, booking1 (booking0 rejected)
+    // user 2 - matched booking2 (rejected)
+    // user 5 - normal-expert booking
+    for (i = 1; i < 5; i++) {
+      if (i === 2) {
+        continue;
+      }
+      expected.normalNormals.push(resetVal + i);
     }
+    expected.normalExperts.push(resetVal + 5);
+    console.log('expected', expected);
+
+    const userIds = await insertTestUsers(auth0Ids);
 
     // insert test bookings
-    for (i in userIds) {
-      // last user is normalExpert
-      const userId = userIds[i];
-      if (parseInt(i) === userIds.length - 1) {
-        const bookingId = (await pool.query(
-          'INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, 1, true)'
-          + 'RETURNING booking_id',
-          [userId]
-        ))
-          .rows[0].booking_id;
-        bookings.push(bookingId);
+    const bookingIds = [];
+    for (let i = 0; i < 6; i++) {
+      if (i === 0) {
+        bookingIds.push(await insertUnmatchedBooking(userIds[i], 1, false));
+      } else if (i === 2) {
+        bookingIds.push(await insertBooking(userIds[i - 1], 1, false, 1));
+      } else if (i === 5) {
+        bookingIds.push(await insertUnmatchedBooking(userIds[i - 1], 1, true));
       } else {
-        const bookingId = (await pool.query(
-          'INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, 1, false)'
-          + 'RETURNING booking_id',
-          [userId]
-        ))
-          .rows[0].booking_id;
-        bookings.push(bookingId);
+        bookingIds.push(await insertUnmatchedBooking(userIds[i - 1], 1, false));
       }
 
-      if (parseInt(i) === 0) {
-        // repeat first user
-        const bookingId = (await pool.query(
-          'INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, 1, false)'
-          + 'RETURNING booking_id',
-          [userId]
-        ))
-          .rows[0].booking_id;
-        bookings.push(bookingId);
-      }
     }
+    console.log('bookingIds', bookingIds);
 
-    // insert timeslots
-    for (i in bookings) {
-      const bookingId = bookings[i];
-      await pool.query(
-        'INSERT INTO timeslots (booking_id, date_col, time_start) VALUES ($1, $2, $3)',
-        [bookingId, date, time]
-      );
-    }
+    await insertSameTimeslots(bookingIds, date, time);
+
   });
 
   it('should preprocess bookings at specified time', async () => {
@@ -96,13 +73,7 @@ describe('preprocess bookings', () => {
 
   after(async () => {
 
-    for (i in auth0Ids) {
-      const auth0Id = auth0Ids[i];
-      await pool.query('DELETE FROM users WHERE auth0_id = $1',
-        [auth0Id]);
-    }
-    await pool.query("SELECT SETVAL((SELECT pg_get_serial_sequence('bookings', 'booking_id')), $1, false)",
-      [resetVal]);
+    await cleanUp(auth0Ids, resetVal);
 
   });
 

@@ -3,6 +3,7 @@ const pool = require('../../../db');
 const chai = require('chai');
 const expect = chai.expect;
 const { constructGraph, connectWithinGraph } = require('../graph');
+const { insertTestUsers, getResetVal, insertUnmatchedBooking, cleanUp } = require('./helper');
 
 describe('graph algorithms', () => {
 
@@ -14,46 +15,31 @@ describe('graph algorithms', () => {
   const auth0Ids = [user1, user2, user3, user4, user5];
   let resetVal = 1;
   const bookingIds = [];
-  const userIds = [];
+  let userIds = [];
+
+  const addProgLanguage = async (bookingId, progId) => {
+    await pool.query(
+      'INSERT INTO booking_prog_languages (booking_id, prog_id) '
+      + 'VALUES ($1, $2)',
+      [bookingId, progId]
+    )
+  };
 
   before(async () => {
 
     console.log('inserting test users...')
-    for (index in auth0Ids) {
-      const auth0Id = auth0Ids[index];
-      const userId = (await pool.query(
-        'INSERT INTO users (auth0_id) VALUES ($1) RETURNING user_id',
-        [auth0Id]
-      ))
-        .rows[0]
-        .user_id;
-      userIds.push(userId);
-    }
+    userIds = await insertTestUsers(auth0Ids);
 
     console.log('inserting bookings same topic...');
-    const max = await pool.query('SELECT MAX(booking_id) FROM bookings');
-    resetVal = max.rowCount === 0 ? 1 : max.rows[0].max + 1;
+    resetVal = await getResetVal();
 
-    for (index in userIds) {
-      const userId = userIds[index];
-      const bookingId = (await pool.query(
-        'INSERT INTO bookings (user_id, topic_id, other_is_expert) '
-        + 'VALUES ($1, 1, false) RETURNING booking_id',
-        [userId]
-      ))
-        .rows[0]
-        .booking_id;
+    for (const userId of userIds) {
+      const bookingId = await insertUnmatchedBooking(userId, 1, false);
       bookingIds.push(bookingId);
     }
 
     console.log('inserting booking prog languages...');
-    const addProgLanguage = async (bookingId, progId) => {
-      await pool.query(
-        'INSERT INTO booking_prog_languages (booking_id, prog_id) '
-        + 'VALUES ($1, $2)',
-        [bookingId, progId]
-      )
-    };
+
     // user1
     await addProgLanguage(bookingIds[0], 1);
     await addProgLanguage(bookingIds[0], 4);
@@ -82,8 +68,8 @@ describe('graph algorithms', () => {
     graph = await constructGraph(bookingIds);
   });
 
-  it('connects bookings within the same topic', () => {
-    connectWithinGraph(graph);
+  it('connects bookings within the same topic', async () => {
+    await connectWithinGraph(graph);
   });
 
   it('match same topic, different programming languages', async () => {
@@ -91,42 +77,24 @@ describe('graph algorithms', () => {
     console.log('insert bookings');
     const differentBookings = [];
     for (const user of userIds) {
-      const bookingId = (await pool.query(
-        'INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, 1, false) '
-        + 'RETURNING booking_id',
-        [user]
-      ))
-        .rows[0]
-        .booking_id;
+      const bookingId = await insertUnmatchedBooking(user, 1, false);
       differentBookings.push(bookingId);
     }
     console.log('different bookings', differentBookings);
 
     // inserting prog languages
     for (let i = 0; i < 4; i++) {
-      await pool.query(
-        'INSERT INTO booking_prog_languages (booking_id, prog_id) VALUES ($1, $2)',
-        [differentBookings[i], i + 1]
-      );
+      await addProgLanguage(differentBookings[i], i + 1);
     }
 
     const graph2 = await constructGraph(differentBookings);
-    connectWithinGraph(graph2);
+    await connectWithinGraph(graph2);
 
   });
 
   after(async () => {
 
-    for (index in auth0Ids) {
-      const auth0Id = auth0Ids[index];
-      await pool.query(
-        'DELETE FROM users WHERE auth0_id = $1',
-        [auth0Id]
-      );
-    }
-
-    await pool.query("SELECT SETVAL((SELECT pg_get_serial_sequence('bookings', 'booking_id')), $1, false)",
-      [resetVal]);
+    await cleanUp(auth0Ids, resetVal);
 
   });
 

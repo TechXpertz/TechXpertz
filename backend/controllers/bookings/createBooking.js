@@ -10,12 +10,12 @@ const createBooking = async (req, res) => {
   if (!otherAccType || !topic || !progLanguages || !timeslots) {
     return res.sendStatus(400);
   }
-  if (otherAccType !== 'Expert' && otherAccType !== 'Normal') {
+  if (otherAccType.toLowerCase() !== 'expert' && otherAccType.toLowerCase() !== 'normal') {
     return res.sendStatus(422);
   }
 
   const userId = await getUserId(req.user);
-  const otherIsExpert = otherAccType === 'Expert' ? true : false;
+  const otherIsExpert = otherAccType.toLowerCase() === 'expert' ? true : false;
 
   const bookingId = await addBooking(userId, otherIsExpert, topic);
   if (!bookingId) return res.status(422).send('Invalid topic');

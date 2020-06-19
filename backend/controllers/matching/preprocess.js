@@ -3,11 +3,13 @@ const pool = require('../../db');
 const preprocessBookings = async (date, time) => {
 
   const bookingIds = await getBookingIds(date, time);
-  console.log(bookingIds);
-  const uniqueBookings = await filterOutRepeatUsers(bookingIds);
-  console.log(uniqueBookings);
+  console.log('bookingIds', bookingIds);
+  const unmatchedBookings = await removeMatchBookings(bookingIds);
+  console.log('unmatchedBookings', unmatchedBookings);
+  const uniqueBookings = await filterOutRepeatUsers(unmatchedBookings);
+  console.log('uniqueBookings', uniqueBookings);
   const separatedBookings = await separateOtherAccType(uniqueBookings);
-  console.log(separatedBookings);
+  console.log('separatedBookings', separatedBookings);
   return separatedBookings;
 
 };
@@ -18,6 +20,19 @@ const getBookingIds = async (date, time) => {
       [date, time]);
   return bookingRes.rows.map(booking => booking.booking_id);
 };
+
+const removeMatchBookings = async (bookingIds) => {
+
+  return (await pool.query(
+    'SELECT booking_id FROM bookings '
+    + 'WHERE booking_id = ANY ($1) '
+    + 'AND other_booking_id IS NULL',
+    [bookingIds]
+  ))
+    .rows
+    .map(booking => booking.booking_id);
+
+}
 
 const filterOutRepeatUsers = async (bookingIds) => {
 

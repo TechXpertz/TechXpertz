@@ -1,6 +1,7 @@
 const pool = require('../../db');
 const { BinaryHeap } = require('./binaryHeap');
 const { Node } = require('./node');
+const { match } = require('./settingMatch');
 
 const constructGraph = async (bookings) => {
 
@@ -152,12 +153,6 @@ const randomlyMatch = (unmatched) => {
   }
 
   return unmatched.length % 2 === 0 ? undefined : unmatched[length - 1];
-
-};
-
-const match = async (bookingA, bookingB) => {
-
-  console.log(`${bookingA} matched with ${bookingB}`);
 
 };
 
