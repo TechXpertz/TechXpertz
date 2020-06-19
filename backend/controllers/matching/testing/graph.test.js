@@ -2,7 +2,7 @@ require('../../../config');
 const pool = require('../../../db');
 const chai = require('chai');
 const expect = chai.expect;
-const { constructGraph, connectSameTopics, Node } = require('../graph');
+const { constructGraph, connectWithinGraph } = require('../graph');
 
 describe('graph algorithms', () => {
 
@@ -83,7 +83,7 @@ describe('graph algorithms', () => {
   });
 
   it('connects bookings within the same topic', () => {
-    connectSameTopics(graph);
+    connectWithinGraph(graph);
   });
 
   it('match same topic, different programming languages', async () => {
@@ -111,7 +111,7 @@ describe('graph algorithms', () => {
     }
 
     const graph2 = await constructGraph(differentBookings);
-    connectSameTopics(graph2);
+    connectWithinGraph(graph2);
 
   });
 

@@ -19,7 +19,7 @@ BinaryHeap.prototype = {
 
     this.content.push(elt);
     var index = this.bubbleUp(this.content.length - 1);
-    //this.map[this.idFunction(elt)] = index;
+    this.map[this.idFunction(elt)] = index;
     //console.log(this.map);
   },
 
@@ -33,7 +33,7 @@ BinaryHeap.prototype = {
       this.content[0] = end;
       this.map[this.idFunction(end)] = 0;
       var index = this.sinkDown(0);
-      //this.map[this.idFunction(end)] = index;
+      this.map[this.idFunction(end)] = index;
       //console.log(this.map);
     }
 

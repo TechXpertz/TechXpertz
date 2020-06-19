@@ -61,7 +61,7 @@ const makeEdgeIfPossible = (bookingA, bookingB, nodes) => {
 
 };
 
-const connectSameTopics = async (graph) => {
+const connectWithinGraph = async (graph) => {
 
   nodes = Array.from(graph);
   console.log('nodes', nodes);
@@ -81,7 +81,7 @@ const connectSameTopics = async (graph) => {
 
   // match those with overlapping prog languages
   while (heap.size() > 0 && visited.length !== graph.size) {
-    const node = nodes.pop()[1];
+    const node = heap.pop();
     console.log('visited so far', visited);
     console.log('processing ', node);
     if (visited.includes(node.bookingId)) {
@@ -106,11 +106,17 @@ const connectSameTopics = async (graph) => {
       const uniqueNeighbours = new Set();
 
       for (const neighbour of node.neighbours) {
-        uniqueNeighbours.add(neighbour);
+        const neighbourNode = graph.get(neighbour);
+        if (neighbourNode.bookingId !== node.bookingId && neighbourNode.bookingId !== partnerBooking) {
+          uniqueNeighbours.add(neighbour);
+        }
       }
 
       for (const neighbour of graph.get(partnerBooking).neighbours) {
-        uniqueNeighbours.add(neighbour);
+        const neighbourNode = graph.get(neighbour);
+        if (neighbourNode.bookingId !== node.bookingId && neighbourNode.bookingId !== partnerBooking) {
+          uniqueNeighbours.add(neighbour);
+        }
       }
 
       console.log('unique neighbours ', uniqueNeighbours);
@@ -118,12 +124,15 @@ const connectSameTopics = async (graph) => {
         heap.decreaseKey(booking, graph.get(booking).degree - 1);
       });
 
+      console.log('heap now', heap);
+
+
     }
   }
 
   console.log('unmatched', unmatched);
   const leftover = randomlyMatch(unmatched);
-  console.log(leftover);
+  console.log('leftover', leftover);
   return leftover;
 
 };
@@ -131,6 +140,12 @@ const connectSameTopics = async (graph) => {
 const randomlyMatch = (unmatched) => {
 
   unmatched.sort();
+
+  if (unmatched.length === 0) {
+    return undefined;
+  } else if (unmatched.length === 1) {
+    return unmatched[0];
+  }
 
   for (let i = 0; i < unmatched.length; i = i + 2) {
     match(unmatched[i], unmatched[i + 1]);
@@ -148,5 +163,5 @@ const match = async (bookingA, bookingB) => {
 
 module.exports = {
   constructGraph,
-  connectSameTopics
+  connectWithinGraph
 }
