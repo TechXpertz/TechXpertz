@@ -98,7 +98,7 @@ describe('graph algorithms', () => {
     console.log(expectedEdgeList);
 
     expect(degrees).to.eql(expectedDegrees);
-    expect(edgeList).to.eql(expectedEdgeList);
+    expect(edgeList.sort()).to.have.same.deep.members(expectedEdgeList.sort());
 
   });
 

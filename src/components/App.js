@@ -7,8 +7,11 @@ import FAQ from './faq/FAQ';
 import Profile from './userprofile/Profile';
 import UserDashboard from './dashboard/UserDashboard';
 import Callback from './callback';
+// import { useAuth0 } from "../react-auth0-spa";
+// import { register } from "../api_callers/apis.json";
 
 const App = () => {
+
     return (
         <div>
             <Router history={history}>
@@ -18,6 +21,12 @@ const App = () => {
                         <Route path="/about" component={About} />
                         <Route path="/FAQ" component={FAQ} />
                         <Route path="/profile" component={Profile} />
+                        {/* <Route
+                            path='/dashboard'
+                            render={(props) => (
+                                <UserDashboard {...props} status={registerStatus[0]} />
+                            )}
+                        /> */}
                         <Route path="/dashboard" component={UserDashboard} />
                         <Route path="/callback" component={Callback} />
                     </Switch>

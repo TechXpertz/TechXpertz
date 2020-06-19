@@ -68,6 +68,10 @@ const connectSameTopics = async (graph) => {
   const unmatched = [];
 
   // match those with overlapping prog languages
+  for (index in degreeList) {
+    const { key: bookingId, value: degree } = degreeList[index];
+
+  }
 
 };
 

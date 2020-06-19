@@ -20,7 +20,7 @@ const UserDashboard = () => {
     }
 
     console.log(type)
-    return(
+    return (
         <div>
             <UserNavBar />
             <TypeCheckForm
