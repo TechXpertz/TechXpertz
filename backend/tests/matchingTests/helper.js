@@ -1,4 +1,4 @@
-const pool = require('../../../db');
+const pool = require('../../db');
 
 const getResetVal = async () => {
   const max = await pool.query('SELECT MAX(booking_id) FROM bookings');
@@ -17,6 +17,15 @@ const insertTestUsers = async (auth0Ids) => {
     userIds.push(userId);
   }
   return userIds;
+}
+
+const generateTestUsers = async (numOfUsers) => {
+  const auth0Ids = [];
+  for (let i = 0; i < numOfUsers; i++) {
+    auth0Ids.push('user' + i.toString());
+  }
+  const userIds = await insertTestUsers(auth0Ids);
+  return { userIds, auth0Ids };
 }
 
 const insertBooking = async (userId, topicId, otherIsExpert, otherBookingId) => {
@@ -70,6 +79,37 @@ const insertSameTimeslots = async (bookingIds, date, time) => {
 
 }
 
+const setUpMatchingTest1 = async () => {
+  console.log('inserting users');
+  const users = await generateTestUsers(10);
+  const auth0Ids = users.auth0Ids;
+  const userIds = users.userIds;
+
+  console.log('inserting bookings');
+  const resetVal = await getResetVal();
+  const topicIds = [3, 2, 2, 2, 1, 4, 4, 4, 4, 4];
+  const bookingIds = [];
+  for (let i = 0; i < 10; i++) {
+    bookingIds.push(await insertUnmatchedBooking(userIds[i], topicIds[i], false));
+  }
+
+  const insertBookingProgLang = async (bookingId, progIds) => {
+    for (const progId of progIds) {
+      await pool.query(
+        'INSERT INTO booking_prog_languages (booking_id, prog_id) VALUES ($1, $2)',
+        [bookingId, progId]
+      );
+    }
+  }
+
+  console.log('inserting programming languages');
+  const progIds = [[3], [1], [2], [2], [1], [1, 2, 3], [2, 3], [1], [3], [4]];
+  for (let i = 0; i < 10; i++) {
+    await insertBookingProgLang(bookingIds[i], progIds[i]);
+  }
+  return { auth0Ids, userIds, bookingIds, resetVal };
+};
+
 const deleteTestUsers = async (auth0Ids) => {
   for (const auth0Id of auth0Ids) {
     await pool.query('DELETE FROM users WHERE auth0_id = $1',
@@ -87,13 +127,36 @@ const cleanUp = async (auth0Ids, resetVal) => {
   await resetBookingPK(resetVal);
 }
 
+const checkPartnersInDb = async (bookingA, bookingB) => {
+
+  const isPartner = async (bookingA, bookingB) => {
+    const partnerOfA = (await pool.query(
+      'SELECT other_booking_id FROM bookings WHERE booking_id = $1',
+      [bookingA]
+    ))
+      .rows[0]
+      .other_booking_id;
+    return partnerOfA === bookingB;
+  }
+
+  return (await isPartner(bookingA, bookingB)) && (await isPartner(bookingB, bookingA));
+
+};
+
+let matches = [];
+
 module.exports = {
   getResetVal,
   insertTestUsers,
+  generateTestUsers,
   insertBooking,
   insertUnmatchedBooking,
   insertSameTimeslots,
-  cleanUp
+  setUpMatchingTest1,
+  cleanUp,
+  matches,
+  checkPartnersInDb,
+  deleteTestUsers
 }
 
 

@@ -1,17 +1,16 @@
-require('../../../config');
+require('../../config');
 const chai = require('chai');
 const expect = chai.expect;
-const { preprocessBookings } = require('../preprocess');
+const { preprocessBookings } = require('../../controllers/matching/preprocess');
 const { getResetVal,
-  insertTestUsers,
   insertBooking,
   insertUnmatchedBooking,
   insertSameTimeslots,
-  cleanUp } = require('./helper');
+  cleanUp,
+  generateTestUsers } = require('./helper');
 
 describe('preprocess bookings', () => {
 
-  const auth0Ids = ['auth0 | 1', 'auth0 | 2', 'auth0 | 3', 'auth0 | 4', 'auth0 | 5'];
   const date = '2020-06-17';
   const time = '6:00 PM';
   const expected = {
@@ -19,10 +18,15 @@ describe('preprocess bookings', () => {
     normalExperts: []
   };
   let resetVal = 1;
+  let auth0Ids;
+  let userIds;
 
   before(async () => {
 
     resetVal = await getResetVal();
+    users = await generateTestUsers(5);
+    auth0Ids = users.auth0Ids;
+    userIds = users.userIds;
 
     // determine expected response
     // user 1 - booking0, booking1 (booking0 rejected)
@@ -36,8 +40,6 @@ describe('preprocess bookings', () => {
     }
     expected.normalExperts.push(resetVal + 5);
     console.log('expected', expected);
-
-    const userIds = await insertTestUsers(auth0Ids);
 
     // insert test bookings
     const bookingIds = [];

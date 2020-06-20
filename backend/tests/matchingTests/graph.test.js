@@ -1,21 +1,16 @@
-require('../../../config');
-const pool = require('../../../db');
+require('../../config');
+const pool = require('../../db');
 const chai = require('chai');
 const expect = chai.expect;
-const { constructGraph, connectWithinGraph } = require('../graph');
-const { insertTestUsers, getResetVal, insertUnmatchedBooking, cleanUp } = require('./helper');
+const { constructGraph, connectWithinGraph } = require('../../controllers/matching/graph');
+const { getResetVal, insertUnmatchedBooking, cleanUp, generateTestUsers } = require('./helper');
 
 describe('graph algorithms', () => {
 
-  const user1 = 'auth0 | user1';
-  const user2 = 'auth0 | user2';
-  const user3 = 'auth0 | user3';
-  const user4 = 'auth0 | user4';
-  const user5 = 'auth0 | user5';
-  const auth0Ids = [user1, user2, user3, user4, user5];
   let resetVal = 1;
   const bookingIds = [];
   let userIds = [];
+  let auth0Ids = [];
 
   const addProgLanguage = async (bookingId, progId) => {
     await pool.query(
@@ -28,7 +23,9 @@ describe('graph algorithms', () => {
   before(async () => {
 
     console.log('inserting test users...')
-    userIds = await insertTestUsers(auth0Ids);
+    const users = await generateTestUsers(5);
+    userIds = users.userIds;
+    auth0Ids = users.auth0Ids;
 
     console.log('inserting bookings same topic...');
     resetVal = await getResetVal();

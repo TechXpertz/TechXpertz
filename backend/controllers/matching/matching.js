@@ -4,11 +4,14 @@ const { constructGraph, connectWithinGraph } = require('./graph');
 const { getBookingsWithTopic } = require('./helper');
 
 
-const matchAlgo = function (date, time) {
+const matchAlgo = async function (now) {
 
-  const bookings = preprocessBookings(date, time);
-  const noMatch = normalNormalMatching(bookings.normalNormals);
-  normalExpertMatching(bookings.normalExperts);
+  const { date, time } = now;
+
+  const bookings = await preprocessBookings(date, time);
+  const normalLeftover = await normalNormalMatching(bookings.normalNormals);
+  const expertLeftover = normalExpertMatching(bookings.normalExperts);
+  return { bookings, normalLeftover, expertLeftover };
 
 };
 
@@ -25,10 +28,10 @@ const normalNormalMatching = async function (fullBookings) {
 
   for (const topicId of topics) {
     const bookings = await getBookingsWithTopic(topicId, fullBookings);
-    console.log('bookings with same topic ', bookings)
+    // console.log('bookings with same topic ', bookings)
     if (bookings.length < 2) {
       noSameTopics = noSameTopics.concat(bookings);
-      console.log('no same topics', noSameTopics)
+      // console.log('no same topics', noSameTopics)
       continue;
     };
     const graph = await constructGraph(bookings);

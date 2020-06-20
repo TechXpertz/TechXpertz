@@ -1,11 +1,13 @@
 const pool = require('../../db');
+const { matches } = require('../../tests/matchingTests/helper');
 
 const match = async (bookingA, bookingB) => {
 
   await setOtherBookingId(bookingA, bookingB);
   await setOtherBookingId(bookingB, bookingA);
 
-  console.log(`${bookingA} matched with ${bookingB}`);
+  // FOR TESTING
+  matches.push(new Set([bookingA, bookingB]));
 
 };
 

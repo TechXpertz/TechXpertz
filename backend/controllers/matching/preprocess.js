@@ -2,19 +2,19 @@ const pool = require('../../db');
 
 const preprocessBookings = async (date, time) => {
 
-  const bookingIds = await getBookingIds(date, time);
-  console.log('bookingIds', bookingIds);
+  const bookingIds = await getBookingIdsAtTimeslot(date, time);
+  // console.log('bookingIds', bookingIds);
   const unmatchedBookings = await removeMatchBookings(bookingIds);
-  console.log('unmatchedBookings', unmatchedBookings);
+  // console.log('unmatchedBookings', unmatchedBookings);
   const uniqueBookings = await filterOutRepeatUsers(unmatchedBookings);
-  console.log('uniqueBookings', uniqueBookings);
+  // console.log('uniqueBookings', uniqueBookings);
   const separatedBookings = await separateOtherAccType(uniqueBookings);
   console.log('separatedBookings', separatedBookings);
   return separatedBookings;
 
 };
 
-const getBookingIds = async (date, time) => {
+const getBookingIdsAtTimeslot = async (date, time) => {
   const bookingRes = await pool
     .query('SELECT booking_id FROM timeslots WHERE date_col = $1 AND time_start = $2',
       [date, time]);
@@ -79,5 +79,6 @@ const separateOtherAccType = async (bookings) => {
 };
 
 module.exports = {
-  preprocessBookings
+  preprocessBookings,
+  getBookingIdsAtTimeslot
 };

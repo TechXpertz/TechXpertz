@@ -5,7 +5,7 @@ const { match } = require('./settingMatch');
 
 const constructGraph = async (bookings) => {
 
-  console.log('bookings: ', bookings);
+  // console.log('bookings: ', bookings);
   const nodes = new Map(); // key: bookingId, value: node
 
   const orderedBookings = (await pool.query(
@@ -15,7 +15,7 @@ const constructGraph = async (bookings) => {
   ))
     .rows;
 
-  console.log('orderedBookings: ', orderedBookings);
+  // console.log('orderedBookings: ', orderedBookings);
 
   let start = 0;
   let end = 0;
@@ -55,7 +55,7 @@ const makeEdgeIfPossible = (bookingA, bookingB, nodes) => {
   if (areNeighbours(bookingA, bookingB, nodes)) {
     return;
   } else {
-    console.log(`draw an edge between ${bookingA} and ${bookingB}`);
+    // console.log(`draw an edge between ${bookingA} and ${bookingB}`);
     nodes.get(bookingA).addNeighbour(bookingB);
     nodes.get(bookingB).addNeighbour(bookingA);
   }
@@ -65,7 +65,7 @@ const makeEdgeIfPossible = (bookingA, bookingB, nodes) => {
 const connectWithinGraph = async (graph) => {
 
   nodes = Array.from(graph);
-  console.log('nodes', nodes);
+  // console.log('nodes', nodes);
   const unmatched = [];
   const visited = [];
 
@@ -78,18 +78,18 @@ const connectWithinGraph = async (graph) => {
   nodes.forEach(element => {
     heap.push(element[1])
   });
-  console.log('heap', heap);
+  // console.log('heap', heap);
 
   // match those with overlapping prog languages
   while (heap.size() > 0 && visited.length !== graph.size) {
     const node = heap.pop();
-    console.log('visited so far', visited);
-    console.log('processing ', node);
+    // console.log('visited so far', visited);
+    // console.log('processing ', node);
     if (visited.includes(node.bookingId)) {
-      console.log('already visited');
+      // console.log('already visited');
       continue;
     } else if (node.neighbours.length === 0) {
-      console.log('no neighbours');
+      // console.log('no neighbours');
       unmatched.push(node.bookingId);
       visited.push(node.bookingId);
     } else {
@@ -98,7 +98,7 @@ const connectWithinGraph = async (graph) => {
 
       if (!partnerBooking) {
         unmatched.push(node.bookingId);
-        console.log('no neighbours');
+        // console.log('no neighbours');
         continue;
       }
 
@@ -120,25 +120,25 @@ const connectWithinGraph = async (graph) => {
         }
       }
 
-      console.log('unique neighbours ', uniqueNeighbours);
+      // console.log('unique neighbours ', uniqueNeighbours);
       uniqueNeighbours.forEach(booking => {
         heap.decreaseKey(booking, graph.get(booking).degree - 1);
       });
 
-      console.log('heap now', heap);
+      // console.log('heap now', heap);
 
 
     }
   }
 
-  console.log('unmatched', unmatched);
-  const leftover = randomlyMatch(unmatched);
+  // console.log('unmatched', unmatched);
+  const leftover = await randomlyMatch(unmatched);
   console.log('leftover', leftover);
   return leftover;
 
 };
 
-const randomlyMatch = (unmatched) => {
+const randomlyMatch = async (unmatched) => {
 
   unmatched.sort();
 
@@ -149,7 +149,7 @@ const randomlyMatch = (unmatched) => {
   }
 
   for (let i = 0; i < unmatched.length; i = i + 2) {
-    match(unmatched[i], unmatched[i + 1]);
+    await match(unmatched[i], unmatched[i + 1]);
   }
 
   return unmatched.length % 2 === 0 ? undefined : unmatched[length - 1];
