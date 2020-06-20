@@ -27,9 +27,8 @@ const toISO = (dateObj) => {
 
 };
 
-const yesterdayLastBooking = (dateObj) => {
+const get1amTime = (dateObj) => {
   const date = new Date(dateObj);
-  date.setDate(dateObj.getDate() - 1);
   date.setHours(1);
   return date;
 }
@@ -38,5 +37,5 @@ module.exports = {
   getNextTimeslot,
   add2Minutes,
   toISO,
-  yesterdayLastBooking
+  get1amTime
 }

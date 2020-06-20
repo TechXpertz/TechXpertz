@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { toISO, getNextTimeslot, add2Minutes, yesterdayLastBooking } = require('./cronHelpers');
+const { toISO, getNextTimeslot, add2Minutes, get1amTime } = require('./cronHelpers');
 const { deleteUnmatchedBookingsAt, sendFailureEmail } = require('./tasks');
 const { matchAlgo } = require('../matching/matching');
 
@@ -13,14 +13,12 @@ const task = cron.schedule(every2Minutes, async () => {
   console.log('current timeslot', currentTimeslot);
   console.log('target timeslot', targetTimeslot);
 
-  if (currentTimeslot === '07:00') {
-    const prevBooking = toISO(yesterdayLastBooking(now));
+  if (currentTimeslot.time === '07:00') {
+    const prevBooking = toISO(get1amTime(now));
     await deleteUnmatchedBookingsAt(prevBooking);
   } else {
     await deleteUnmatchedBookingsAt(currentTimeslot);
   }
-
-  await deleteUnmatchedBookingsAt(currentTimeslot);
 
   const leftovers = await matchAlgo(targetTimeslot);
   const { bookings, normalLeftover, expertLeftover } = leftovers;
