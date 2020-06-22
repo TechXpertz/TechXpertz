@@ -79,10 +79,9 @@ const NormalForm = (props) => {
 
     const [rating, setRating] = useState(0);
     const [hoverState, setHoverState] = useState(0);
-
     const [check, setCheck] = useState('');
     const [isSubmit, setIsSubmit] = useState(false);
-    const [currentType, setCurrentType] = useState('Normal');
+    //const [currentType, setCurrentType] = useState('Normal');
     const [educationType, setEducationType] = useState([]);
     const [topics, setTopics] = useState([]);
     const [lang, setLang] = useState([]);
@@ -95,21 +94,15 @@ const NormalForm = (props) => {
         { value: 'Graduate', label: 'Graduate' }
     ]
 
-    //this is the callback which handles the submit action
-    //add a post request and submit the arrays accordingly
-    // Education level is educationType
-    // topics of interest is topics
-    // Programming language is lang
-    // Whether or not user has been to interview is check
     const handleClick = async (value) => {
         setIsSubmit(value);
         await sendForm(topics, lang, educationType, check);
     }
     //the values can be viewed here
-    console.log('Topics:', topics);
-    console.log('ProgLang:', lang);
-    console.log('Education:', educationType);
-    console.log('check', check);
+    // console.log('Topics:', topics);
+    // console.log('ProgLang:', lang);
+    // console.log('Education:', educationType);
+    // console.log('check', check);
 
 
     const checkType = (value) => {
@@ -206,6 +199,7 @@ const NormalForm = (props) => {
                             <label style={{ fontSize: '16px' }}>No</label>
                         </div>
                     </div>
+                </div>
                     <div className="four wide column" style={{ paddingRight: '3px' }}>
                         <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
                     </div>
@@ -224,8 +218,6 @@ const NormalForm = (props) => {
                         );
                     })}
                 </div>
-            </div>
-
         </>
     )
 

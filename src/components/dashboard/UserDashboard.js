@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import UserNavBar from './UserNavBar';
 import NormalForm from './NormalForm';
 import ExpertForm from './ExpertForm';
@@ -7,11 +7,9 @@ import TypeCheckForm from './TypeCheckForm';
 const UserDashboard = () => {
     const [type, setType] = useState('AccountType');
     const [isOpen, setIsOpen] = useState(true);
-    const [educationLevel, setEducationLevel] = useState(null);
-    const [experience, setExperience] = useState('');
     // const [experienceLevel, setExperienceLevel] = useState(0);
-    const [interest, setInterest] = useState(null);
-    const [programmingLang, setProgrammingLang] = useState(null);
+    // const [interest, setInterest] = useState(null);
+    // const [programmingLang, setProgrammingLang] = useState(null);
 
     console.log(type);
 
