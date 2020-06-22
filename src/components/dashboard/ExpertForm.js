@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import InputBox from '../InputBox';
 import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
@@ -7,6 +7,8 @@ import Axios from 'axios';
 
 const ExpertForm = (props) => {
 
+    const[hasSubmit, setHasSubmit] = useState(false);
+    // const[type, setType] = useState(props.type);
     const interestArray = [];
     const progLangArray = [];
 
@@ -48,8 +50,29 @@ const ExpertForm = (props) => {
         { value: 'more than 10', label: '10+ years' }
     ]
 
+    const handleClick = (value) => {
+        setHasSubmit(value);
+    }
+
+    useEffect(() => {
+        props.onSubmitClick(hasSubmit);
+    })
+    
     const action = (
         <>
+        <div className="ui center aligned container">
+            <button 
+                className="ui button"
+            >
+                Cancel
+            </button>
+            <button 
+                className="ui red button"
+                onClick={() => handleClick(true)}
+            >
+                Submit
+            </button>
+        </div>
             <div className="ui center aligned container">
                 <button className="ui button">Cancel</button>
                 <button className="ui red button">Submit</button>

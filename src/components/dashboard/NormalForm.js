@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import StarRating from '../StarRating';
 import DropdownMenu from '../DropdownMenu';
@@ -39,19 +39,76 @@ const NormalForm = (props) => {
     const [hoverState, setHoverState] = useState(0);
 
     const [check, setCheck] = useState('');
+    const [isSubmit, setIsSubmit] = useState(false);
+    const [currentType, setCurrentType] = useState('Normal');
+    const [educationType, setEducationType] = useState([]);
+    const [topics, setTopics] = useState([]);
+    const [lang, setLang] = useState([]);
     const stars= [1,2,3,4,5]; 
 
+    
     const educationArray = [
         { value: 'No Degree', label: 'No Degree' },
         { value: 'Undergraduate', label: 'Undergraduate' },
         { value: 'Graduate', label: 'Graduate' }
     ]
 
+    //this is the callback which handles the submit action
+    //add a post request and submit the arrays accordingly
+    // Education level is educationType
+    // topics of interest is topics
+    // Programming language is lang
+    // Whether or not user has been to interview is check
+    const handleClick = (value) => {
+        setIsSubmit(value);
+        // props.onEducation(educationType);
+        // props.onTopics(topics);
+        // props.onLang(lang);
+        // props.onInterview(check);
+    }
+    //the values can be viewed here
+    // console.log('Topics:', topics);
+    // console.log('ProgLang:', lang);
+    // console.log('Education:', educationType);
+    // console.log('check', check);
+
+
+    const checkType = (value) => {
+        props.onTypeClick(value);
+    }
+
+    //callback to retrieve education level input from user
+    const educationHandler = (keyPair) => {
+        setEducationType(keyPair);
+    }
+
+    const topicHandler = (keyPair) => {
+        setTopics(keyPair);
+    }
+
+    const langHandler = (keyPair) => {
+        setLang(keyPair);
+    }
+
+    useEffect(() => {
+        props.onSubmitClick(isSubmit);
+    }, [isSubmit, props]);
+
     const action = (
         <>
         <div className="ui center aligned container">
-            <button className="ui button">Back</button>
-            <button className="ui primary button">Submit</button>
+            <button 
+                className="ui button"
+                onClick={() => checkType('AccountType')}
+            >
+                Back
+            </button>
+            <button 
+                className="ui primary button"
+                onClick={() => handleClick(true)}
+            >
+                Submit
+            </button>
         </div>
         </>
     )
@@ -76,6 +133,7 @@ const NormalForm = (props) => {
                         array={educationArray}
                         content="Select Status"
                         multi={false}
+                        valueChanged={educationHandler}
                     />
                 </div>
             </div>
@@ -143,6 +201,7 @@ const NormalForm = (props) => {
                         array={interestArray}
                         content="Interests"
                         multi={true}
+                        valueChanged={topicHandler}
                     />
                 </div>
             </div>
@@ -160,6 +219,7 @@ const NormalForm = (props) => {
                         array={progLangArray}
                         content="Programming Languages"
                         multi={true}
+                        valueChanged={langHandler}
                     />
                 </div>
             </div>
