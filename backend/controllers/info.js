@@ -1,17 +1,19 @@
 const pool = require('../db');
 
 const getProgLanguages = async (req, res) => {
-  const prog_langs = await pool
-    .query('SELECT JSON_AGG(JSON_BUILD_OBJECT(prog_id, prog_name)) FROM prog_languages');
-
-  res.json(prog_langs.rows[0]);
+  const progLanguages = (await pool.query(
+    'SELECT prog_name AS "progName" FROM prog_languages'
+  ))
+    .rows;
+  res.json({ progLanguages });
 };
 
 const getTopics = async (req, res) => {
-  const topics = await pool
-    .query('SELECT JSON_AGG(JSON_BUILD_OBJECT(topic_id, topic_name)) FROM topics');
-
-  res.json(topics.rows[0]);
+  const topics = (await pool.query(
+    'SELECT topic_name AS "topicName" FROM topics'
+  ))
+    .rows;
+  res.json({ topics });
 };
 
 module.exports = {

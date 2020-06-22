@@ -20,8 +20,9 @@ app.use('/bookings', require('./routes/bookings'));
 // Register and login routes
 const { port } = require('./config');
 
-
 // Start server
 app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
+
+// require('./controllers/matching/cron');

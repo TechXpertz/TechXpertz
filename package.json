@@ -11,6 +11,7 @@
     "axois": "0.0.1-security",
     "concurrently": "^5.2.0",
     "find-config": "^1.0.0",
+    "node-cron": "^2.0.3",
     "moment": "^2.26.0",
     "nodemon": "^2.0.4",
     "react": "^16.13.1",
@@ -26,6 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:backend": "mocha --timeout 10000 ./backend",
+    "test:matching": "mocha --timeout 10000 ./backend/controllers/matching/testing",
     "eject": "react-scripts eject",
     "server": "nodemon ./backend/server.js",
     "dev": "concurrently \"npm run server\" \"npm run start\""
