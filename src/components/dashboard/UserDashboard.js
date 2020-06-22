@@ -23,23 +23,6 @@ const UserDashboard = () => {
         setIsOpen(!value);
     }
 
-    // const educationEventHandler = (value) => {
-    //     setEducationLevel(value);
-    // }
-
-    // const topicsEventHandler = (value) => {
-    //     setInterest(value);
-    // }
-
-    // const langEventHandler = (value) => {
-    //     setProgrammingLang(value);
-    // }
-
-    // const interviewHandler = (value) => {
-    //     setExperience(value);
-    // }
-
-
     if(!isOpen){
         return (
             <div>

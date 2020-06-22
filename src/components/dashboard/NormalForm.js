@@ -171,7 +171,6 @@ const NormalForm = (props) => {
                     );
                 })}
             </div>
-        
         </>
     )
 
