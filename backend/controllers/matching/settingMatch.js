@@ -1,5 +1,5 @@
 const pool = require('../../db');
-const { matches } = require('../../tests/matchingTests/helper');
+const { matches } = require('../../tests/matching/helper');
 
 const match = async (bookingA, bookingB) => {
 

@@ -79,6 +79,15 @@ const insertSameTimeslots = async (bookingIds, date, time) => {
 
 }
 
+const insertBookingProgLang = async (bookingId, progIds) => {
+  for (const progId of progIds) {
+    await pool.query(
+      'INSERT INTO booking_prog_languages (booking_id, prog_id) VALUES ($1, $2)',
+      [bookingId, progId]
+    );
+  }
+}
+
 const setUpMatchingTest1 = async () => {
   console.log('inserting users');
   const users = await generateTestUsers(10);
@@ -91,15 +100,6 @@ const setUpMatchingTest1 = async () => {
   const bookingIds = [];
   for (let i = 0; i < 10; i++) {
     bookingIds.push(await insertUnmatchedBooking(userIds[i], topicIds[i], false));
-  }
-
-  const insertBookingProgLang = async (bookingId, progIds) => {
-    for (const progId of progIds) {
-      await pool.query(
-        'INSERT INTO booking_prog_languages (booking_id, prog_id) VALUES ($1, $2)',
-        [bookingId, progId]
-      );
-    }
   }
 
   console.log('inserting programming languages');
@@ -156,7 +156,9 @@ module.exports = {
   cleanUp,
   matches,
   checkPartnersInDb,
-  deleteTestUsers
+  deleteTestUsers,
+  insertManyUnmatchedBookings,
+  insertBookingProgLang
 }
 
 

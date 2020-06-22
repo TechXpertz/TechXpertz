@@ -25,5 +25,5 @@ app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
 
-const { task } = require('./controllers/cronJobs/schedule');
-task.start();
+// const { task } = require('./controllers/cronJobs/schedule');
+// task.start();

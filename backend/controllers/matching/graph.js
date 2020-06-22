@@ -148,11 +148,14 @@ const randomlyMatch = async (unmatched) => {
     return unmatched[0];
   }
 
-  for (let i = 0; i < unmatched.length; i = i + 2) {
+  let max;
+  max = unmatched.length % 2 === 0 ? unmatched.length : unmatched.length - 1;
+
+  for (let i = 0; i < max; i = i + 2) {
     await match(unmatched[i], unmatched[i + 1]);
   }
 
-  return unmatched.length % 2 === 0 ? undefined : unmatched[length - 1];
+  return unmatched.length % 2 === 0 ? undefined : unmatched[unmatched.length - 1];
 
 };
 

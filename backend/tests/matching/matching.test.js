@@ -1,11 +1,10 @@
 require('../../config');
 const pool = require('../../db');
 const chai = require('chai');
-// const expect = chai.expect;
+const expect = chai.expect;
 const { normalNormalMatching } = require('../../controllers/matching/matching');
 const { cleanUp, setUpMatchingTest1, checkPartnersInDb } = require('./helper');
 const { matches } = require('./helper');
-const { expect } = require('chai');
 
 describe('normal-normal matching', async () => {
 

@@ -6,7 +6,7 @@ const { matchAlgo } = require('../matching/matching');
 const realSchedule = '0 7,9,11,13,15,17,19,21,23 * * *';
 const every2Minutes = '*/2 * * * *';
 
-const task = cron.schedule(every2Minutes, async () => {
+const task = timing => cron.schedule(timing, async () => {
   const now = new Date(Date.now());
   const currentTimeslot = toISO(now);
   const targetTimeslot = toISO(add2Minutes(now));
@@ -32,4 +32,8 @@ const task = cron.schedule(every2Minutes, async () => {
 
 
 
-module.exports = { task };
+module.exports = {
+  task,
+  realSchedule,
+  every2Minutes
+};
