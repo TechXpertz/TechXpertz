@@ -10,10 +10,38 @@ import { useAuth0 } from "../../react-auth0-spa";
 
 const NormalForm = (props) => {
 
-    const { isAuthenticated, loading, getTokenSilently } = useAuth0();
+    const { getTokenSilently } = useAuth0();
 
     const interestArray = [];
     const progLangArray = [];
+
+    React.useEffect(() => {
+
+        const fetchTopics = async () => {
+            const response = await Axios.get('http://localhost:5000/info/topics');
+            return response.data;
+        }
+
+        fetchTopics().then(data => {
+            const topics = data.topics
+                .map(element => element.topicName);
+            topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
+        });
+        // console.log('interestArr', interestArray);
+
+        const fetchProgLanguages = async () => {
+            const response = await Axios.get('http://localhost:5000/info/prog-languages');
+            return response.data;
+        }
+
+        fetchProgLanguages().then(data => {
+            const progLanguages = data.progLanguages
+                .map(element => element.progName)
+            progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
+        });
+        // console.log('progArr', progLangArray);
+
+    }, [interestArray, progLangArray]);
 
     const sendForm = async (topics, progLang, educationType, check) => {
         try {
@@ -48,30 +76,6 @@ const NormalForm = (props) => {
             console.error(error);
         }
     };
-
-    const fetchTopics = async () => {
-        const response = await Axios.get('http://localhost:5000/info/topics');
-        return response.data;
-    }
-
-    fetchTopics().then(data => {
-        const topics = data.topics
-            .map(element => element.topicName);
-        topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
-    });
-    // console.log('interestArr', interestArray);
-
-    const fetchProgLanguages = async () => {
-        const response = await Axios.get('http://localhost:5000/info/prog-languages');
-        return response.data;
-    }
-
-    fetchProgLanguages().then(data => {
-        const progLanguages = data.progLanguages
-            .map(element => element.progName)
-        progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
-    });
-    // console.log('progArr', progLangArray);
 
     const [rating, setRating] = useState(0);
     const [hoverState, setHoverState] = useState(0);
