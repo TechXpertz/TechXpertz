@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
 const DropdownMenu = (props) => {
+
     if(props.multi){
         return (
             <Select 

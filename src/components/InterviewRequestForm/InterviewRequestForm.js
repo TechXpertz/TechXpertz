@@ -125,6 +125,7 @@ const InterviewRequestFrom = () => {
                         </div>
                     </div>
                 </div>
+
                 <div className="twelve wide column" style={{ height: '95vh', borderLeft: '1px solid' }}>
                     <div className="row"  style={{ height: '9em'}}/>
                     <AppointmentScheduler 

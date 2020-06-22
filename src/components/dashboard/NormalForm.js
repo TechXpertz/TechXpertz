@@ -177,7 +177,6 @@ const NormalForm = (props) => {
 
     const interview = (
         <>
-
             <div className="row">
                 <div className="four wide column">
                     <h3>Have You Been To A Technical Interview Before?</h3>

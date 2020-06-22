@@ -10,12 +10,12 @@ const createBooking = async (req, res) => {
   if (!otherAccType || !topic || !progLanguages || !timeslots) {
     return res.sendStatus(400);
   }
-  if (otherAccType !== 'Expert' && otherAccType !== 'Normal') {
+  if (otherAccType.toLowerCase() !== 'expert' && otherAccType.toLowerCase() !== 'normal') {
     return res.sendStatus(422);
   }
 
   const userId = await getUserId(req.user);
-  const otherIsExpert = otherAccType === 'Expert' ? true : false;
+  const otherIsExpert = otherAccType.toLowerCase() === 'expert' ? true : false;
 
   const bookingId = await addBooking(userId, otherIsExpert, topic);
   if (!bookingId) return res.status(422).send('Invalid topic');
@@ -46,7 +46,7 @@ const addBooking = async (userId, otherIsExpert, topic) => {
 
 const addBookingProgLanguages = async (bookingId, progLanguages) => {
 
-  progLanguages.forEach(async prog => {
+  for (prog of progLanguages) {
     const { progName } = prog;
     const progIdRes = await pool
       .query('SELECT prog_id FROM prog_languages WHERE prog_name = $1',
@@ -57,20 +57,23 @@ const addBookingProgLanguages = async (bookingId, progLanguages) => {
     await pool.query('INSERT INTO booking_prog_languages (booking_id, prog_id) '
       + 'VALUES ($1, $2)',
       [bookingId, progId]);
-  });
+  }
+
 };
 
 const addTimeslots = async (bookingId, timeslots) => {
 
-  timeslots.forEach(async timeslot => {
+  for (timeslot of timeslots) {
     const { date, timeStart } = timeslot;
     await pool.query('INSERT INTO timeslots (booking_id, date_col, time_start)'
       + 'VALUES ($1, $2, $3)',
       [bookingId, date, timeStart]);
-  });
+  }
 
 };
 
 module.exports = {
-  createBooking
+  createBooking,
+  addBookingProgLanguages,
+  addTimeslots
 };
