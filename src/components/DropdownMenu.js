@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
 const DropdownMenu = (props) => {
-    const [inputValue, setInputValue] = useState([]);
-    
-    console.log(inputValue);
 
     if(props.multi){
         return (
@@ -14,7 +11,7 @@ const DropdownMenu = (props) => {
                 placeholder={props.content}
                 className="basic-multi-select"
                 isClearable
-                onChange={(value) => setInputValue(value)}
+                onChange={(value) => props.valueChanged(value)}
             />
         );
     } else {
@@ -22,7 +19,7 @@ const DropdownMenu = (props) => {
             <Select 
                     options={props.array}
                     placeholder={props.content}
-                    onChange={(value) => setInputValue(value)}
+                    onChange={(value) => props.valueChanged(value)}
                 />
         );
     }
