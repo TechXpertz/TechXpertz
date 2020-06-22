@@ -8,7 +8,8 @@ const StarRating = ({ starId, rating, onMouseEnter, onMouseLeave, onClick }) =>{
         styleClass = 'star-rating-filled';
     }
 
-    console.log(starId);
+    //rating prop will determine the number
+    //console.log(rating);
 
     return(
         <div
