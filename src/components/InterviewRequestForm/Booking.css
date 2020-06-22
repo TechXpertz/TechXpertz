@@ -1,0 +1,4 @@
+.booking-grid {
+  display: grid;
+  grid-template-columns: 412px auto;
+}

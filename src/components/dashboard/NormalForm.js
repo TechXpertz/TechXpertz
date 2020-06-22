@@ -37,7 +37,9 @@ const NormalForm = (props) => {
 
     const [rating, setRating] = useState(0);
     const [hoverState, setHoverState] = useState(0);
-    const stars = [1, 2, 3, 4, 5];
+
+    const [check, setCheck] = useState('');
+    const stars= [1,2,3,4,5]; 
 
     const educationArray = [
         { value: 'No Degree', label: 'No Degree' },
@@ -47,10 +49,10 @@ const NormalForm = (props) => {
 
     const action = (
         <>
-            <div className="ui center aligned container">
-                <button className="ui button">Cancel</button>
-                <button className="ui primary button">Submit</button>
-            </div>
+        <div className="ui center aligned container">
+            <button className="ui button">Back</button>
+            <button className="ui primary button">Submit</button>
+        </div>
         </>
     )
 
@@ -82,22 +84,30 @@ const NormalForm = (props) => {
 
     const interview = (
         <>
-            <div className="row">
-                <div className="four wide column">
-                    <h3>Have You Been To A Technical Interview Before?</h3>
-                </div>
-                <div className="three wide column" style={{ top: "12px" }}>
-                    <div className="row">
-                        <div className="ui checkbox">
-                            <input type="checkbox" />
-                            <label style={{ fontSize: '16px' }}>Yes</label>
-                        </div>
+
+        <div className="row">
+            <div className="four wide column">
+                <h3>Have You Been To A Technical Interview Before?</h3>
+            </div>
+            <div className="three wide column" style={{ top:"12px" }}>
+                <div className="row">
+                    <div className="ui checkbox">
+                        <input 
+                            type="checkbox" 
+                            onClick={() => check ? setCheck('') : setCheck('Yes')}
+                            disabled={check && check !== 'Yes' ? "disabled" : null}
+                        />
+                        <label style={{ fontSize: '16px'}}>Yes</label>
                     </div>
-                    <div className='row'>
-                        <div className="ui checkbox">
-                            <input type="checkbox" />
-                            <label style={{ fontSize: '16px' }}>No</label>
-                        </div>
+                </div>
+                <div className='row'>
+                    <div className="ui checkbox">
+                        <input 
+                            type="checkbox"
+                            onClick={() => check ? setCheck('') : setCheck('No')}
+                            disabled={check && check !== 'No' ? "disabled" : null} 
+                        />
+                        <label style={{ fontSize: '16px'}}>No</label>
                     </div>
                 </div>
                 <div className="four wide column" style={{ paddingRight: '3px' }}>
