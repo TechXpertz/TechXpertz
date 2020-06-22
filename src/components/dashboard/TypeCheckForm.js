@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import Modal from '../Modal';
 
 const TypeCheckForm = (props) => {
+
     const [ accountType, setAccountType ] = useState('');
+
+    console.log('TypeCheck:', accountType);
 
 
     if(props.type !== 'AccountType'){
@@ -11,6 +14,7 @@ const TypeCheckForm = (props) => {
 
     const checkType = type => {
         props.onTypeClick(type);
+        setAccountType('');
     }
 
     const modalContent = (

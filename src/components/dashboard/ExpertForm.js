@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import InputBox from '../InputBox';
 import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
 
 
 const ExpertForm = (props) => {
+    const[hasSubmit, setHasSubmit] = useState(false);
+    // const[type, setType] = useState(props.type);
+
     const period = [
         { value: '0', label: 'Less than 1 year'},
         { value: '1', label: '1 year'},
@@ -35,11 +38,28 @@ const ExpertForm = (props) => {
         { value: 'cpp', label: 'C++' }
     ]
 
+    const handleClick = (value) => {
+        setHasSubmit(value);
+    }
+
+    useEffect(() => {
+        props.onSubmitClick(hasSubmit);
+    })
+    
     const action = (
         <>
         <div className="ui center aligned container">
-            <button className="ui button">Cancel</button>
-            <button className="ui red button">Submit</button>
+            <button 
+                className="ui button"
+            >
+                Cancel
+            </button>
+            <button 
+                className="ui red button"
+                onClick={() => handleClick(true)}
+            >
+                Submit
+            </button>
         </div>
         </>
     )
