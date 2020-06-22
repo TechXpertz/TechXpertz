@@ -34,7 +34,7 @@ const Callback = () => {
                 registerStatus.push(res);
             });;
         }
-    }, [loading, getTokenSilently]);
+    }, [loading, getTokenSilently, registerStatus]);
 
     if (loading) {
         return (<p>Loading...</p>);
