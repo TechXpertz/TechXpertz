@@ -3,13 +3,51 @@ import Modal from '../Modal';
 import StarRating from '../StarRating';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
+import { normalBackground } from '../../api_callers/apis.json';
+import { useAuth0 } from "../../react-auth0-spa";
+
 
 
 const NormalForm = (props) => {
 
+    const { isAuthenticated, loading, getTokenSilently } = useAuth0();
 
     const interestArray = [];
     const progLangArray = [];
+
+    const sendForm = async (topics, progLang, educationType, check) => {
+        try {
+            const token = await getTokenSilently();
+            const header = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            const myTopics = topics.map(topic => {
+                return { topicName: topic.value };
+            });
+
+            const progLanguages = progLang.map(prog => {
+                return { progName: prog.value };
+            });
+
+            const data = {
+                education: educationType.value,
+                hasExperience: check,
+                topics: myTopics,
+                progLanguages,
+                interviewLevel: '0'
+            }
+
+            console.log('data', data);
+
+            await Axios.post(normalBackground, data, header);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const fetchTopics = async () => {
         const response = await Axios.get('http://localhost:5000/info/topics');
@@ -21,7 +59,7 @@ const NormalForm = (props) => {
             .map(element => element.topicName);
         topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
     });
-    console.log('interestArr', interestArray);
+    // console.log('interestArr', interestArray);
 
     const fetchProgLanguages = async () => {
         const response = await Axios.get('http://localhost:5000/info/prog-languages');
@@ -33,7 +71,7 @@ const NormalForm = (props) => {
             .map(element => element.progName)
         progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
     });
-    console.log('progArr', progLangArray);
+    // console.log('progArr', progLangArray);
 
     const [rating, setRating] = useState(0);
     const [hoverState, setHoverState] = useState(0);
@@ -44,9 +82,9 @@ const NormalForm = (props) => {
     const [educationType, setEducationType] = useState([]);
     const [topics, setTopics] = useState([]);
     const [lang, setLang] = useState([]);
-    const stars= [1,2,3,4,5]; 
+    const stars = [1, 2, 3, 4, 5];
 
-    
+
     const educationArray = [
         { value: 'No Degree', label: 'No Degree' },
         { value: 'Undergraduate', label: 'Undergraduate' },
@@ -59,18 +97,15 @@ const NormalForm = (props) => {
     // topics of interest is topics
     // Programming language is lang
     // Whether or not user has been to interview is check
-    const handleClick = (value) => {
+    const handleClick = async (value) => {
         setIsSubmit(value);
-        // props.onEducation(educationType);
-        // props.onTopics(topics);
-        // props.onLang(lang);
-        // props.onInterview(check);
+        await sendForm(topics, lang, educationType, check);
     }
     //the values can be viewed here
-    // console.log('Topics:', topics);
-    // console.log('ProgLang:', lang);
-    // console.log('Education:', educationType);
-    // console.log('check', check);
+    console.log('Topics:', topics);
+    console.log('ProgLang:', lang);
+    console.log('Education:', educationType);
+    console.log('check', check);
 
 
     const checkType = (value) => {
@@ -96,20 +131,20 @@ const NormalForm = (props) => {
 
     const action = (
         <>
-        <div className="ui center aligned container">
-            <button 
-                className="ui button"
-                onClick={() => checkType('AccountType')}
-            >
-                Back
+            <div className="ui center aligned container">
+                <button
+                    className="ui button"
+                    onClick={() => checkType('AccountType')}
+                >
+                    Back
             </button>
-            <button 
-                className="ui primary button"
-                onClick={() => handleClick(true)}
-            >
-                Submit
+                <button
+                    className="ui primary button"
+                    onClick={() => handleClick(true)}
+                >
+                    Submit
             </button>
-        </div>
+            </div>
         </>
     )
 
@@ -143,48 +178,49 @@ const NormalForm = (props) => {
     const interview = (
         <>
 
-        <div className="row">
-            <div className="four wide column">
-                <h3>Have You Been To A Technical Interview Before?</h3>
-            </div>
-            <div className="three wide column" style={{ top:"12px" }}>
-                <div className="row">
-                    <div className="ui checkbox">
-                        <input 
-                            type="checkbox" 
-                            onClick={() => check ? setCheck('') : setCheck('Yes')}
-                            disabled={check && check !== 'Yes' ? "disabled" : null}
-                        />
-                        <label style={{ fontSize: '16px'}}>Yes</label>
-                    </div>
+            <div className="row">
+                <div className="four wide column">
+                    <h3>Have You Been To A Technical Interview Before?</h3>
                 </div>
-                <div className='row'>
-                    <div className="ui checkbox">
-                        <input 
-                            type="checkbox"
-                            onClick={() => check ? setCheck('') : setCheck('No')}
-                            disabled={check && check !== 'No' ? "disabled" : null} 
-                        />
-                        <label style={{ fontSize: '16px'}}>No</label>
-                    </div>
-                </div>
-                <div className="four wide column" style={{ paddingRight: '3px' }}>
-                    <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
-                </div>
-                {stars.map((i) => {
-                    return (
-                        <div className="one wide column" style={{ marginTop: '10px' }} key={i}>
-                            <StarRating
-                                key={i}
-                                starId={i}
-                                rating={hoverState || rating}
-                                onMouseEnter={() => setHoverState(i)}
-                                onMouseLeave={() => setHoverState(0)}
-                                onClick={() => setRating(i)}
+                <div className="three wide column" style={{ top: "12px" }}>
+                    <div className="row">
+                        <div className="ui checkbox">
+                            <input
+                                type="checkbox"
+                                onClick={() => check ? setCheck('') : setCheck('Yes')}
+                                disabled={check && check !== 'Yes' ? "disabled" : null}
                             />
+                            <label style={{ fontSize: '16px' }}>Yes</label>
                         </div>
-                    );
-                })}
+                    </div>
+                    <div className='row'>
+                        <div className="ui checkbox">
+                            <input
+                                type="checkbox"
+                                onClick={() => check ? setCheck('') : setCheck('No')}
+                                disabled={check && check !== 'No' ? "disabled" : null}
+                            />
+                            <label style={{ fontSize: '16px' }}>No</label>
+                        </div>
+                    </div>
+                    <div className="four wide column" style={{ paddingRight: '3px' }}>
+                        <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
+                    </div>
+                    {stars.map((i) => {
+                        return (
+                            <div className="one wide column" style={{ marginTop: '10px' }} key={i}>
+                                <StarRating
+                                    key={i}
+                                    starId={i}
+                                    rating={hoverState || rating}
+                                    onMouseEnter={() => setHoverState(i)}
+                                    onMouseLeave={() => setHoverState(0)}
+                                    onClick={() => setRating(i)}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
         </>
