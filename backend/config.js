@@ -1,3 +1,5 @@
+require('dotenv').config({ path: 'backend/.env' });
+
 const port = process.env.PORT || 5000;
 const db_user = process.env.DB_USER;
 const db_password = process.env.DB_PASSWORD;
