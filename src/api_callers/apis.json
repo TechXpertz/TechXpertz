@@ -1,4 +1,5 @@
 {
     "register": "http://localhost:5000/auth/register",
-    "dashboard": "http://localhost:5000/user/dashboard"
+    "dashboard": "http://localhost:5000/user/dashboard",
+    "normalBackground": "http://localhost:5000/user/normal-background"
 }

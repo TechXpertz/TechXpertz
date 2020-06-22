@@ -1,37 +1,44 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
 import { useAuth0 } from "../react-auth0-spa";
-import { register } from "../api_callers/apis.json";
+import { register } from '../api_callers/apis.json';
 
 
 const Callback = () => {
-    const { getTokenSilently } = useAuth0();
 
-    const callApi = async () => {
-        try {
-            const token = await getTokenSilently();
+    const { isAuthenticated, loading, getTokenSilently } = useAuth0();
+    const registerStatus = [];
 
-            const response = await fetch(register, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                method: 'POST'
-            });
+    React.useEffect(() => {
+        const callApi = async () => {
+            try {
+                const token = await getTokenSilently();
 
-            const responseData = await response.json();
-            return responseData;
+                const response = await fetch(register, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    method: 'POST'
+                });
 
-        } catch (error) {
-            console.error(error);
+                const responseData = await response.json();
+                return responseData;
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        if (!loading) {
+            callApi().then(res => {
+                console.log('status', res);
+                registerStatus.push(res);
+            });;
         }
-    };
-
-    const { isAuthenticated, loading } = useAuth0();
+    }, [loading, getTokenSilently, registerStatus]);
 
     if (loading) {
         return (<p>Loading...</p>);
     } else if (isAuthenticated) {
-        console.log(JSON.stringify(callApi()));
         return (<Redirect to="/dashboard" />);
     } else {
         return (<Redirect to="/" />);
