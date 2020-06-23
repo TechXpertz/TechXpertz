@@ -42,6 +42,7 @@ const InterviewRequestFrom = () => {
 
     const [topicsState, setTopicsState] = useState([]);
     const [lang, setLang] = useState([]);
+    const [userTiming, setUserTiming] = useState([]);
 
     const topicHandler = (keyPair) => {
         setTopicsState(keyPair);
@@ -99,7 +100,7 @@ const InterviewRequestFrom = () => {
                     array={progLangArray}
                     content="Choose your programming languages"
                     multi={true}
-                    valueChanged={topicHandler}
+                    valueChanged={langHandler}
                 />
             </div>
         </>
@@ -111,6 +112,10 @@ const InterviewRequestFrom = () => {
             <button className="ui primary button">Submit</button>
         </>
     )
+
+    const userTimingHandler = (value) => {
+        console.log(value);
+    }
 
     return (
         <div>
@@ -158,6 +163,7 @@ const InterviewRequestFrom = () => {
                     <div className="row" style={{ height: '9em' }} />
                     <AppointmentScheduler
                         moment={currentMoment}
+                        userTiming={userTimingHandler}
                     />
                 </div>
             </div>
