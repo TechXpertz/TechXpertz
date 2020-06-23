@@ -9,7 +9,7 @@ const every2Minutes = '*/2 * * * *';
 const task = timing => cron.schedule(timing, async () => {
   const now = new Date(Date.now());
   const currentTimeslot = toISO(now);
-  const targetTimeslot = toISO(add2Minutes(now));
+  const targetTimeslot = toISO(getNextTimeslot(now));
   console.log('current timeslot', currentTimeslot);
   console.log('target timeslot', targetTimeslot);
 

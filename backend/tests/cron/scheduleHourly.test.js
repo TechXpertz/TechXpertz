@@ -30,16 +30,8 @@ describe('real schedule', async () => {
       [false, false, false, false, false]);
     await addTimeslots(bookingIds[0], [
       {
-        date: '2020-06-23',
-        timeStart: '01:00 AM'
-      },
-      {
-        date: '2020-06-23',
-        timeStart: '09:00 AM'
-      },
-      {
-        date: '2020-06-23',
-        timeStart: '11:00 AM'
+        date: '24/06/2020',
+        timings: ['1:00AM', '9:00AM', '11:00AM']
       }
     ]);
     await addBookingProgLanguages(bookingIds[0], [
@@ -53,12 +45,8 @@ describe('real schedule', async () => {
 
     await addTimeslots(bookingIds[1], [
       {
-        date: '2020-06-23',
-        timeStart: '09:00 AM'
-      },
-      {
-        date: '2020-06-23',
-        timeStart: '11:00 AM'
+        date: '24/06/2020',
+        timings: ['9:00 AM', '11:00AM']
       }
     ]);
     await addBookingProgLanguages(bookingIds[1], [
@@ -72,8 +60,8 @@ describe('real schedule', async () => {
 
     await addTimeslots(bookingIds[2], [
       {
-        date: '2020-06-23',
-        timeStart: '01:00 AM'
+        date: '24/06/2020',
+        timings: ['1:00AM']
       }
     ]);
     await addBookingProgLanguages(bookingIds[2], [
@@ -84,8 +72,8 @@ describe('real schedule', async () => {
 
     await addTimeslots(bookingIds[3], [
       {
-        date: '2020-06-23',
-        timeStart: '09:00 AM'
+        date: '24/06/2020',
+        timings: ['9:00AM']
       }
     ]);
     await addBookingProgLanguages(bookingIds[3], [
@@ -96,8 +84,8 @@ describe('real schedule', async () => {
 
     await addTimeslots(bookingIds[4], [
       {
-        date: '2020-06-23',
-        timeStart: '09:00 AM'
+        date: '24/06/2020',
+        timings: ['9:00AM']
       }
     ]);
     await addBookingProgLanguages(bookingIds[4], [

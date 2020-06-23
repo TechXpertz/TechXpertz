@@ -45,10 +45,10 @@ const getBookingsAfterNow = async (bookings) => {
   for (booking of bookings) {
     const bookingId = booking.booking_id;
     const timeslotsRes = (await pool.query(
-      'SELECT date_col, time_start FROM timeslots WHERE booking_id = $1 '
+      'SELECT date_col, ARRAY_AGG(time_start) FROM timeslots WHERE booking_id = $1 '
       + 'AND (date_col > CURRENT_DATE '
       + 'OR (date_col = CURRENT_DATE AND time_start >= CURRENT_TIME)) '
-      + 'ORDER BY (date_col, time_start)',
+      + 'GROUP BY (date_col)',
       [bookingId]
     ))
       .rows;
@@ -58,10 +58,13 @@ const getBookingsAfterNow = async (bookings) => {
     }
 
     const timeslots = timeslotsRes.map(timeslot => {
+      const { date_col, array_agg: timings } = timeslot;
+      const parsedTimings = timings.map(parseTimeForFE);
+      const date = parseDateForFE(date_col);
       return {
-        date: toISO(timeslot.date_col).date,
-        timeStart: timeslot.time_start
-      }
+        date,
+        timings: parsedTimings
+      };
     });
 
     const topic = (await pool.query(
@@ -75,6 +78,7 @@ const getBookingsAfterNow = async (bookings) => {
     const isMatched = booking.other_booking_id === null ? false : true;
 
     const bookingRes = {
+      bookingId,
       topic,
       otherAccType,
       isMatched,
@@ -87,6 +91,20 @@ const getBookingsAfterNow = async (bookings) => {
 
   return { bookings: result };
 
+}
+
+const parseDateForFE = (dbDate) => {
+  const year = dbDate.getFullYear();
+  const month = (dbDate.getMonth() + 1).toString().padStart(2, '0');
+  const date = dbDate.getDate().toString().padStart(2, '0');
+  return `${date}/${month}/${year}`;
+}
+
+const parseTimeForFE = (dbTime) => {
+  const [hour, min, second] = dbTime.split(':');
+  const hour12 = hour % 12;
+  const suffix = parseInt(hour) === hour12 ? 'AM' : 'PM';
+  return `${hour12}:${min}${suffix}`;
 }
 
 module.exports = { getUpcomingBookings };
