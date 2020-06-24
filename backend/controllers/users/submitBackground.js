@@ -60,7 +60,7 @@ const submitNormalBackground = async (req, res) => {
   }
 
   const { education, hasExperience, interviewLevel, progLanguages, topics } = req.body;
-  if (!education || !hasExperience || !interviewLevel || !progLanguages || !topics) {
+  if (!education || !hasExperience || interviewLevel === undefined || !progLanguages || !topics) {
     return res.sendStatus(400);
   }
 

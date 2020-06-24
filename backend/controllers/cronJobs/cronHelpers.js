@@ -27,9 +27,10 @@ const toISO = (dateObj) => {
 
 };
 
-const get1amTime = (dateObj) => {
+const get11pmTime = (dateObj) => {
   const date = new Date(dateObj);
-  date.setHours(1);
+  date.setDate(date.getDate() - 1);
+  date.setHours(23);
   return date;
 }
 
@@ -37,5 +38,5 @@ module.exports = {
   getNextTimeslot,
   add2Minutes,
   toISO,
-  get1amTime
+  get11pmTime
 }

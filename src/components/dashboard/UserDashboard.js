@@ -5,12 +5,13 @@ import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
 import Axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
-import { hasSubmittedBackground } from '../../api_callers/apis.json';
+import { hasSubmittedBackground, getUpcomingBookings } from '../../api_callers/apis.json';
 
 const UserDashboard = () => {
     const [type, setType] = useState('Loading');
     const [isOpen, setIsOpen] = useState(true);
     const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
+
     // const [experienceLevel, setExperienceLevel] = useState(0);
     // const [interest, setInterest] = useState(null);
     // const [programmingLang, setProgrammingLang] = useState(null);
@@ -30,7 +31,7 @@ const UserDashboard = () => {
 
                 const response = await Axios.get(hasSubmittedBackground, header);
                 const { hasSubmittedForm } = response.data;
-                // console.log('hasSubmittedForm', hasSubmittedForm);
+                console.log('hasSubmittedForm', hasSubmittedForm);
                 setHasSubmittedForm(hasSubmittedForm);
                 if (!hasSubmittedForm) {
                     setType('AccountType');
@@ -42,9 +43,39 @@ const UserDashboard = () => {
             }
         }
 
-        fetchHasSubmittedForm();
+        if (!loading) {
+            fetchHasSubmittedForm();
+        }
 
-    }, [hasSubmittedForm, getTokenSilently])
+    }, [hasSubmittedForm, getTokenSilently, loading]);
+
+    // getting upcoming bookings:
+    React.useEffect(() => {
+
+        const getBookings = async () => {
+
+            try {
+                const token = await getTokenSilently();
+                const header = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+
+                const response = (await Axios.get(getUpcomingBookings, header)).data;
+                console.log('bookings', response.bookings);
+
+            } catch (err) {
+                console.log(err);
+            }
+
+        };
+
+        if (!loading && hasSubmittedForm) {
+            getBookings();
+        }
+
+    }, [getTokenSilently, hasSubmittedForm, loading]);
 
     // console.log(type);
 
