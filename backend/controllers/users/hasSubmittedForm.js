@@ -10,16 +10,8 @@ const checkUserBackgroundSubmission = async (req, res) => {
   const userId = await getUserId(req.user);
   const isExpert = await checkIsExpert(userId);
   const hasSubmittedForm = await checkHasSubmittedForm(userId, isExpert);
-  let accountType;
-  if (isExpert === true) {
-    accountType = 'Expert';
-  } else if (isExpert === false) {
-    accountType = 'Normal';
-  } else {
-    accountType = 'AccountType';
-  }
+
   return res.status(200).json({
-    accountType,
     hasSubmittedForm
   });
 

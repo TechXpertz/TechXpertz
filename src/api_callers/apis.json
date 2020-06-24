@@ -2,5 +2,7 @@
     "register": "http://localhost:5000/auth/register",
     "dashboard": "http://localhost:5000/user/dashboard",
     "normalBackground": "http://localhost:5000/user/normal-background",
-    "postBookingForm": "http://localhost:5000/bookings"
+    "postAccType": "http://localhost:5000/user/account-type",
+    "postBookingForm": "http://localhost:5000/bookings",
+    "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background"
 }

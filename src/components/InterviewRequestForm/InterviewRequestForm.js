@@ -158,7 +158,7 @@ const InterviewRequestFrom = () => {
             });
 
             const myTimeslots = timeslots.map(slot => {
-                return { date: slot.date, timing: slot.timeSlots };
+                return { date: slot.date, timings: slot.timeSlots };
             });
 
             const data = {
@@ -167,6 +167,8 @@ const InterviewRequestFrom = () => {
                 progLanguages: myProgLangs,
                 timeslots: myTimeslots
             };
+
+            console.log(data);
 
             await Axios.post(postBookingForm, data, header);
 
