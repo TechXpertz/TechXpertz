@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DaysColumn from './DaysColumn';
 
-const AppointmentScheduler = ({ moment }) => {
+const AppointmentScheduler = ({ moment, userTiming }) => {
     const[click, setClick] = useState(0);
+    const[period, setPeriod] = useState(
+        [
+            { date: '', timings: [] }
+        ]
+    )
     let shiftArr= [0,1,2,3,4,5,6];
+
+    const dateHandler = (childProp) => {
+        setPeriod(prevState => {
+            return [...prevState.filter((value) => {
+                        return value.date !== childProp.date 
+                    }), 
+                    prevState[prevState.findIndex((item) => {
+                        return item.date === childProp.date;
+                    })] = childProp
+                ]
+        })
+    }
+
+    useEffect(() => {
+        userTiming(period.filter((timings) => {
+            return timings.date !== ''
+        }))
+    }, [period])
 
     const renderDays = (arr) => {
         const newArr = arr.map((i) => {
@@ -13,14 +36,12 @@ const AppointmentScheduler = ({ moment }) => {
             }
             return i+click;
         })
-        console.log(newArr);
         return newArr.map(index => {
             return(
                 <DaysColumn
                     key={(index)}
-                    day={moment.clone().add(index, 'days').format('ddd')}
-                    month={moment.clone().add(index, 'days').format('MMM')}
-                    date={moment.clone().add(index, 'days').format('Do')}
+                    dateObj={moment.clone().add(index, 'days')}
+                    onDaysChange={dateHandler}
                 />
             );
         })

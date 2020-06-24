@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 
-const TimeBlock = ({ value, callbackFromDays }) => {
+const TimeBlock = (props) => {
     const [click, setClick] = useState("False");
 
     const buttonColor = click === "False" ? "ui medium blue basic button" : "ui blue button"
 
     const handleButtonClick = (value) => {
         click === "False" ? setClick("True") : setClick("False")
-        callbackFromDays(value);
+        props.callbackFromDays(value);
     }
-
+    
     return (
-        <div 
+        <button 
             className={buttonColor}
             style={{ width: '8em' }}
-            value
-            onClick={(value) => handleButtonClick(value)}
+            onClick={() => handleButtonClick(props.value)}
         >
-            <h5>{value}</h5>
-        </div>
+            <h5>{props.value}</h5>
+        </button>
     );
 }
 

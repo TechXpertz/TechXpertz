@@ -7,7 +7,7 @@ import Axios from 'axios';
 
 const ExpertForm = (props) => {
 
-    const[hasSubmit, setHasSubmit] = useState(false);
+    const [hasSubmit, setHasSubmit] = useState(false);
     // const[type, setType] = useState(props.type);
     const interestArray = [];
     const progLangArray = [];
@@ -17,24 +17,26 @@ const ExpertForm = (props) => {
         return response.data;
     }
 
-    fetchTopics().then(data => {
-        const topics = data.topics
-            .map(element => element.topicName);
-        topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
-    });
-    console.log('interestArr', interestArray);
-
     const fetchProgLanguages = async () => {
         const response = await Axios.get('http://localhost:5000/info/prog-languages');
         return response.data;
     }
 
-    fetchProgLanguages().then(data => {
-        const progLanguages = data.progLanguages
-            .map(element => element.progName)
-        progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
-    });
-    console.log('progArr', progLangArray);
+    if (props.type === 'Expert') {
+        fetchTopics().then(data => {
+            const topics = data.topics
+                .map(element => element.topicName);
+            topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
+        });
+        console.log('interestArr', interestArray);
+
+        fetchProgLanguages().then(data => {
+            const progLanguages = data.progLanguages
+                .map(element => element.progName)
+            progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
+        });
+        console.log('progArr', progLangArray);
+    }
 
     const period = [
         { value: '0', label: 'Less than 1 year' },
@@ -57,22 +59,22 @@ const ExpertForm = (props) => {
     useEffect(() => {
         props.onSubmitClick(hasSubmit);
     })
-    
+
     const action = (
         <>
-        <div className="ui center aligned container">
-            <button 
-                className="ui button"
-            >
-                Cancel
+            <div className="ui center aligned container">
+                <button
+                    className="ui button"
+                >
+                    Cancel
             </button>
-            <button 
-                className="ui red button"
-                onClick={() => handleClick(true)}
-            >
-                Submit
+                <button
+                    className="ui red button"
+                    onClick={() => handleClick(true)}
+                >
+                    Submit
             </button>
-        </div>
+            </div>
             <div className="ui center aligned container">
                 <button className="ui button">Cancel</button>
                 <button className="ui red button">Submit</button>
@@ -174,7 +176,7 @@ const ExpertForm = (props) => {
         </>
     )
 
-    if (props.type !== 'Expert') {
+    if (props.type !== 'Expert' || props.hasSubmittedForm) {
         return null
     }
 
