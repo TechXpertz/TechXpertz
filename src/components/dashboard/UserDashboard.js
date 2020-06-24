@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import UserNavBar from './UserNavBar';
+import MainDashboard from './MainDashboard';
 import NormalForm from './NormalForm';
 import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
@@ -91,6 +92,7 @@ const UserDashboard = () => {
         return (
             <div>
                 <UserNavBar />
+                <MainDashboard />
             </div>
         );
     }
