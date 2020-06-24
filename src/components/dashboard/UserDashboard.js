@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import UserNavBar from './UserNavBar';
+import MainDashboard from './MainDashboard';
 import NormalForm from './NormalForm';
 import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
 
 const UserDashboard = () => {
     const [type, setType] = useState('AccountType');
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     // const [experienceLevel, setExperienceLevel] = useState(0);
     // const [interest, setInterest] = useState(null);
     // const [programmingLang, setProgrammingLang] = useState(null);
@@ -25,6 +26,7 @@ const UserDashboard = () => {
         return (
             <div>
                 <UserNavBar />
+                <MainDashboard />
             </div>
         );
     }
