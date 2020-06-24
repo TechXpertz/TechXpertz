@@ -4,25 +4,91 @@ import MainDashboard from './MainDashboard';
 import NormalForm from './NormalForm';
 import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
+import Axios from 'axios';
+import { useAuth0 } from "../../react-auth0-spa";
+import { hasSubmittedBackground, getUpcomingBookings } from '../../api_callers/apis.json';
 
 const UserDashboard = () => {
-    const [type, setType] = useState('AccountType');
-    const [isOpen, setIsOpen] = useState(false);
+    const [type, setType] = useState('Loading');
+    const [isOpen, setIsOpen] = useState(true);
+    const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
+
     // const [experienceLevel, setExperienceLevel] = useState(0);
     // const [interest, setInterest] = useState(null);
     // const [programmingLang, setProgrammingLang] = useState(null);
 
-    console.log(type);
+    const { loading, isAuthenticated, getTokenSilently } = useAuth0();
+
+    React.useEffect(() => {
+
+        const fetchHasSubmittedForm = async () => {
+            try {
+                const token = await getTokenSilently();
+                const header = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+
+                const response = await Axios.get(hasSubmittedBackground, header);
+                const { hasSubmittedForm } = response.data;
+                console.log('hasSubmittedForm', hasSubmittedForm);
+                setHasSubmittedForm(hasSubmittedForm);
+                if (!hasSubmittedForm) {
+                    setType('AccountType');
+                }
+                return response;
+
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        if (!loading) {
+            fetchHasSubmittedForm();
+        }
+
+    }, [hasSubmittedForm, getTokenSilently, loading]);
+
+    // getting upcoming bookings:
+    React.useEffect(() => {
+
+        const getBookings = async () => {
+
+            try {
+                const token = await getTokenSilently();
+                const header = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+
+                const response = (await Axios.get(getUpcomingBookings, header)).data;
+                console.log('bookings', response.bookings);
+
+            } catch (err) {
+                console.log(err);
+            }
+
+        };
+
+        if (!loading && hasSubmittedForm) {
+            getBookings();
+        }
+
+    }, [getTokenSilently, hasSubmittedForm, loading]);
+
+    // console.log(type);
 
     const typeCheck = (type) => {
         setType(type);
     }
-    
+
     const submitCheck = (value) => {
         setIsOpen(!value);
     }
 
-    if(!isOpen){
+    if (!isOpen) {
         return (
             <div>
                 <UserNavBar />
@@ -30,7 +96,7 @@ const UserDashboard = () => {
             </div>
         );
     }
-  
+
     return (
 
         <div>
@@ -38,18 +104,21 @@ const UserDashboard = () => {
             <TypeCheckForm
                 type={type}
                 onTypeClick={typeCheck}
+                hasSubmittedForm={hasSubmittedForm}
             />
             <NormalForm
                 type={type}
+                hasSubmittedForm={hasSubmittedForm}
                 onSubmitClick={submitCheck}
                 onTypeClick={typeCheck}
-                // onEducation={educationEventHandler}
-                // onTopics={topicsEventHandler}
-                // onLang={langEventHandler}
-                // onInterview={interviewHandler}
+            // onEducation={educationEventHandler}
+            // onTopics={topicsEventHandler}
+            // onLang={langEventHandler}
+            // onInterview={interviewHandler}
             />
             <ExpertForm
                 type={type}
+                hasSubmittedForm={hasSubmittedForm}
                 onSubmitClick={submitCheck}
                 onTypeClick={typeCheck}
             />

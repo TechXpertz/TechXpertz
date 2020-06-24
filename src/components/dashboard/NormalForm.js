@@ -3,7 +3,7 @@ import Modal from '../Modal';
 import StarRating from '../StarRating';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
-import { normalBackground } from '../../api_callers/apis.json';
+import { normalBackground, postAccType } from '../../api_callers/apis.json';
 import { useAuth0 } from "../../react-auth0-spa";
 
 
@@ -16,6 +16,10 @@ const NormalForm = (props) => {
     const progLangArray = [];
 
     React.useEffect(() => {
+
+        if (props.type !== 'Normal') {
+            return;
+        }
 
         const fetchTopics = async () => {
             const response = await Axios.get('http://localhost:5000/info/topics');
@@ -41,7 +45,7 @@ const NormalForm = (props) => {
         });
         // console.log('progArr', progLangArray);
 
-    }, [interestArray, progLangArray]);
+    }, [interestArray, progLangArray, props.type]);
 
     const sendForm = async (topics, progLang, educationType, check) => {
         try {
@@ -65,12 +69,14 @@ const NormalForm = (props) => {
                 hasExperience: check,
                 topics: myTopics,
                 progLanguages,
-                interviewLevel: '0'
+                interviewLevel: rating
             }
 
             console.log('data', data);
 
-            await Axios.post(normalBackground, data, header);
+            const normBackground = Axios.post(normalBackground, data, header);
+            const accType = Axios.post(postAccType, { accountType: 'Normal' }, header);
+            await Promise.all([normBackground, accType])
 
         } catch (error) {
             console.error(error);
@@ -200,24 +206,24 @@ const NormalForm = (props) => {
                         </div>
                     </div>
                 </div>
-                    <div className="four wide column" style={{ paddingRight: '3px' }}>
-                        <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
-                    </div>
-                    {stars.map((i) => {
-                        return (
-                            <div className="one wide column" style={{ marginTop: '10px' }} key={i}>
-                                <StarRating
-                                    key={i}
-                                    starId={i}
-                                    rating={hoverState || rating}
-                                    onMouseEnter={() => setHoverState(i)}
-                                    onMouseLeave={() => setHoverState(0)}
-                                    onClick={() => setRating(i)}
-                                />
-                            </div>
-                        );
-                    })}
+                <div className="four wide column" style={{ paddingRight: '3px' }}>
+                    <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
                 </div>
+                {stars.map((i) => {
+                    return (
+                        <div className="one wide column" style={{ marginTop: '10px' }} key={i}>
+                            <StarRating
+                                key={i}
+                                starId={i}
+                                rating={hoverState || rating}
+                                onMouseEnter={() => setHoverState(i)}
+                                onMouseLeave={() => setHoverState(0)}
+                                onClick={() => setRating(i)}
+                            />
+                        </div>
+                    );
+                })}
+            </div>
         </>
     )
 
@@ -269,7 +275,7 @@ const NormalForm = (props) => {
         </>
     )
 
-    if (props.type !== 'Normal') {
+    if (props.type !== 'Normal' || props.hasSubmittedForm) {
         return null
     }
 
