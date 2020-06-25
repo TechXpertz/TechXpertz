@@ -5,7 +5,7 @@ import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
 import moment from 'moment/moment.js';
 import Axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
-import { postBookingForm } from '../../api_callers/apis.json';
+import { bookingsUrl } from '../../api_callers/apis.json';
 
 const InterviewRequestFrom = () => {
 
@@ -170,7 +170,7 @@ const InterviewRequestFrom = () => {
 
             console.log(data);
 
-            await Axios.post(postBookingForm, data, header);
+            await Axios.post(bookingsUrl, data, header);
 
 
         } catch (err) {

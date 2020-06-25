@@ -6,7 +6,7 @@ import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
 import Axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
-import { hasSubmittedBackground, getUpcomingBookings } from '../../api_callers/apis.json';
+import { hasSubmittedBackground } from '../../api_callers/apis.json';
 
 const UserDashboard = () => {
     const [type, setType] = useState('Loading');
@@ -36,6 +36,8 @@ const UserDashboard = () => {
                 setHasSubmittedForm(hasSubmittedForm);
                 if (!hasSubmittedForm) {
                     setType('AccountType');
+                } else {
+                    setIsOpen(false);
                 }
                 return response;
 
@@ -49,34 +51,6 @@ const UserDashboard = () => {
         }
 
     }, [hasSubmittedForm, getTokenSilently, loading]);
-
-    // getting upcoming bookings:
-    React.useEffect(() => {
-
-        const getBookings = async () => {
-
-            try {
-                const token = await getTokenSilently();
-                const header = {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                };
-
-                const response = (await Axios.get(getUpcomingBookings, header)).data;
-                console.log('bookings', response.bookings);
-
-            } catch (err) {
-                console.log(err);
-            }
-
-        };
-
-        if (!loading && hasSubmittedForm) {
-            getBookings();
-        }
-
-    }, [getTokenSilently, hasSubmittedForm, loading]);
 
     // console.log(type);
 

@@ -74,6 +74,19 @@ const getBookingsAfterNow = async (bookings) => {
       .rows[0]
       .topic_name;
 
+    const progIds = (await pool.query(
+      'SELECT prog_id FROM booking_prog_languages WHERE booking_id = $1',
+      [bookingId]
+    ))
+      .rows
+      .map(prog => prog.prog_id);
+
+    const progLanguages = (await pool.query(
+      'SELECT ARRAY_AGG(prog_name) FROM prog_languages WHERE prog_id = ANY($1)',
+      [progIds]
+    ))
+      .rows;
+
     const otherAccType = booking.other_is_expert ? 'Expert' : 'Normal';
     const isMatched = booking.other_booking_id === null ? false : true;
 
@@ -82,7 +95,8 @@ const getBookingsAfterNow = async (bookings) => {
       topic,
       otherAccType,
       isMatched,
-      timeslots
+      timeslots,
+      langs: progLanguages[0].array_agg
     }
 
     result.push(bookingRes);
@@ -95,9 +109,12 @@ const getBookingsAfterNow = async (bookings) => {
 
 const parseDateForFE = (dbDate) => {
   const year = dbDate.getFullYear();
-  const month = (dbDate.getMonth() + 1).toString().padStart(2, '0');
-  const date = dbDate.getDate().toString().padStart(2, '0');
-  return `${date}/${month}/${year}`;
+  const month = dbDate.getMonth();
+  const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayArr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const date = dbDate.getDate().toString();
+  const day = dbDate.getDay();
+  return `${dayArr[day]}, ${date} ${monthArr[month]} ${year}`;
 }
 
 const parseTimeForFE = (dbTime) => {

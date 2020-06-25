@@ -3,7 +3,7 @@
     "dashboard": "http://localhost:5000/user/dashboard",
     "normalBackground": "http://localhost:5000/user/normal-background",
     "postAccType": "http://localhost:5000/user/account-type",
-    "postBookingForm": "http://localhost:5000/bookings",
+    "bookingsUrl": "http://localhost:5000/bookings",
     "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background",
     "getUpcomingBookings": "http://localhost:5000/bookings/upcoming"
 }

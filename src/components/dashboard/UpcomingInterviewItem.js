@@ -1,15 +1,15 @@
 import React from 'react';
 
-const UpcomingInterviewItem = ({ date, type, language, timing }) => {
+const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete }) => {
     return (
         <div className="ui two column grid">
-            <div className="fourteen wide column" style={{ paddingBottom:'0px'}}>
-                <div className="ui segment" style={{width: '1000px', height:'55px', marginLeft: '1.5em', paddingBottom: '18px', backgroundColor: '#DEEBF2'}}>
+            <div className="fourteen wide column" style={{ paddingBottom: '0px' }}>
+                <div className="ui segment" style={{ width: '1000px', height: '55px', marginLeft: '1.5em', paddingBottom: '18px', backgroundColor: '#DEEBF2' }}>
                     <div className="ui four column grid">
-                        <div className="two wide column" style={{ marginRight: '4em', paddingTop: '10px'}}>
+                        <div className="two wide column" style={{ marginRight: '4em', paddingTop: '10px' }}>
                             <p>{date}</p>
                         </div>
-                        <div className="four wide column" style={{ marginRight: '3.5em'}}>
+                        <div className="four wide column" style={{ marginRight: '3.5em' }}>
                             <p>{type}</p>
                         </div>
                         <div className="four wide column">
@@ -28,7 +28,9 @@ const UpcomingInterviewItem = ({ date, type, language, timing }) => {
                     </button>
                 </div>
                 <div className="row">
-                    <button className="compact ui red tiny button">
+                    <button className="compact ui red tiny button"
+                        onClick={() => onDelete(bookingId)}
+                    >
                         Cancel
                     </button>
                 </div>
