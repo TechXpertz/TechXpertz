@@ -21,7 +21,7 @@ const deleteBooking = async (req, res) => {
   }
 
   if (deleted.otherBookingId) {
-    // inform partner 
+    // inform partner and delete partner's timeslot
 
   }
 

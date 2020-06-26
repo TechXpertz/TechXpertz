@@ -26,7 +26,6 @@ const InterviewRequestFrom = () => {
                 .map(element => element.topicName);
             topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
         });
-        // console.log('interestArr', interestArray);
 
         const fetchProgLanguages = async () => {
             const response = await Axios.get('http://localhost:5000/info/prog-languages');
