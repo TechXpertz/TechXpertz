@@ -1,10 +1,9 @@
 const pool = require('../../db');
 const { getUserId } = require('./helper');
 
-const addUserProgLanguages = (userId, progLanguages) => {
+const addUserProgLanguages = async (userId, progLanguages) => {
 
-  progLanguages.forEach(async progLang => {
-
+  for (progLang of progLanguages) {
     const progName = progLang.progName;
     const progIdRes = await pool.query(
       'SELECT prog_id FROM prog_languages WHERE prog_name = $1',
@@ -17,15 +16,12 @@ const addUserProgLanguages = (userId, progLanguages) => {
       'INSERT INTO user_prog_languages (user_id, prog_id) VALUES ($1, $2)',
       [userId, progId]
     );
-
-  });
-
+  }
 };
 
 const addUserTopics = async (userId, topics) => {
 
-  topics.forEach(async topic => {
-
+  for (topic of topics) {
     const topicName = topic.topicName;
     const topicIdRes = await pool.query(
       'SELECT topic_id FROM topics WHERE topic_name = $1',
@@ -38,7 +34,8 @@ const addUserTopics = async (userId, topics) => {
       'INSERT INTO user_topics (user_id, topic_id) VALUES ($1, $2)',
       [userId, topicId]
     );
-  });
+  }
+
 };
 
 const addNormalBackground = async (userId, education, hasExperience, interviewLevel) => {
@@ -63,7 +60,7 @@ const submitNormalBackground = async (req, res) => {
   }
 
   const { education, hasExperience, interviewLevel, progLanguages, topics } = req.body;
-  if (!education || !hasExperience || !interviewLevel || !progLanguages || !topics) {
+  if (!education || !hasExperience || interviewLevel === undefined || !progLanguages || !topics) {
     return res.sendStatus(400);
   }
 

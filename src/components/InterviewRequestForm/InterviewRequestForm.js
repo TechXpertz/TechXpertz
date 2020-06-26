@@ -4,6 +4,8 @@ import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
 import moment from 'moment/moment.js';
 import Axios from 'axios';
+import { useAuth0 } from "../../react-auth0-spa";
+import { bookingsUrl } from '../../api_callers/apis.json';
 
 const InterviewRequestFrom = () => {
 
@@ -24,7 +26,6 @@ const InterviewRequestFrom = () => {
                 .map(element => element.topicName);
             topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
         });
-        // console.log('interestArr', interestArray);
 
         const fetchProgLanguages = async () => {
             const response = await Axios.get('http://localhost:5000/info/prog-languages');
@@ -43,6 +44,8 @@ const InterviewRequestFrom = () => {
     const [topicsState, setTopicsState] = useState([]);
     const [lang, setLang] = useState([]);
     const [userTiming, setUserTiming] = useState([]);
+    const [isSubmit, setIsSubmit] = useState(false);
+    const [otherAccType, setOtherAccType] = useState('');
 
     const topicHandler = (keyPair) => {
         setTopicsState(keyPair);
@@ -62,13 +65,21 @@ const InterviewRequestFrom = () => {
         <>
             <div className="row" style={{ width: '10px' }}>
                 <div className="ui checkbox">
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        onClick={() => (otherAccType ? setOtherAccType('') : setOtherAccType('Normal'))}
+                        disabled={otherAccType && otherAccType !== 'Normal' ? "disabled" : null}
+                    />
                     <label>Normal</label>
                 </div>
             </div>
             <div className="row" style={{ width: '10px', paddingTop: '5px' }}>
                 <div className="ui checkbox">
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        onClick={() => (otherAccType ? setOtherAccType('') : setOtherAccType('Expert'))}
+                        disabled={otherAccType && otherAccType !== 'Expert' ? "disabled" : null}
+                    />
                     <label>Expert</label>
                 </div>
             </div>
@@ -109,12 +120,61 @@ const InterviewRequestFrom = () => {
     const actions = (
         <>
             <button className="ui button">Cancel</button>
-            <button className="ui primary button">Submit</button>
+            <button className="ui primary button"
+                onClick={() => handleClick(true)}>
+                Submit
+            </button>
         </>
     )
 
     const userTimingHandler = (value) => {
+        setUserTiming(value);
         console.log(value);
+    }
+
+    const handleClick = (value) => {
+        setIsSubmit(value);
+        console.log('otherAccType', otherAccType);
+        console.log('topicsState', topicsState);
+        console.log('lang', lang);
+        console.log('userTiming', userTiming);
+        submitBookingForm(otherAccType, topicsState, lang, userTiming);
+    }
+
+    const { getTokenSilently } = useAuth0();
+    const submitBookingForm = async (otherAccType, topic, progLanguages, timeslots) => {
+        try {
+
+            const token = await getTokenSilently();
+            const header = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            const myProgLangs = progLanguages.map(prog => {
+                return { progName: prog.value };
+            });
+
+            const myTimeslots = timeslots.map(slot => {
+                return { date: slot.date, timings: slot.timeSlots };
+            });
+
+            const data = {
+                otherAccType,
+                topic: topic.value,
+                progLanguages: myProgLangs,
+                timeslots: myTimeslots
+            };
+
+            console.log(data);
+
+            await Axios.post(bookingsUrl, data, header);
+
+
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (

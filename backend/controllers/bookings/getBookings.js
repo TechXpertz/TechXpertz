@@ -45,10 +45,10 @@ const getBookingsAfterNow = async (bookings) => {
   for (booking of bookings) {
     const bookingId = booking.booking_id;
     const timeslotsRes = (await pool.query(
-      'SELECT date_col, time_start FROM timeslots WHERE booking_id = $1 '
+      'SELECT date_col, ARRAY_AGG(time_start) FROM timeslots WHERE booking_id = $1 '
       + 'AND (date_col > CURRENT_DATE '
       + 'OR (date_col = CURRENT_DATE AND time_start >= CURRENT_TIME)) '
-      + 'ORDER BY (date_col, time_start)',
+      + 'GROUP BY (date_col)',
       [bookingId]
     ))
       .rows;
@@ -58,10 +58,13 @@ const getBookingsAfterNow = async (bookings) => {
     }
 
     const timeslots = timeslotsRes.map(timeslot => {
+      const { date_col, array_agg: timings } = timeslot;
+      const parsedTimings = timings.map(parseTimeForFE);
+      const date = parseDateForFE(date_col);
       return {
-        date: toISO(timeslot.date_col).date,
-        timeStart: timeslot.time_start
-      }
+        date,
+        timings: parsedTimings
+      };
     });
 
     const topic = (await pool.query(
@@ -71,14 +74,29 @@ const getBookingsAfterNow = async (bookings) => {
       .rows[0]
       .topic_name;
 
+    const progIds = (await pool.query(
+      'SELECT prog_id FROM booking_prog_languages WHERE booking_id = $1',
+      [bookingId]
+    ))
+      .rows
+      .map(prog => prog.prog_id);
+
+    const progLanguages = (await pool.query(
+      'SELECT ARRAY_AGG(prog_name) FROM prog_languages WHERE prog_id = ANY($1)',
+      [progIds]
+    ))
+      .rows;
+
     const otherAccType = booking.other_is_expert ? 'Expert' : 'Normal';
     const isMatched = booking.other_booking_id === null ? false : true;
 
     const bookingRes = {
+      bookingId,
       topic,
       otherAccType,
       isMatched,
-      timeslots
+      timeslots,
+      langs: progLanguages[0].array_agg
     }
 
     result.push(bookingRes);
@@ -87,6 +105,23 @@ const getBookingsAfterNow = async (bookings) => {
 
   return { bookings: result };
 
+}
+
+const parseDateForFE = (dbDate) => {
+  const year = dbDate.getFullYear();
+  const month = dbDate.getMonth();
+  const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayArr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const date = dbDate.getDate().toString();
+  const day = dbDate.getDay();
+  return `${dayArr[day]}, ${date} ${monthArr[month]} ${year}`;
+}
+
+const parseTimeForFE = (dbTime) => {
+  const [hour, min, second] = dbTime.split(':');
+  const hour12 = hour % 12;
+  const suffix = parseInt(hour) === hour12 ? 'AM' : 'PM';
+  return `${hour12}:${min}${suffix}`;
 }
 
 module.exports = { getUpcomingBookings };

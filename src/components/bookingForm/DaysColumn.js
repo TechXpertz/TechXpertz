@@ -3,21 +3,22 @@ import TimeBlock from './TimeBlock';
 
 const DaysColumn = (props) => {
     const timeArr = ["9:00 AM", "11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM", "9:00 PM", "11:00 PM", "1:00 AM"];
-    const[timings, setTimings] = useState({
-        date: props.dateObj.format('MM/DD/YYYY'),
+    const [timings, setTimings] = useState({
+        date: props.dateObj.format('DD/MM/YYYY'),
         timeSlots: []
     });
 
     const callbackForTime = (timeValues) => {
         setTimings(prevState => {
-           return  {
-            ...prevState, 
-            timeSlots: [...prevState.timeSlots, timeValues]}
+            return {
+                ...prevState,
+                timeSlots: [...prevState.timeSlots, timeValues]
+            }
         });
     }
 
     useEffect(() => {
-        if(timings.timeSlots.length <= 0){
+        if (timings.timeSlots.length <= 0) {
             return;
         }
         props.onDaysChange(timings);
@@ -26,14 +27,14 @@ const DaysColumn = (props) => {
     //console.log(timings);
 
     return (
-        <div className="one wide column"  style={{ paddingLeft:"2px" }}>
+        <div className="one wide column" style={{ paddingLeft: "2px" }}>
             <div className="row">
                 <h3 className="ui center aligned header" style={{ marginRight: '18px' }}>
                     {props.dateObj.format('ddd')}
                 </h3>
             </div>
             <div className="row">
-                <h3 className="ui center aligned grey header" style={{ fontWeight: 'lighter', marginRight: '18px'}}>
+                <h3 className="ui center aligned grey header" style={{ fontWeight: 'lighter', marginRight: '18px' }}>
                     {props.dateObj.format('MMM')}
                     &nbsp;
                     {props.dateObj.format('Do')}

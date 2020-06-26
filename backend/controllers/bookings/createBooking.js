@@ -64,13 +64,20 @@ const addBookingProgLanguages = async (bookingId, progLanguages) => {
 const addTimeslots = async (bookingId, timeslots) => {
 
   for (timeslot of timeslots) {
-    const { date, timeStart } = timeslot;
-    await pool.query('INSERT INTO timeslots (booking_id, date_col, time_start)'
-      + 'VALUES ($1, $2, $3)',
-      [bookingId, date, timeStart]);
+    const { date, timings } = timeslot;
+    const parsedDate = parseDateFromFE(date);
+    for (timeStart of timings) {
+      await pool.query('INSERT INTO timeslots (booking_id, date_col, time_start)'
+        + 'VALUES ($1, $2, $3)',
+        [bookingId, parsedDate, timeStart]);
+    }
   }
-
 };
+
+const parseDateFromFE = (date) => {
+  const [day, month, year] = date.split('/');
+  return `${year}-${month}-${day}`;
+}
 
 module.exports = {
   createBooking,

@@ -1,5 +1,9 @@
 {
     "register": "http://localhost:5000/auth/register",
     "dashboard": "http://localhost:5000/user/dashboard",
-    "normalBackground": "http://localhost:5000/user/normal-background"
+    "normalBackground": "http://localhost:5000/user/normal-background",
+    "postAccType": "http://localhost:5000/user/account-type",
+    "bookingsUrl": "http://localhost:5000/bookings",
+    "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background",
+    "getUpcomingBookings": "http://localhost:5000/bookings/upcoming"
 }
