@@ -4,6 +4,7 @@ import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
 import moment from 'moment/moment.js';
 import Axios from 'axios';
+import history from '../../history';
 import { useAuth0 } from "../../react-auth0-spa";
 import { bookingsUrl } from '../../api_callers/apis.json';
 
@@ -134,11 +135,8 @@ const InterviewRequestFrom = () => {
 
     const handleClick = (value) => {
         setIsSubmit(value);
-        console.log('otherAccType', otherAccType);
-        console.log('topicsState', topicsState);
-        console.log('lang', lang);
-        console.log('userTiming', userTiming);
         submitBookingForm(otherAccType, topicsState, lang, userTiming);
+        history.push('/dashboard');
     }
 
     const { getTokenSilently } = useAuth0();

@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '../../react-auth0-spa';
 import Logo from '../../images/Logo.png'
-import Select from 'react-select';
 import '../App.css';
 import './Dashboard.css';
 
