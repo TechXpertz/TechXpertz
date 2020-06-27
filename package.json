@@ -9,13 +9,17 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "axois": "0.0.1-security",
+    "codemirror": "^5.55.0",
     "concurrently": "^5.2.0",
     "find-config": "^1.0.0",
     "moment": "^2.26.0",
     "node-cron": "^2.0.3",
     "nodemon": "^2.0.4",
     "pusher": "^3.0.1",
+    "pusher-js": "^6.0.3",
+    "pushid": "^1.0.0",
     "react": "^16.13.1",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",
     "react-icon": "^1.0.0",
     "react-icons": "^3.10.0",
@@ -23,7 +27,9 @@
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "socketio-jwt": "^4.6.2",
+    "stringquery": "^1.0.8"
   },
   "scripts": {
     "start": "react-scripts start",

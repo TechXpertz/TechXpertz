@@ -23,9 +23,44 @@ const deleteBooking = async (req, res) => {
   if (deleted.otherBookingId) {
     // inform partner and delete partner's timeslot
 
+    const cancelation = await cancelPartnerBooking(deleted.otherBookingId);
+
+    if (cancelation.hasRemaining) {
+      const { date, timeStart } = cancelation;
+      // send cancelled TIMESLOT email
+      console.log('delete timeslot', deleted.otherBookingId);
+    } else {
+      // send cancelled BOOKING email
+      console.log('delete booking', deleted.otherBookingId);
+    }
+
   }
 
   return res.sendStatus(200);
+
+}
+
+const cancelPartnerBooking = async (otherBookingId) => {
+
+  const timeslots = await pool.query('SELECT date_col, time_start FROM timeslots WHERE booking_id = $1',
+    [otherBookingId]);
+
+  if (timeslots.rowCount < 2) {
+    await pool.query('DELETE FROM bookings WHERE booking_id = $1',
+      [otherBookingId]);
+    return { hasRemaining: false };
+  } else {
+    await pool.query('DELETE FROM timeslots WHERE booking_id = $1 AND date_col = $2 AND time_start = $3',
+      [otherBookingId, timeslots.rows[0].date_col, timeslots.rows[0].time_start]);
+    await pool.query('UPDATE BOOKINGS set other_booking_id = NULL WHERE booking_id = $1',
+      [otherBookingId]);
+    return {
+      hasRemaining: true,
+      date: timeslots.rows[0].date_col,
+      timeStart: timeslots.rows[0].time_start
+    };
+  }
+
 
 }
 

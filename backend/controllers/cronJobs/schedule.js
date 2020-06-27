@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const { toISO, getNextTimeslot, add2Minutes, get11pmTime } = require('./cronHelpers');
-const { deleteUnmatchedBookingsAt, sendFailureEmail } = require('./tasks');
+const { deleteUnmatchedBookingsAt } = require('./tasks');
+const { sendSuccessEmail, sendFailureEmail } = require('./email');
 const { matchAlgo } = require('../matching/matching');
 
 const realSchedule = '0 5,7,9,11,13,15,17,19,21 * * *';
@@ -17,7 +18,7 @@ const task = timing => cron.schedule(timing, async () => {
 const doTaskAtTime = async (now) => {
 
   const currentTimeslot = toISO(now);
-  const targetTimeslot = toISO(getNextTimeslot(now));
+  const targetTimeslot = toISO(add2Minutes(now));
   console.log('current timeslot', currentTimeslot);
   console.log('target timeslot', targetTimeslot);
 
