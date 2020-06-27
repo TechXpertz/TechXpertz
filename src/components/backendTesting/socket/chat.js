@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import InputBox from '../InputBox';
+import InputBox from '../../InputBox';
 import io from "socket.io-client";
 import Message from './message';
-import { useAuth0 } from "../../react-auth0-spa";
+import { useAuth0 } from "../../../react-auth0-spa";
 const endpoint = "http://localhost:5000";
 
 const Chat = () => {

@@ -10,12 +10,13 @@ const MainDashboard = () => {
     const headerRef = useRef(null);
     const [headerWidth, setHeaderWidth] = useState(0);
     const [bookings, setBookings] = useState([]);
+    const [refresh, setRefresh] = useState(false);
 
     const { getTokenSilently, loading } = useAuth0();
 
     const splitBookingIntoSeparateDates = (booking) => {
 
-        const { bookingId, topic, otherAccType, isMatched, timeslots, langs } = booking;
+        const { bookingId, topic, otherAccType, otherBookingId, timeslots, langs } = booking;
 
         const ans = timeslots.map(
             timeslot => {
@@ -23,7 +24,7 @@ const MainDashboard = () => {
                     bookingId,
                     topic,
                     otherAccType,
-                    isMatched,
+                    otherBookingId,
                     langs,
                     date: timeslot.date,
                     timings: timeslot.timings
@@ -58,6 +59,7 @@ const MainDashboard = () => {
 
                 const response = (await axios.get(getUpcomingBookings, header)).data;
                 setBookings(splitBookings(response.bookings));
+                console.log(splitBookings(response.bookings));
 
 
             } catch (err) {
@@ -66,11 +68,12 @@ const MainDashboard = () => {
 
         };
 
-        if (!loading) {
+        if (!loading || refresh) {
             getBookings();
+            setRefresh(false);
         }
 
-    }, []);
+    }, [refresh]);
 
     const button = (
         <>
@@ -137,6 +140,7 @@ const MainDashboard = () => {
             };
             await axios.delete(bookingsUrl, { headers, data });
             setBookings(bookings.filter(item => item.bookingId !== booking));
+            setRefresh(true);
 
         } catch (err) {
             console.log(err);
@@ -147,15 +151,15 @@ const MainDashboard = () => {
         <>
             <div className="ui container" style={{ backgroundColor: '#F9F9F9', paddingTop: '20px', paddingBottom: '20px', minWidth: `${headerWidth}px` }}>
                 {bookings.map((booking, index) => {
-                    const { bookingId, date, isMatched, otherAccType, timings, topic, langs } = booking;
+                    const { bookingId, date, otherBookingId, otherAccType, timings, topic, langs } = booking;
                     return (
                         <UpcomingInterviewItem
                             key={index}
                             bookingId={bookingId}
                             date={date}
-                            isMatched={isMatched}
+                            otherBookingId={otherBookingId}
                             otherAccType={otherAccType}
-                            timing={isMatched ? timings[0] : timingsToString(timings)}
+                            timing={otherBookingId !== null ? timings[0] : timingsToString(timings)}
                             type={topic}
                             language={langsToString(langs)}
                             onDelete={handleDelete}

@@ -45,10 +45,10 @@ const getBookingsAfterNow = async (bookings) => {
   for (booking of bookings) {
     const bookingId = booking.booking_id;
     const timeslotsRes = (await pool.query(
-      'SELECT date_col, ARRAY_AGG(time_start) FROM timeslots WHERE booking_id = $1 '
+      'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
       + 'AND (date_col > CURRENT_DATE '
       + 'OR (date_col = CURRENT_DATE AND time_start >= CURRENT_TIME)) '
-      + 'GROUP BY (date_col)',
+      + 'GROUP BY (date_col) ORDER BY date_col',
       [bookingId]
     ))
       .rows;
@@ -82,19 +82,18 @@ const getBookingsAfterNow = async (bookings) => {
       .map(prog => prog.prog_id);
 
     const progLanguages = (await pool.query(
-      'SELECT ARRAY_AGG(prog_name) FROM prog_languages WHERE prog_id = ANY($1)',
+      'SELECT ARRAY_AGG(prog_name ORDER BY prog_name) FROM prog_languages WHERE prog_id = ANY($1)',
       [progIds]
     ))
       .rows;
 
     const otherAccType = booking.other_is_expert ? 'Expert' : 'Normal';
-    const isMatched = booking.other_booking_id === null ? false : true;
 
     const bookingRes = {
       bookingId,
       topic,
       otherAccType,
-      isMatched,
+      otherBookingId: booking.other_booking_id,
       timeslots,
       langs: progLanguages[0].array_agg
     }
