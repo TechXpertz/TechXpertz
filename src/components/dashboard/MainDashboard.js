@@ -12,6 +12,8 @@ const MainDashboard = () => {
     const [bookings, setBookings] = useState([]);
     const [refresh, setRefresh] = useState(false);
 
+    console.log('bookings', bookings);
+
     const { getTokenSilently, loading } = useAuth0();
 
     const splitBookingIntoSeparateDates = (booking) => {
@@ -58,6 +60,7 @@ const MainDashboard = () => {
                 };
 
                 const response = (await axios.get(getUpcomingBookings, header)).data;
+                console.log('response', response);
                 setBookings(splitBookings(response.bookings));
                 console.log(splitBookings(response.bookings));
 

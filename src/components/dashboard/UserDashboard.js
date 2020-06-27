@@ -52,7 +52,7 @@ const UserDashboard = () => {
 
     }, [hasSubmittedForm, getTokenSilently, loading]);
 
-    // console.log(type);
+    // console.log(isOpen);
 
     const typeCheck = (type) => {
         setType(type);
@@ -85,10 +85,6 @@ const UserDashboard = () => {
                 hasSubmittedForm={hasSubmittedForm}
                 onSubmitClick={submitCheck}
                 onTypeClick={typeCheck}
-            // onEducation={educationEventHandler}
-            // onTopics={topicsEventHandler}
-            // onLang={langEventHandler}
-            // onInterview={interviewHandler}
             />
             <ExpertForm
                 type={type}
