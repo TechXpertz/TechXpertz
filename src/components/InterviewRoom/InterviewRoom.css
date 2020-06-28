@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+body #fonts {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.CodeMirror {
+  width: 63.5vw;
+  height: 90vh !important;
+}
+
+.Header.header {
+  padding: 20px 20px;
+  background-color: black;
+  color: white;
+  display: flex;
+}
+
+.subheader-text {
+  padding: 14px 14px;
+  background-color: #3aa7f6;
+  color: black;
+  display: flex;
+}
+
+.ui-grid-container {
+  width: 100% !important;
+}

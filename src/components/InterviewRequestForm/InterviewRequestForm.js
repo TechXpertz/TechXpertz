@@ -120,7 +120,7 @@ const InterviewRequestFrom = () => {
 
     const actions = (
         <>
-            <button className="ui button">Cancel</button>
+            <button className="ui button" onClick={() => history.push('/dashboard')}>Cancel</button>
             <button className="ui primary button"
                 onClick={() => handleClick(true)}>
                 Submit

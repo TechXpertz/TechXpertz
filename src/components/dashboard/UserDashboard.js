@@ -4,6 +4,7 @@ import MainDashboard from './MainDashboard';
 import NormalForm from './NormalForm';
 import ExpertForm from './ExpertForm';
 import TypeCheckForm from './TypeCheckForm';
+import LoaderPage from '../LoaderPage';
 import Axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
 import { hasSubmittedBackground } from '../../api_callers/apis.json';
@@ -12,6 +13,7 @@ const UserDashboard = () => {
     const [type, setType] = useState('Loading');
     const [isOpen, setIsOpen] = useState(true);
     const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
+    const [loader, setLoader] = useState(true);
 
     // const [experienceLevel, setExperienceLevel] = useState(0);
     // const [interest, setInterest] = useState(null);
@@ -32,12 +34,14 @@ const UserDashboard = () => {
 
                 const response = await Axios.get(hasSubmittedBackground, header);
                 const { hasSubmittedForm } = response.data;
-                console.log('hasSubmittedForm', hasSubmittedForm);
+                //console.log('hasSubmittedForm', hasSubmittedForm);
                 setHasSubmittedForm(hasSubmittedForm);
                 if (!hasSubmittedForm) {
                     setType('AccountType');
+                    setLoader(false);
                 } else {
                     setIsOpen(false);
+                    setLoader(false);
                 }
                 return response;
 
@@ -52,7 +56,7 @@ const UserDashboard = () => {
 
     }, [hasSubmittedForm, getTokenSilently, loading]);
 
-    // console.log(isOpen);
+    console.log('loader',loader);
 
     const typeCheck = (type) => {
         setType(type);
@@ -62,7 +66,14 @@ const UserDashboard = () => {
         setIsOpen(!value);
     }
 
-    if (!isOpen) {
+    if(loader){
+        return (
+            <div>
+                <UserNavBar />
+                <LoaderPage />
+            </div>
+        )
+    } else if (!isOpen & !loader) {
         return (
             <div>
                 <UserNavBar />
@@ -70,7 +81,6 @@ const UserDashboard = () => {
             </div>
         );
     }
-
     return (
 
         <div>
