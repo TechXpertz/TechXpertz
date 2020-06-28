@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import UpcomingInterviewItem from './UpcomingInterviewItem';
+import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
 import { getUpcomingBookings, bookingsUrl } from '../../api_callers/apis.json';
@@ -11,8 +12,37 @@ const MainDashboard = () => {
     const [headerWidth, setHeaderWidth] = useState(0);
     const [bookings, setBookings] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [dimensions, setDimensions] = useState({
+        height: window.innerHeight,
+        width: window.innerWidth
+    })
+    
+    function debounce(fn, ms){
+        let timer;
+        return _ => {
+            clearTimeout(timer)
+            timer = setTimeout(_ => {
+                timer = null
+                fn.apply(this, arguments)
+            }, ms)
+        };
+    }
 
-    console.log('bookings', bookings);
+    //used to dynamically resize the ui segment for the upcoming interview items
+    useEffect(() => {
+        const debouncedHandleResize = debounce(function handlResize(){
+            setDimensions({
+                height: window.innerHeight,
+                width: window.innerWidth
+            })
+        }, 20);
+
+        window.addEventListener('resize', debouncedHandleResize);
+
+        return _ => {
+            window.removeEventListener('resize', debouncedHandleResize);
+        }
+    });
 
     const { getTokenSilently, loading } = useAuth0();
 
@@ -99,24 +129,25 @@ const MainDashboard = () => {
     useEffect(() => {
         const width = headerRef.current.offsetWidth;
         setHeaderWidth(width);
-    }, [headerRef, headerWidth]);
+    }, [headerRef, headerWidth, dimensions]);
 
     const upcomingInterviews = (
         <>
             <div className="row" style={{ backgroundColor: '#E1E1E1', paddingTop: '15px', paddingBottom: '15px' }}>
                 <div className="ui five column grid">
-                    <div className="two wide column" style={{ marginLeft: '2.5em', marginRight: '1.5em' }}>
+                    <div className="two wide column" style={{ marginLeft: '2.9em' }}>
                         <h3 style={{ fontWeight: 'lighter' }}>Date</h3>
                     </div>
-                    <div className="three wide column" style={{ marginRight: '4em' }}>
+                    <div className="two wide column" style={{ marginLeft: '2em', marginRight: '2em'}}>
                         <h3 style={{ fontWeight: 'lighter' }}>Type</h3>
                     </div>
-                    <div className="three wide column" style={{ marginRight: '8px' }}>
+                    <div className="three wide column" style={{ marginRight: '1.3em'}}>
                         <h3 style={{ fontWeight: 'lighter' }}>Language</h3>
                     </div>
                     <div className="three wide column">
                         <h3 style={{ fontWeight: 'lighter' }}>Timing</h3>
                     </div>
+                    <div className="three wide column" />
                 </div>
             </div>
         </>
@@ -181,7 +212,8 @@ const MainDashboard = () => {
                     {button}
                     {header}
                     {upcomingInterviews}
-                    {interviewItem}
+                    {bookings && interviewItem}
+                    {!bookings && <LoaderPage />}
                 </div>
                 <div className="two wide column" />
             </div>

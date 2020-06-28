@@ -8,6 +8,8 @@ import Profile from './userprofile/Profile';
 import UserDashboard from './dashboard/UserDashboard';
 import InterviewRequestForm from './InterviewRequestForm/InterviewRequestForm';
 import Callback from './callback';
+import CodeEditor from './backendTesting/pusher/codeEditor';
+import InterviewRoom from './InterviewRoom/InterviewRoom';
 import SocketEditor from './backendTesting/socket/SocketEditor';
 // import { useAuth0 } from "../react-auth0-spa";
 // import { register } from "../api_callers/apis.json";
@@ -32,6 +34,8 @@ const App = () => {
                         <Route path="/dashboard" component={UserDashboard} />
                         <Route path="/callback" component={Callback} />
                         <Route path="/booking" component={InterviewRequestForm} />
+                        {/* <Route path="/code-editor" component={CodeEditor} /> */}
+                        <Route path="/interview-room" component={InterviewRoom} />
                         <Route path="/socket-editor" component={SocketEditor} />
                     </Switch>
                 </div>
