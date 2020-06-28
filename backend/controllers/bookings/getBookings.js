@@ -47,7 +47,7 @@ const getBookingsAfterNow = async (bookings) => {
     const timeslotsRes = (await pool.query(
       'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
       + 'AND (date_col > CURRENT_DATE '
-      + 'OR (date_col = CURRENT_DATE AND time_start >= CURRENT_TIME)) '
+      + "OR (date_col = CURRENT_DATE AND time_start >= (CURRENT_TIME - INTERVAL '2 hours'))) "
       + 'GROUP BY (date_col) ORDER BY date_col',
       [bookingId]
     ))
@@ -123,4 +123,4 @@ const parseTimeForFE = (dbTime) => {
   return `${hour12}:${min}${suffix}`;
 }
 
-module.exports = { getUpcomingBookings };
+module.exports = { getUpcomingBookings, getAllBookingsOfUser };

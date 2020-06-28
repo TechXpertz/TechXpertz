@@ -16,7 +16,7 @@ const SocketEditor = (props) => {
   const [socket, setSocket] = useState();
 
   const { getTokenSilently, loading } = useAuth0();
-  const endpoint = "http://localhost:5000";
+  const endpoint = "http://localhost:5000/editor";
   const bookingId = querySearch(props.location.search).booking_id;
 
   useEffect(() => {
