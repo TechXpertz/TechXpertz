@@ -103,11 +103,13 @@ const ioAuth = (socket, next) => {
 }
 
 const editor = io.of('/editor');
+const comments = io.of('/comments');
 
 module.exports = {
   editor,
+  comments,
   ioAuth
 };
 
 require('./editor');
-
+require('./comments');

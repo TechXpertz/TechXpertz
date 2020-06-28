@@ -9,7 +9,7 @@ body #fonts {
   height: 90vh !important;
 }
 
-.Header.header {
+.header-text {
   padding: 20px 20px;
   background-color: black;
   color: white;

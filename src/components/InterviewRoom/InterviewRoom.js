@@ -14,15 +14,19 @@ const InterviewRoom = (props) => {
             <SubHeader />
             <div className="ui two column grid">
                 <div className="six wide column">
-                    <div className="row" style={{ height: '40vh'}}>
-                        <QuestionBox />
+                    <div className="row" style={{ height: '40vh' }}>
+                        <QuestionBox bookingId={props.location.state.bookingId} />
                     </div>
-                    <div className="row" style={{ height: '40vh'}}>
-                        <CommentSection />
+                    <div className="row" style={{ height: '40vh' }}>
+                        <CommentSection
+                            bookingId={props.location.state.bookingId}
+                        />
                     </div>
                 </div>
                 <div className="ten wide column">
-                    <CodeEditor windowLocation={props.location} />
+                    <CodeEditor
+                        bookingId={props.location.state.bookingId}
+                    />
                 </div>
             </div>
         </div>

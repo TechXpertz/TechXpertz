@@ -57,7 +57,7 @@ const getBookingsAfterNow = async (bookings) => {
       continue;
     }
 
-    const timeslots = timeslotsRes.map(timeslot => {
+    let timeslots = timeslotsRes.map(timeslot => {
       const { date_col, array_agg: timings } = timeslot;
       const parsedTimings = timings.map(parseTimeForFE);
       const date = parseDateForFE(date_col);
@@ -66,6 +66,15 @@ const getBookingsAfterNow = async (bookings) => {
         timings: parsedTimings
       };
     });
+
+    if (booking.other_booking_id !== null) {
+      timeslots = [
+        {
+          date: timeslots[0].date,
+          timings: [timeslots[0].timings[0]]
+        }
+      ]
+    };
 
     const topic = (await pool.query(
       'SELECT topic_name FROM topics WHERE topic_id = $1',

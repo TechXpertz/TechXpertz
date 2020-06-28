@@ -7,7 +7,6 @@ import 'codemirror/theme/material.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
-import querySearch from "stringquery"
 import './InterviewRoom.css'
 
 const CodeEditor = (props) => {
@@ -17,8 +16,8 @@ const CodeEditor = (props) => {
   const [socket, setSocket] = useState();
 
   const { getTokenSilently, loading } = useAuth0();
-  const endpoint = "http://localhost:5000";
-  const bookingId = querySearch(props.windowLocation.search).booking_id;
+  const endpoint = "http://localhost:5000/editor";
+  const bookingId = props.bookingId;
 
   useEffect(() => {
 
@@ -80,7 +79,7 @@ const CodeEditor = (props) => {
   return (
     <div>
       <section className="playground">
-        <div className="code-editor js-code" style={{ float: 'right'}}>
+        <div className="code-editor js-code" style={{ float: 'right' }}>
           <div className="editor-header">JavaScript</div>
           <CodeMirror
             value={js}

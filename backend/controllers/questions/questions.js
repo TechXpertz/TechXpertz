@@ -8,10 +8,10 @@ const getQuestion = async (req, res) => {
   }
   const userId = await getUserId(req.user);
 
-  if (!req.body.bookingId) {
+  if (!req.query.bookingId) {
     return res.sendStatus(400);
   }
-  const bookingId = req.body.bookingId;
+  const bookingId = req.query.bookingId;
   const question = await getQuestionForBooking(userId, bookingId);
   if (question.error) {
     return res.status(403).json(question.error);

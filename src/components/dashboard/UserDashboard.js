@@ -54,9 +54,9 @@ const UserDashboard = () => {
             fetchHasSubmittedForm();
         }
 
-    }, [hasSubmittedForm, getTokenSilently, loading]);
+    }, [hasSubmittedForm, loading]);
 
-    console.log('loader',loader);
+    console.log('loader', loader);
 
     const typeCheck = (type) => {
         setType(type);
@@ -66,7 +66,7 @@ const UserDashboard = () => {
         setIsOpen(!value);
     }
 
-    if(loader){
+    if (loader) {
         return (
             <div>
                 <UserNavBar />
