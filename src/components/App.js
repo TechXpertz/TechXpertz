@@ -8,8 +8,6 @@ import Profile from './userprofile/Profile';
 import UserDashboard from './dashboard/UserDashboard';
 import InterviewRequestForm from './InterviewRequestForm/InterviewRequestForm';
 import Callback from './callback';
-import Chat from './backendTesting/socket/chat';
-import Prechat from './backendTesting/socket/prechat';
 import CodeEditor from './backendTesting/pusher/codeEditor';
 import InterviewRoom from './InterviewRoom/InterviewRoom';
 import SocketEditor from './backendTesting/socket/SocketEditor';
@@ -36,8 +34,6 @@ const App = () => {
                         <Route path="/dashboard" component={UserDashboard} />
                         <Route path="/callback" component={Callback} />
                         <Route path="/booking" component={InterviewRequestForm} />
-                        <Route path="/chat" component={Chat} />
-                        <Route path="/prechat" component={Prechat} />
                         {/* <Route path="/code-editor" component={CodeEditor} /> */}
                         <Route path="/interview-room" component={InterviewRoom} />
                         <Route path="/socket-editor" component={SocketEditor} />

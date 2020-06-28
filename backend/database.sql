@@ -25,11 +25,11 @@ INSERT INTO prog_languages (prog_name) VALUES ('C++');
 INSERT INTO prog_languages (prog_name) VALUES ('Python');
 
 -- prepopulating topics table
-INSERT INTO topics (topic_name) VALUES ('topic 1');
-INSERT INTO topics (topic_name) VALUES ('topic 2');
-INSERT INTO topics (topic_name) VALUES ('topic 3');
-INSERT INTO topics (topic_name) VALUES ('topic 4');
-INSERT INTO topics (topic_name) VALUES ('topic 5');
+INSERT INTO topics (topic_name) VALUES ('Data Structures and Algorithms');
+INSERT INTO topics (topic_name) VALUES ('Frontend');
+INSERT INTO topics (topic_name) VALUES ('Backend');
+INSERT INTO topics (topic_name) VALUES ('System Design');
+INSERT INTO topics (topic_name) VALUES ('Applied Data Science');
 
 CREATE TABLE IF NOT EXISTS user_topics(
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
@@ -77,4 +77,21 @@ CREATE TABLE IF NOT EXISTS timeslots(
     date_col DATE NOT NULL,
     time_start TIME NOT NULL,
     PRIMARY KEY(booking_id, date_col, time_start)
+);
+
+CREATE TABLE IF NOT EXISTS questions(
+    question_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL UNIQUE,
+    topic_id INTEGER REFERENCES topics(topic_id) NOT NULL,
+    content TEXT NOT NULL,
+    solution TEXT NOT NULL,
+    hint TEXT NOT NULL
+);
+
+-- prepoulating questions table
+\COPY questions (title, topic_id, content, solution, hint) FROM 'questions.csv' DELIMITER ',' CSV HEADER;
+
+CREATE TABLE IF NOT EXISTS past_interviews(
+    booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE PRIMARY KEY,
+    question_id INTEGER REFERENCES questions(question_id) NOT NULL
 );

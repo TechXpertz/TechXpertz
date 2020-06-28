@@ -18,7 +18,7 @@ const task = timing => cron.schedule(timing, async () => {
 const doTaskAtTime = async (now) => {
 
   const currentTimeslot = toISO(now);
-  const targetTimeslot = toISO(add2Minutes(now));
+  const targetTimeslot = toISO(getNextTimeslot(now));
   console.log('current timeslot', currentTimeslot);
   console.log('target timeslot', targetTimeslot);
 
@@ -38,11 +38,15 @@ const doTaskAtTime = async (now) => {
 
 };
 
+const realTask = task(realSchedule);
+const testTask = task(every2Minutes);
+
 
 
 module.exports = {
   task,
   realSchedule,
   every2Minutes,
-  doTaskAtTime
+  doTaskAtTime,
+  realTask
 };

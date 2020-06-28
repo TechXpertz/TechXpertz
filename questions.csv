@@ -1,0 +1,8 @@
+﻿title,topic_id,content,solution,hint
+Sentence Reverse,1,"You are given an array of characters that consists of sequences of characters delimited by the space character. Every sequence of characters separated by the space character is a word. 
+
+Your task is to output another array which reverses the order of the words using the most efficint algorithm.
+
+For example, 
+Input: [""c"", ""a"", ""t"", "" "", ""a"", ""n"", ""d"", "" "", ""d"", ""o"", ""g""]
+Output: [""d"", ""o"", ""g"", "" "", ""a"", ""n"", ""d"", "" "", ""c"", ""a"", ""t""]",<solution goes here>,<hints>
