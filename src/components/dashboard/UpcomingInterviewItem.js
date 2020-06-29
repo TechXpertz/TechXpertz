@@ -7,11 +7,19 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
         history.push({
             pathname: '/interview-room',
             state: {
-                bookingId,
-                otherBookingId
+                bookingId: bookingId,
+                otherBookingId: otherBookingId
             }
         });
     }
+
+    const joinRoomButton = (
+        
+            <button className="compact ui small green button" onClick={joinRoom}>
+                Join
+            </button>
+      
+    )
 
     return (
         <div className="ui two column grid">
@@ -31,19 +39,12 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
                             <p style={{ fontSize: '16px' }}>{timing}</p>
                         </div>
                         <div className="two wide column">
-                            <button className="compact ui small green button" onClick={joinRoom}>
-                                Join
-                            </button>
+                           {joinRoomButton}
                         </div>
                     </div>
                 </div>
             </div>
             <div className="one wide column" style={{ position: 'relative', marginRight: '2.5em' }}>
-                {/* <div className="row">
-                    <button className="compact ui mini green button" onClick={joinRoom}>
-                        Join
-                    </button>
-                </div> */}
                 <div className="row">
                     <button className="compact ui tiny button" style={{ marginBottom: '2px', marginTop: '4px' }}>
                         Reschedule

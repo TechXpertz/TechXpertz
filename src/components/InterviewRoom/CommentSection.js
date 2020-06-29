@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import CommentItem from './CommentItem';
 import moment from 'moment';
 import { useAuth0 } from '../../react-auth0-spa';
 import io from "socket.io-client";
+import './InterviewRoom.css';
 
 const CommentSection = (props) => {
 
     const [newComment, setNewComment] = useState('');
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState([{
+        commentContent: '',
+        commentTime: ''
+    }]);
     const [socket, setSocket] = useState();
 
     const { getTokenSilently, loading } = useAuth0();
@@ -57,26 +62,45 @@ const CommentSection = (props) => {
 
     }, [loading]);
 
-    const handleComment = () => {
+    const currentTime = moment().format('LT');
 
+    const handleComment = (event) => {
+        event.preventDefault();
         socket.emit('comment', newComment);
-        setComments(comments.concat(newComment));
-
+        setComments(prevState => {
+            return [...prevState, {
+                commentContent: newComment,
+                commentTime: currentTime
+            }]
+        });
+        setNewComment('');
     }
 
-    //current time
-    //to display when the "interviewer" makes a comment
-    const currentTime = moment().format('LT');
-    console.log(comments);
     return (
         <>
-            <h2>Comment Section</h2>
-            {comments.map(comment => <p>{comment}</p>)}
-            <input
-                placeholder='comment'
-                onChange={(event) => setNewComment(event.target.value)}
-            />
-            <button onClick={() => handleComment()}>Send</button>
+        <div className="ui comments" style={{ padding: '20px 18px'}}>
+            <div className="ui dividing header">
+                Comment Section
+            </div>
+            <div className="content" style={{ minHeight: '150px', maxHeight: '200px', overflow: 'auto'}}>
+                {comments.map(item => {
+                    return <CommentItem time={item.commentTime} comment={item.commentContent} />
+                })}
+            </div>
+        </div>
+        <form style={{ padding:'20px 18px' }} onSubmit={handleComment}>
+            <div className="field">
+                <textarea 
+                    placeholder="Please type in your comment here" 
+                    value={newComment} 
+                    style={{ width: `550px`, height: '90px' }} 
+                    onChange={(event) => setNewComment(event.target.value)}
+                />
+            </div>
+            <button className="ui primary submit labeled icon button" type="submit">
+                <i className="icon edit"></i> Add Comment
+            </button>
+        </form>
         </>
     );
 }
