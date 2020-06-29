@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
 import { useAuth0 } from "../react-auth0-spa";
 import { register } from '../api_callers/apis.json';
-
+import LoaderPage from './LoaderPage';
+import NavBar from './NavBar';
 
 const Callback = () => {
 
     const { isAuthenticated, loading, getTokenSilently } = useAuth0();
     const registerStatus = [];
+    const [loader, setLoader] = useState(true);
 
     React.useEffect(() => {
         const callApi = async () => {
@@ -32,12 +34,17 @@ const Callback = () => {
             callApi().then(res => {
                 console.log('status', res);
                 registerStatus.push(res);
+                setLoader(false);
             });;
         }
-    }, [loading, getTokenSilently, registerStatus]);
+    }, [loading, registerStatus]);
 
-    if (loading) {
-        return (<p>Loading...</p>);
+    if (loading || loader) {
+        return (<>
+            <NavBar />
+            <LoaderPage />
+        </>
+        );
     } else if (isAuthenticated) {
         return (<Redirect to="/dashboard" />);
     } else {

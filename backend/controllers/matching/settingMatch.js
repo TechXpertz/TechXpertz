@@ -3,6 +3,8 @@ const { matches } = require('../../tests/matching/helper');
 
 const match = async (bookingA, bookingB) => {
 
+  console.log('match', bookingA, bookingB);
+
   await setOtherBookingId(bookingA, bookingB);
   await setOtherBookingId(bookingB, bookingA);
 

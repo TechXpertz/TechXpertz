@@ -3,9 +3,15 @@ import history from '../../history';
 
 const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, otherBookingId }) => {
 
-    const joinRoom = () => (
-        history.push('/interview-room')
-    )
+    const joinRoom = () => {
+        history.push({
+            pathname: '/interview-room',
+            state: {
+                bookingId,
+                otherBookingId
+            }
+        });
+    }
 
     return (
         <div className="ui two column grid">
@@ -32,7 +38,7 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
                     </div>
                 </div>
             </div>
-            <div className="one wide column" style={{ position: 'relative', marginRight: '2.5em'}}>
+            <div className="one wide column" style={{ position: 'relative', marginRight: '2.5em' }}>
                 {/* <div className="row">
                     <button className="compact ui mini green button" onClick={joinRoom}>
                         Join
@@ -44,7 +50,7 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
                     </button>
                 </div>
                 <div className="row">
-                    <button 
+                    <button
                         className="compact ui red tiny button"
                         onClick={() => onDelete(bookingId)}
                     >
