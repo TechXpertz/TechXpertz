@@ -49,7 +49,9 @@ const QuestionBox = (props) => {
     return (
         <>
             <div className="ui top attached tabular menu" style={{ backgroundColor: "#eeeded" }}>
-                <div className="active item">Question</div>
+                <div className="active item">
+                    <h3>Question</h3>
+                </div>
             </div>
             <div className="ui bottom attached active tab segment" style={{ height: '35vh', overflow: 'scroll' }}>
                 <span>{question && question.content}</span>

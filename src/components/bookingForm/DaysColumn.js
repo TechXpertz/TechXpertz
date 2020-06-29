@@ -24,7 +24,7 @@ const DaysColumn = (props) => {
         props.onDaysChange(timings);
     }, [timings])
 
-    //console.log(timings);
+    console.log(timings);
 
     return (
         <div className="one wide column" style={{ paddingLeft: "2px" }}>
