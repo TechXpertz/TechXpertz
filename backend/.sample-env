@@ -1,10 +1,13 @@
-// Database
-DB_USER="postgres"
-DB_PASSWORD=""
-DB_HOST="localhost"
-DB_PORT=5432
-DB_NAME="techxpertz_database"
+NODE_ENV=development
 
-// auth0 database credentials
-DOMAIN="techxpertz.auth0.com"
-API_IDENTIFIER="techxpertz/api"
+DB_USER=postgres
+DB_PASSWORD=Broodmother2824
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=techxpertz_database
+
+DOMAIN=techxpertz.auth0.com
+AUDIENCE=techxpertz/api
+
+AUTH0_CLIENT_ID=72FYCJh4jJ51zOOLAH9YqahX3zUUJzpm
+AUTH0_CLIENT_SECRET=lhEL6SRk62UzqUSTcNQ1l_7UmQMHYoW1BneWpnLwDszJMXWTrjNu03mgWfKTKHWO

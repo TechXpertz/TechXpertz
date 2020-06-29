@@ -10,10 +10,11 @@ body #fonts {
 }
 
 .header-text {
-  padding: 20px 20px;
+  padding: 24px 20px 14px;
   background-color: black;
   color: white;
   display: flex;
+  align-items: center;
 }
 
 .subheader-text {
@@ -25,4 +26,9 @@ body #fonts {
 
 .ui-grid-container {
   width: 100% !important;
+}
+
+.comment-section-header {
+  padding: 14px 14px;
+  background-color: #eeeded;
 }
