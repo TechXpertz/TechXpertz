@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TimeBlock from './TimeBlock';
 
 const DaysColumn = (props) => {
-    const timeArr = ["9:00 AM", "11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM", "9:00 PM", "11:00 PM", "1:00 AM"];
+    const timeArr = ["7.00 AM", "9:00 AM", "11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM", "9:00 PM", "11:00 PM"];
     const [timings, setTimings] = useState({
         date: props.dateObj.format('DD/MM/YYYY'),
         timeSlots: []
     });
 
-    const callbackForTime = (timeValues) => {
+    const callbackForTime = useCallback((timeValues) => {
         setTimings(prevState => {
-            return {
-                ...prevState,
-                timeSlots: [...prevState.timeSlots, timeValues]
+            if(!prevState.timeSlots.includes(timeValues)){
+                return {
+                    ...prevState,
+                    timeSlots: [...prevState.timeSlots, timeValues]
+                }
+            } else {
+                return {
+                    ...prevState,
+                    timeSlots: prevState.timeSlots.filter(time => time !== timeValues)
+                }
             }
         });
-    }
+    }, []);
 
     useEffect(() => {
         if (timings.timeSlots.length <= 0) {
@@ -23,8 +30,6 @@ const DaysColumn = (props) => {
         }
         props.onDaysChange(timings);
     }, [timings])
-
-    console.log(timings);
 
     return (
         <div className="one wide column" style={{ paddingLeft: "2px" }}>

@@ -10,6 +10,7 @@ import InterviewRequestForm from './InterviewRequestForm/InterviewRequestForm';
 import Callback from './callback';
 import InterviewRoom from './InterviewRoom/InterviewRoom';
 import SocketEditor from './backendTesting/socket/SocketEditor';
+import FeedbackFormPage from './Feedback/FeedbackFormPage';
 // import { useAuth0 } from "../react-auth0-spa";
 // import { register } from "../api_callers/apis.json";
 
@@ -35,6 +36,7 @@ const App = () => {
                         <Route path="/booking" component={InterviewRequestForm} />
                         <Route path="/interview-room" component={InterviewRoom} />
                         <Route path="/socket-editor" component={SocketEditor} />
+                        <Route path="/feedback-form-page" component={FeedbackFormPage} />
                     </Switch>
                 </div>
             </Router>

@@ -93,6 +93,9 @@ const NormalForm = (props) => {
     const [lang, setLang] = useState([]);
     const stars = [1, 2, 3, 4, 5];
 
+   
+    const submitButton = (check === '' || educationType.length === 0 || topics.length === 0 || lang.length === 0) ? "ui primary disabled button" : "ui primary button"
+    
 
     const educationArray = [
         { value: 'No Degree', label: 'No Degree' },
@@ -104,18 +107,11 @@ const NormalForm = (props) => {
         setIsSubmit(value);
         await sendForm(topics, lang, educationType, check);
     }
-    //the values can be viewed here
-    // console.log('Topics:', topics);
-    // console.log('ProgLang:', lang);
-    // console.log('Education:', educationType);
-    // console.log('check', check);
-
 
     const checkType = (value) => {
         props.onTypeClick(value);
     }
 
-    //callback to retrieve education level input from user
     const educationHandler = (keyPair) => {
         setEducationType(keyPair);
     }
@@ -142,7 +138,7 @@ const NormalForm = (props) => {
                     Back
             </button>
                 <button
-                    className="ui primary button"
+                    className={submitButton}
                     onClick={() => handleClick(true)}
                 >
                     Submit

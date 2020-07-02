@@ -5,12 +5,14 @@ const TypeCheckForm = (props) => {
 
     const [accountType, setAccountType] = useState('');
 
-    // console.log('TypeCheck:', accountType);
+    console.log('TypeCheck:', accountType);
     // console.log('type', props.type);
 
     if (props.type !== 'AccountType' || props.hasSubmittedForm) {
         return null;
     }
+
+    const submitButton = accountType === '' ? "ui primary disabled button" : "ui primary button"
 
     const checkType = type => {
         props.onTypeClick(type);
@@ -52,7 +54,7 @@ const TypeCheckForm = (props) => {
             <div className="ui center aligned container">
                 <button className="ui button">Cancel</button>
                 <button
-                    className="ui primary button"
+                    className={submitButton}
                     onClick={() => checkType(accountType)}
                 >
                     Next
