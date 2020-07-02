@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import DaysColumn from './DaysColumn';
 
 const AppointmentScheduler = ({ moment, userTiming }) => {
@@ -10,7 +10,7 @@ const AppointmentScheduler = ({ moment, userTiming }) => {
     )
     let shiftArr = [0, 1, 2, 3, 4, 5, 6];
 
-    const dateHandler = (childProp) => {
+    const dateHandler = useCallback((childProp) => {
         setPeriod(prevState => {
             return [...prevState.filter((value) => {
                 return value.date !== childProp.date
@@ -20,7 +20,7 @@ const AppointmentScheduler = ({ moment, userTiming }) => {
             })] = childProp
             ]
         })
-    }
+    }, []);
 
     useEffect(() => {
         userTiming(period.filter((timings) => {

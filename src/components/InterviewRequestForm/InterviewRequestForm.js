@@ -48,6 +48,8 @@ const InterviewRequestFrom = () => {
     const [isSubmit, setIsSubmit] = useState(false);
     const [otherAccType, setOtherAccType] = useState('');
 
+    const submitButton = topicsState.length === 0 || lang.length === 0 || otherAccType === '' || userTiming.length === 0 ? "ui primary disabled button" : "ui primary button"
+
     const topicHandler = (keyPair) => {
         setTopicsState(keyPair);
     }
@@ -121,7 +123,7 @@ const InterviewRequestFrom = () => {
     const actions = (
         <>
             <button className="ui button" onClick={() => history.push('/dashboard')}>Cancel</button>
-            <button className="ui primary button"
+            <button className={submitButton}
                 onClick={() => handleClick(true)}>
                 Submit
             </button>

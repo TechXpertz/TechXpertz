@@ -3,6 +3,7 @@ import InputBox from '../InputBox';
 import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
+import { checkPropTypes } from 'prop-types';
 
 
 const ExpertForm = (props) => {
@@ -28,14 +29,14 @@ const ExpertForm = (props) => {
                 .map(element => element.topicName);
             topics.forEach(topic => interestArray.push({ value: topic, label: topic }));
         });
-        console.log('interestArr', interestArray);
+        //console.log('interestArr', interestArray);
 
         fetchProgLanguages().then(data => {
             const progLanguages = data.progLanguages
                 .map(element => element.progName)
             progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
         });
-        console.log('progArr', progLangArray);
+        //console.log('progArr', progLangArray);
     }
 
     const period = [
@@ -52,6 +53,10 @@ const ExpertForm = (props) => {
         { value: 'more than 10', label: '10+ years' }
     ]
 
+    const checkType = (value) => {
+        props.onTypeClick(value);
+    }
+
     const handleClick = (value) => {
         setHasSubmit(value);
     }
@@ -65,6 +70,7 @@ const ExpertForm = (props) => {
             <div className="ui center aligned container">
                 <button
                     className="ui button"
+                    onClick={() => checkType('AccountType')}
                 >
                     Cancel
             </button>
@@ -74,10 +80,6 @@ const ExpertForm = (props) => {
                 >
                     Submit
             </button>
-            </div>
-            <div className="ui center aligned container">
-                <button className="ui button">Cancel</button>
-                <button className="ui red button">Submit</button>
             </div>
         </>
     )
