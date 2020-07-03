@@ -14,14 +14,6 @@ const QuestionBox = (props) => {
 
         const getQuestion = async () => {
             const token = await getTokenSilently();
-            const header = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            const data = {
-                bookingId: props.bookingId
-            }
             const response = await axios.get(
                 'http://localhost:5000/questions',
                 {

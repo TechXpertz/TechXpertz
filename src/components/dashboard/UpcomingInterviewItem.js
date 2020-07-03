@@ -1,19 +1,16 @@
 import React from 'react';
 import history from '../../history';
 
-<<<<<<< HEAD
 const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, onReschedule, otherBookingId }) => {
 
-=======
-const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, otherBookingId }) => {
-    console.log(bookingId)
->>>>>>> 65d285ea4878a3306c807f4192b02d4efa9483ab
     const joinRoom = () => {
         history.push({
             pathname: '/interview-room',
             state: {
                 bookingId: bookingId,
-                otherBookingId: otherBookingId
+                otherBookingId: otherBookingId,
+                date,
+                time: timing
             }
         });
     }

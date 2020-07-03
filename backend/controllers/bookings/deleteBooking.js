@@ -40,6 +40,58 @@ const deleteBooking = async (req, res) => {
 
 }
 
+const deleteOtherTimeslots = async (req, res) => {
+  // called when exiting session
+
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const { date, time, bookingId } = req.body;
+
+  if (!bookingId || !date || !time) {
+    return res.sendStatus(400);
+  }
+
+  const userId = await getUserId(req.user);
+  const deleted = await deleteOtherTimeslotsOf(userId, bookingId, parseFEInterviewDate(date), time);
+  if (!deleted.success) {
+    return res.sendStatus(403);
+  }
+  return res.sendStatus(200);
+}
+
+const parseFEInterviewDate = (feDate) => {
+  const [day, date, feMonth, year] = feDate.split(' ');
+  const arr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = arr.indexOf(feMonth) + 1;
+  return `${year}-${month}-${date}`;
+}
+
+const deleteOtherTimeslotsOf = async (userId, bookingId, date, time) => {
+
+  const booking = await pool.query(
+    'SELECT booking_id FROM bookings WHERE user_id = $1 AND booking_id = $2',
+    [userId, bookingId]
+  );
+  if (booking.rowCount === 0) {
+    return {
+      success: false
+    };
+  }
+
+  await pool.query(
+    'DELETE FROM timeslots WHERE booking_id = $1 AND (date_col != $2 OR time_start != $3)',
+    [bookingId, date, time]
+  );
+  return {
+    success: true
+  }
+
+}
+
+
+
 const cancelPartnerBooking = async (otherBookingId) => {
 
   const timeslots = await pool.query('SELECT date_col, time_start FROM timeslots WHERE booking_id = $1',
@@ -87,5 +139,6 @@ const deleteBookingWithId = async (userId, bookingId) => {
 }
 
 module.exports = {
-  deleteBooking
+  deleteBooking,
+  deleteOtherTimeslots
 }
