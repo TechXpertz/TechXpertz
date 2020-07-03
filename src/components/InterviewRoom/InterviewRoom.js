@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import Header from './Header';
 import SubHeader from './SubHeader';
 import QuestionBox from './QuestionBox';
@@ -7,11 +7,9 @@ import CodeEditor from './CodeEditor';
 //import querySearch from 'stringquery';
 
 const InterviewRoom = (props) => {
-    console.log(props.location);
-
     return (
         <div>
-            <Header />
+            <Header otherBookingId={props.location.state.otherBookingId}/>
             <SubHeader />
             <div className="ui two column grid">
                 <div className="six wide column">

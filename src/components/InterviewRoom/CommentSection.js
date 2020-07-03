@@ -84,7 +84,7 @@ const CommentSection = (props) => {
             </div>
             <div className="content" style={{ minHeight: '150px', maxHeight: '200px', overflow: 'auto'}}>
                 {comments.map(item => {
-                    return <CommentItem time={item.commentTime} comment={item.commentContent} />
+                    return <CommentItem time={item.commentTime} key={Math.random()} comment={item.commentContent} />
                 })}
             </div>
         </div>
