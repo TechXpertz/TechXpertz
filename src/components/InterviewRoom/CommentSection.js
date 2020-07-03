@@ -49,7 +49,12 @@ const CommentSection = (props) => {
 
                     socket.on('receive comment', (newComment) => {
                         console.log('comments', comments);
-                        setComments(comments.concat(newComment));
+                        setComments(prevState => {
+                            return [...prevState, {
+                                commentContent: newComment,
+                                commentTime: currentTime
+                            }]
+                        });
                         console.log(newComment);
                     })
 
@@ -78,29 +83,30 @@ const CommentSection = (props) => {
 
     return (
         <>
-        <div className="ui comments" style={{ padding: '20px 18px'}}>
-            <div className="ui dividing header">
-                Comment Section
+            <div className="ui comments" style={{ padding: '20px 18px' }}>
+                <div className="ui dividing header">
+                    Comment Section
             </div>
+
             <div className="content" style={{ minHeight: '150px', maxHeight: '200px', overflow: 'auto'}}>
                 {comments.map(item => {
                     return <CommentItem time={item.commentTime} key={Math.random()} comment={item.commentContent} />
                 })}
+                
             </div>
-        </div>
-        <form style={{ padding:'20px 18px' }} onSubmit={handleComment}>
-            <div className="field">
-                <textarea 
-                    placeholder="Please type in your comment here" 
-                    value={newComment} 
-                    style={{ width: `550px`, height: '90px' }} 
-                    onChange={(event) => setNewComment(event.target.value)}
-                />
-            </div>
-            <button className="ui primary submit labeled icon button" type="submit">
-                <i className="icon edit"></i> Add Comment
+            <form style={{ padding: '20px 18px' }} onSubmit={handleComment}>
+                <div className="field">
+                    <textarea
+                        placeholder="Please type in your comment here"
+                        value={newComment}
+                        style={{ width: `550px`, height: '90px' }}
+                        onChange={(event) => setNewComment(event.target.value)}
+                    />
+                </div>
+                <button className="ui primary submit labeled icon button" type="submit">
+                    <i className="icon edit"></i> Add Comment
             </button>
-        </form>
+            </form>
         </>
     );
 }
