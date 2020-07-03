@@ -86,13 +86,14 @@ const CommentSection = (props) => {
             <div className="ui comments" style={{ padding: '20px 18px' }}>
                 <div className="ui dividing header">
                     Comment Section
+                </div>
             </div>
 
-            <div className="content" style={{ minHeight: '150px', maxHeight: '200px', overflow: 'auto'}}>
+            <div className="content" style={{ minHeight: '150px', maxHeight: '200px', overflow: 'auto' }}>
                 {comments.map(item => {
                     return <CommentItem time={item.commentTime} key={Math.random()} comment={item.commentContent} />
                 })}
-                
+
             </div>
             <form style={{ padding: '20px 18px' }} onSubmit={handleComment}>
                 <div className="field">

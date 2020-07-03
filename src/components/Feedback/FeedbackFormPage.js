@@ -4,6 +4,9 @@ import UserInput from './UserInput';
 import Question from './Question';
 import Rating from './Rating';
 import history from '../../history';
+import axios from 'axios';
+import { postFeedback } from '../../api_callers/apis.json';
+import { useAuth0 } from '../../react-auth0-spa';
 
 const FeedbackFormPage = (props) => {
     console.log(props.location.state.otherBookingId)
@@ -37,28 +40,53 @@ const FeedbackFormPage = (props) => {
         behaviouralFeedback: '',
         others: ''
     });
+    const { getTokenSilently } = useAuth0();
 
     const rateResult = rate.correctnessRate !== 0 && rate.clarityRate !== 0 && rate.behaviouralRate !== 0;
 
-    const responseResult = response.correctnessFeedback !== '' && response.clarityFeedback !== '' 
-    && response.behaviouralFeedback !== '' && response.others !== '';
+    const responseResult = response.correctnessFeedback !== '' && response.clarityFeedback !== ''
+        && response.behaviouralFeedback !== '' && response.others !== '';
     console.log(rateResult);
     console.log('response', responseResult);
 
     const submitButton = rateResult && responseResult ? "ui primary button" : "ui primary disabled button"
 
     const submitFeedback = () => {
+        callPostFeedback();
         history.push({
             pathname: '/dashboard',
             state: { otherBookingId: props.location.state.otherBookingId }
         });
+
+    }
+
+    const callPostFeedback = async () => {
+
+        try {
+            const token = await getTokenSilently();
+            const header = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+            const data = {
+                bookingId: props.location.state.bookingId,
+                otherBookingId: props.location.state.otherBookingId,
+                rate,
+                response
+            }
+            await axios.post(postFeedback, data, header);
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
     const actions = (
         <>
             <div className="ui right aligned grid">
                 <div className="sixteen wide column">
-                    <div className={submitButton} style={{ marginBottom: '20px'}} onClick={submitFeedback}>
+                    <div className={submitButton} style={{ marginBottom: '20px' }} onClick={submitFeedback}>
                         Submit
                     </div>
                 </div>
@@ -67,18 +95,18 @@ const FeedbackFormPage = (props) => {
     )
 
     const ratingHandler = useCallback((childProp) => {
-        switch(childProp.type){
+        switch (childProp.type) {
             case 'FIRST':
                 return setRate(prevState => {
-                    return {...prevState, correctnessRate: childProp.rate};
+                    return { ...prevState, correctnessRate: childProp.rate };
                 });
             case 'SECOND':
                 return setRate(prevState => {
-                    return {...prevState, clarityRate: childProp.rate};
+                    return { ...prevState, clarityRate: childProp.rate };
                 });
             case 'THIRD':
                 return setRate(prevState => {
-                    return {...prevState, behaviouralRate: childProp.rate};
+                    return { ...prevState, behaviouralRate: childProp.rate };
                 });
             default:
                 return console.log('Should not come here!');
@@ -86,26 +114,26 @@ const FeedbackFormPage = (props) => {
     }, [])
 
     const commentHandler = useCallback((childProp) => {
-        switch(childProp.type){
+        switch (childProp.type) {
             case 'FIRST':
                 return setResponse(prevState => {
-                    return {...prevState, correctnessFeedback: childProp.comment};
+                    return { ...prevState, correctnessFeedback: childProp.comment };
                 });
 
             case 'SECOND':
                 return setResponse((prevState) => {
-                    return {...prevState, clarityFeedback: childProp.comment};
+                    return { ...prevState, clarityFeedback: childProp.comment };
                 });
             case 'THIRD':
                 return setResponse((prevState) => {
-                    return {...prevState, behaviouralFeedback: childProp.comment};
+                    return { ...prevState, behaviouralFeedback: childProp.comment };
                 });
-            
+
             case 'OTHER':
                 return setResponse((prevState) => {
-                    return {...prevState, others: childProp.comment};
+                    return { ...prevState, others: childProp.comment };
                 });
-            default: 
+            default:
                 return console.log('Should not come here!')
         }
     }, []);
@@ -113,128 +141,128 @@ const FeedbackFormPage = (props) => {
     return (
         <div>
             <FeedbackHeader />
-                <div className="ui grid" style={{ marginTop: '7px', marginLeft: '10px'}}>
-                    <div className="row">
-                        <div className="one wide column" />
-                        <div className="four wide column">
-                            <span style={{ fontSize: '20px'}}>Tell your interviewee how he/she did</span>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            <Question 
-                                header="Correctness of explanation and program" 
-                                question={firstQuestion} 
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className= "four wide column" />
-                        <div className="eight wide column" style={{ alignItems: 'center' }}>
-                            <Rating 
-                                leftExtreme="Completely wrong" 
-                                rightExtreme="Same as the sample solution"  
-                                group="FIRST"
-                                onRateChange={ratingHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            <UserInput 
-                                array={correctness} 
-                                group="FIRST" 
-                                userCommentHandler={commentHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                           <Question 
-                                header="Clarity of explanation" 
-                                question={secondQuestion}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className= "four wide column" />
-                        <div className="eight wide column" style={{ alignItems: 'center' }}>
-                            <Rating 
-                                leftExtreme="Cannot understand explanation" 
-                                rightExtreme= "Very clear explanation" 
-                                group="SECOND" 
-                                onRateChange={ratingHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            <UserInput 
-                                array={clarity} 
-                                group="SECOND"
-                                userCommentHandler={commentHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                           <Question 
-                                header="Behavioural" 
-                                question={thirdQuestion}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className= "four wide column" />
-                        <div className="eight wide column" style={{ alignItems: 'center' }}>
-                            <Rating 
-                                leftExtreme="Not confident at all" 
-                                rightExtreme= "Very confident" 
-                                group="THIRD" 
-                                onRateChange={ratingHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            <UserInput 
-                                array={behavioural} 
-                                group="THIRD"
-                                userCommentHandler={commentHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                           <Question 
-                            header="Others" 
-                        />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            <UserInput 
-                                array={others} 
-                                group="OTHER"
-                                userCommentHandler={commentHandler}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="four wide column" />
-                        <div className="eight wide column">
-                            {actions}
-                        </div>
+            <div className="ui grid" style={{ marginTop: '7px', marginLeft: '10px' }}>
+                <div className="row">
+                    <div className="one wide column" />
+                    <div className="four wide column">
+                        <span style={{ fontSize: '20px' }}>Tell your interviewee how he/she did</span>
                     </div>
                 </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <Question
+                            header="Correctness of explanation and program"
+                            question={firstQuestion}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column" style={{ alignItems: 'center' }}>
+                        <Rating
+                            leftExtreme="Completely wrong"
+                            rightExtreme="Same as the sample solution"
+                            group="FIRST"
+                            onRateChange={ratingHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <UserInput
+                            array={correctness}
+                            group="FIRST"
+                            userCommentHandler={commentHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <Question
+                            header="Clarity of explanation"
+                            question={secondQuestion}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column" style={{ alignItems: 'center' }}>
+                        <Rating
+                            leftExtreme="Cannot understand explanation"
+                            rightExtreme="Very clear explanation"
+                            group="SECOND"
+                            onRateChange={ratingHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <UserInput
+                            array={clarity}
+                            group="SECOND"
+                            userCommentHandler={commentHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <Question
+                            header="Behavioural"
+                            question={thirdQuestion}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column" style={{ alignItems: 'center' }}>
+                        <Rating
+                            leftExtreme="Not confident at all"
+                            rightExtreme="Very confident"
+                            group="THIRD"
+                            onRateChange={ratingHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <UserInput
+                            array={behavioural}
+                            group="THIRD"
+                            userCommentHandler={commentHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <Question
+                            header="Others"
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        <UserInput
+                            array={others}
+                            group="OTHER"
+                            userCommentHandler={commentHandler}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="four wide column" />
+                    <div className="eight wide column">
+                        {actions}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

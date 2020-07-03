@@ -9,12 +9,17 @@ import CodeEditor from './CodeEditor';
 const InterviewRoom = (props) => {
     return (
         <div>
-            <Header otherBookingId={props.location.state.otherBookingId}/>
+            <Header
+                otherBookingId={props.location.state.otherBookingId}
+                bookingId={props.location.state.bookingId}
+                date={props.location.state.date}
+                time={props.location.state.time}
+            />
             <SubHeader />
             <div className="ui two column grid">
                 <div className="six wide column">
                     <div className="row" style={{ height: '40vh' }}>
-                        <QuestionBox bookingId={props.location.state.bookingId}/>
+                        <QuestionBox bookingId={props.location.state.bookingId} />
                     </div>
                     <div className="row" style={{ height: '40vh' }}>
                         <div className="ui container" >

@@ -16,8 +16,8 @@ const MainDashboard = () => {
         height: window.innerHeight,
         width: window.innerWidth
     })
-    
-    function debounce(fn, ms){
+
+    function debounce(fn, ms) {
         let timer;
         return _ => {
             clearTimeout(timer)
@@ -30,7 +30,7 @@ const MainDashboard = () => {
 
     //used to dynamically resize the ui segment for the upcoming interview items
     useEffect(() => {
-        const debouncedHandleResize = debounce(function handlResize(){
+        const debouncedHandleResize = debounce(function handlResize() {
             setDimensions({
                 height: window.innerHeight,
                 width: window.innerWidth
@@ -138,10 +138,10 @@ const MainDashboard = () => {
                     <div className="two wide column" style={{ marginLeft: '2.9em' }}>
                         <h3 style={{ fontWeight: 'lighter' }}>Date</h3>
                     </div>
-                    <div className="two wide column" style={{ marginLeft: '2em', marginRight: '2em'}}>
+                    <div className="two wide column" style={{ marginLeft: '2em', marginRight: '2em' }}>
                         <h3 style={{ fontWeight: 'lighter' }}>Type</h3>
                     </div>
-                    <div className="three wide column" style={{ marginRight: '1.3em'}}>
+                    <div className="three wide column" style={{ marginRight: '1.3em' }}>
                         <h3 style={{ fontWeight: 'lighter' }}>Language</h3>
                     </div>
                     <div className="three wide column">
@@ -181,6 +181,26 @@ const MainDashboard = () => {
         }
     }
 
+    const handleReschedule = async (booking) => {
+
+        try {
+
+            const token = await getTokenSilently();
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+            const data = {
+                bookingId: booking
+            };
+            await axios.delete(bookingsUrl, { headers, data });
+            setBookings(bookings.filter(item => item.bookingId !== booking));
+            // go to the booking form 
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const interviewItem = (
         <>
             <div className="ui container" style={{ backgroundColor: '#F9F9F9', paddingTop: '20px', paddingBottom: '20px', minWidth: `${headerWidth}px` }}>
@@ -197,6 +217,7 @@ const MainDashboard = () => {
                             type={topic}
                             language={langsToString(langs)}
                             onDelete={handleDelete}
+                            onReschedule={handleReschedule}
                         />
                     );
                 })}

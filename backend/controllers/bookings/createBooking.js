@@ -82,5 +82,6 @@ const parseDateFromFE = (date) => {
 module.exports = {
   createBooking,
   addBookingProgLanguages,
-  addTimeslots
+  addTimeslots,
+  parseDateFromFE
 };

@@ -5,5 +5,7 @@
     "postAccType": "http://localhost:5000/user/account-type",
     "bookingsUrl": "http://localhost:5000/bookings",
     "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background",
-    "getUpcomingBookings": "http://localhost:5000/bookings/upcoming"
+    "getUpcomingBookings": "http://localhost:5000/bookings/upcoming",
+    "postFeedback": "http://localhost:5000/feedback",
+    "deleteOtherTimeslots": "http://localhost:5000/bookings/other-timeslots"
 }
