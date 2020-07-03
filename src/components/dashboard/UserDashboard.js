@@ -56,8 +56,6 @@ const UserDashboard = () => {
 
     }, [hasSubmittedForm, loading]);
 
-    console.log('loader', loader);
-
     const typeCheck = (type) => {
         setType(type);
     }

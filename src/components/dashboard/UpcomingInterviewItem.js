@@ -2,7 +2,7 @@ import React from 'react';
 import history from '../../history';
 
 const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, otherBookingId }) => {
-
+    console.log(bookingId)
     const joinRoom = () => {
         history.push({
             pathname: '/interview-room',
