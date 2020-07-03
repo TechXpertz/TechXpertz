@@ -95,3 +95,14 @@ CREATE TABLE IF NOT EXISTS past_interviews(
     booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE PRIMARY KEY,
     question_id INTEGER REFERENCES questions(question_id) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS feedbacks(
+    booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE PRIMARY KEY,
+    correctness_rating INTEGER NOT NULL CHECK (correctness_rating BETWEEN 1 AND 10),
+    correctness_feedback TEXT,
+    clarity_rating INTEGER NOT NULL CHECK (clarity_rating BETWEEN 1 AND 10),
+    clarity_feedback TEXT,
+    behavioural_rating INTEGER NOT NULL CHECK (behavioural_rating BETWEEN 1 AND 10),
+    behavioural_feedback TEXT,
+    others TEXT
+);

@@ -1,7 +1,7 @@
 import React from 'react';
 import history from '../../history';
 
-const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, otherBookingId }) => {
+const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDelete, onReschedule, otherBookingId }) => {
 
     const joinRoom = () => {
         history.push({
@@ -14,11 +14,11 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
     }
 
     const joinRoomButton = (
-        
-            <button className="compact ui small green button" onClick={joinRoom}>
-                Join
-            </button>
-      
+
+        <button className="compact ui small green button" onClick={joinRoom}>
+            Join
+        </button>
+
     )
 
     return (
@@ -39,14 +39,18 @@ const UpcomingInterviewItem = ({ bookingId, date, type, language, timing, onDele
                             <p style={{ fontSize: '16px' }}>{timing}</p>
                         </div>
                         <div className="two wide column">
-                           {joinRoomButton}
+                            {joinRoomButton}
                         </div>
                     </div>
                 </div>
             </div>
             <div className="one wide column" style={{ position: 'relative', marginRight: '2.5em' }}>
                 <div className="row">
-                    <button className="compact ui tiny button" style={{ marginBottom: '2px', marginTop: '4px' }}>
+                    <button
+                        className="compact ui tiny button"
+                        style={{ marginBottom: '2px', marginTop: '4px' }}
+                        onClick={() => onReschedule(bookingId)}
+                    >
                         Reschedule
                     </button>
                 </div>
