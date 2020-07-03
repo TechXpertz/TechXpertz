@@ -1,0 +1,8 @@
+.feedback-text {
+  padding: 24px 20px;
+  background-color: #003eb6;
+  justify-content: center;
+  color: white;
+  display: flex;
+  align-items: center;
+}
