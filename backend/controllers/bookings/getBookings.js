@@ -13,13 +13,6 @@ const getUpcomingBookings = async (req, res) => {
 
 }
 
-const getPastInterviews = async (req, res) => {
-
-
-
-
-}
-
 const getUpcomingBookingsOfUser = async (userId) => {
 
   const bookings = await getAllBookingsOfUser(userId);
@@ -132,4 +125,4 @@ const parseTimeForFE = (dbTime) => {
   return `${hour12}:${min}${suffix}`;
 }
 
-module.exports = { getUpcomingBookings, getAllBookingsOfUser };
+module.exports = { getUpcomingBookings, getAllBookingsOfUser, parseDateForFE, parseTimeForFE };

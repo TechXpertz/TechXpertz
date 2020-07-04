@@ -3,7 +3,7 @@ import UpcomingInterviewItem from './UpcomingInterviewItem';
 import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
-import { getUpcomingBookings, bookingsUrl } from '../../api_callers/apis.json';
+import { getUpcomingBookings, bookingsUrl, getPastInterviews } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -11,6 +11,7 @@ const MainDashboard = () => {
     const headerRef = useRef(null);
     const [headerWidth, setHeaderWidth] = useState(0);
     const [bookings, setBookings] = useState([]);
+    const [pastInterviews, setPastInterviews] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [dimensions, setDimensions] = useState({
         height: window.innerHeight,
@@ -107,6 +108,37 @@ const MainDashboard = () => {
         }
 
     }, [refresh]);
+
+    // getting past interviews (must check for undefined feedback):
+    useEffect(() => {
+
+        const callPastInterviews = async () => {
+
+            try {
+                const token = await getTokenSilently();
+                const header = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+
+                const response = (await axios.get(getPastInterviews, header)).data;
+                setPastInterviews(response.pastInterviews);
+                return response;
+
+            } catch (err) {
+                console.log(err);
+            }
+
+        };
+
+        if (!loading) {
+            callPastInterviews();
+        }
+
+    }, []);
+
+    console.log('past', pastInterviews);
 
     const button = (
         <>
