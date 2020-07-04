@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
 import LoaderPage from '../LoaderPage';
+import { getOrInsertQuestion } from '../../api_callers/apis.json';
 
 
 const QuestionBox = (props) => {
@@ -14,17 +15,14 @@ const QuestionBox = (props) => {
 
         const getQuestion = async () => {
             const token = await getTokenSilently();
-            const response = await axios.get(
-                'http://localhost:5000/questions',
-                {
-                    params: {
-                        bookingId: props.bookingId
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+            const header = {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
+            }
+            const response = await axios.post(getOrInsertQuestion,
+                { bookingId: props.bookingId },
+                header);
             return response.data.question;
         }
 

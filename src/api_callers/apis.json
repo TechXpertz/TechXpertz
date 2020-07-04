@@ -7,5 +7,7 @@
     "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background",
     "getUpcomingBookings": "http://localhost:5000/bookings/upcoming",
     "postFeedback": "http://localhost:5000/feedback",
-    "deleteOtherTimeslots": "http://localhost:5000/bookings/other-timeslots"
+    "deleteOtherTimeslots": "http://localhost:5000/bookings/other-timeslots",
+    "getOrInsertQuestion": "http://localhost:5000/questions",
+    "getPastInterviews": "http://localhost:5000/bookings/past"
 }
