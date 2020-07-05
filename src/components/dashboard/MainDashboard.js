@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import UpcomingInterviewItem from './UpcomingInterviewItem';
+import UpcomingInterviewTable from './UpcomingInterviewTable';
+import CompletedInterviewTable from './CompletedInterviewTable';
 import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
@@ -17,8 +18,8 @@ const MainDashboard = () => {
         height: window.innerHeight,
         width: window.innerWidth
     })
-
-    function debounce(fn, ms) {
+    
+    function debounce(fn, ms){
         let timer;
         return _ => {
             clearTimeout(timer)
@@ -109,7 +110,7 @@ const MainDashboard = () => {
 
     }, [refresh]);
 
-    // getting past interviews (must check for undefined feedback):
+    //getting past interviews (must check for undefined feedback)
     useEffect(() => {
 
         const callPastInterviews = async () => {
@@ -138,8 +139,6 @@ const MainDashboard = () => {
 
     }, []);
 
-    console.log('past', pastInterviews);
-
     const button = (
         <>
             <div className='row'>
@@ -163,36 +162,6 @@ const MainDashboard = () => {
         setHeaderWidth(width);
     }, [headerRef, headerWidth, dimensions]);
 
-    const upcomingInterviews = (
-        <>
-            <div className="row" style={{ backgroundColor: '#E1E1E1', paddingTop: '15px', paddingBottom: '15px' }}>
-                <div className="ui five column grid">
-                    <div className="two wide column" style={{ marginLeft: '2.9em' }}>
-                        <h3 style={{ fontWeight: 'lighter' }}>Date</h3>
-                    </div>
-                    <div className="two wide column" style={{ marginLeft: '2em', marginRight: '2em' }}>
-                        <h3 style={{ fontWeight: 'lighter' }}>Type</h3>
-                    </div>
-                    <div className="three wide column" style={{ marginRight: '1.3em' }}>
-                        <h3 style={{ fontWeight: 'lighter' }}>Language</h3>
-                    </div>
-                    <div className="three wide column">
-                        <h3 style={{ fontWeight: 'lighter' }}>Timing</h3>
-                    </div>
-                    <div className="three wide column" />
-                </div>
-            </div>
-        </>
-    )
-
-    const timingsToString = timings => {
-        return timings.join(', ');
-    };
-
-    const langsToString = langs => {
-        return langs.join(', ');
-    };
-
     const handleDelete = async (booking) => {
 
         try {
@@ -213,6 +182,7 @@ const MainDashboard = () => {
         }
     }
 
+
     const handleReschedule = async (booking) => {
 
         try {
@@ -232,41 +202,55 @@ const MainDashboard = () => {
             console.log(err);
         }
     }
+    const noInterview = (
+        <>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: '18px' }}>No upcoming interviews <br /> Book an interview now </span>
+            </div>
+        </>
+    )
+    
 
     const interviewItem = (
         <>
-            <div className="ui container" style={{ backgroundColor: '#F9F9F9', paddingTop: '20px', paddingBottom: '20px', minWidth: `${headerWidth}px` }}>
-                {bookings.map((booking, index) => {
-                    const { bookingId, date, otherBookingId, otherAccType, timings, topic, langs } = booking;
-                    return (
-                        <UpcomingInterviewItem
-                            key={index}
-                            bookingId={bookingId}
-                            date={date}
-                            otherBookingId={otherBookingId}
-                            otherAccType={otherAccType}
-                            timing={otherBookingId !== null ? timings[0] : timingsToString(timings)}
-                            type={topic}
-                            language={langsToString(langs)}
-                            onDelete={handleDelete}
-                            onReschedule={handleReschedule}
-                        />
-                    );
-                })}
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
+                {bookings.length === 0 && noInterview}
+                {bookings.length !== 0 && <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} />}
             </div>
+        </>
+    )
+
+    const completedInterviewHeader = (
+        <div className="row" style={{ marginTop: '2em', backgroundColor: '#4085CA', height: '5em' }} ref={headerRef} >
+            <h2 style={{ textAlign: 'center', color: 'white', paddingTop: '20px', fontWeight: 'lighter' }}>Completed Interviews</h2>
+        </div>
+    )
+
+    const completedInterviewItem = (
+        <>
+         <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
+            <CompletedInterviewTable pastInterviewArray={pastInterviews}/>
+         </div>
         </>
     )
 
     return (
         <div className="ui five column grid">
-            <div className="row" style={{ position: 'relative', top: '8em' }}>
+            <div className="row" style={{ marginTop: '5em' }}>
                 <div className="two wide column" />
                 <div className="twelve wide column" >
                     {button}
                     {header}
-                    {upcomingInterviews}
                     {bookings && interviewItem}
                     {!bookings && <LoaderPage />}
+                </div>
+                <div className="two wide column" />
+            </div>
+            <div className="row" style={{ marginBottom: '10px' }}>
+                <div className="two wide column" />
+                <div className="twelve wide column">
+                    {completedInterviewHeader}
+                    {completedInterviewItem}
                 </div>
                 <div className="two wide column" />
             </div>

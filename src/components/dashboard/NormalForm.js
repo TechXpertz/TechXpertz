@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Rating } from 'semantic-ui-react';
 import Modal from '../Modal';
 import StarRating from '../StarRating';
 import DropdownMenu from '../DropdownMenu';
@@ -91,7 +92,7 @@ const NormalForm = (props) => {
     const [educationType, setEducationType] = useState([]);
     const [topics, setTopics] = useState([]);
     const [lang, setLang] = useState([]);
-    const stars = [1, 2, 3, 4, 5];
+    const [currentLevel, setCurrentLevel] = useState(0);
 
    
     const submitButton = (check === '' || educationType.length === 0 || topics.length === 0 || lang.length === 0) ? "ui primary disabled button" : "ui primary button"
@@ -123,6 +124,11 @@ const NormalForm = (props) => {
     const langHandler = (keyPair) => {
         setLang(keyPair);
     }
+
+    const handleRate = (e, {rating, maxRating }) => {
+        setCurrentLevel(rating);
+    }
+    console.log(currentLevel);
 
     useEffect(() => {
         props.onSubmitClick(isSubmit);
@@ -180,7 +186,7 @@ const NormalForm = (props) => {
                 <div className="four wide column">
                     <h3>Have You Been To A Technical Interview Before?</h3>
                 </div>
-                <div className="three wide column" style={{ top: "12px" }}>
+                <div className="three wide column" style={{ top: "18px" }}>
                     <div className="row">
                         <div className="ui checkbox">
                             <input
@@ -202,23 +208,17 @@ const NormalForm = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="four wide column" style={{ paddingRight: '3px' }}>
+                <div className="four wide column" style={{ paddingRight: '3px', display: 'flex', alignItems: 'center' }}>
                     <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
                 </div>
-                {stars.map((i) => {
-                    return (
-                        <div className="one wide column" style={{ marginTop: '10px' }} key={i}>
-                            <StarRating
-                                key={i}
-                                starId={i}
-                                rating={hoverState || rating}
-                                onMouseEnter={() => setHoverState(i)}
-                                onMouseLeave={() => setHoverState(0)}
-                                onClick={() => setRating(i)}
-                            />
-                        </div>
-                    );
-                })}
+                <div className="five wide column" style={{ display: "flex", alignItems: 'center'}}>
+                    <Rating 
+                        icon="star" 
+                        maxRating={5} 
+                        size="massive"
+                        onRate={handleRate}
+                    />
+                </div>
             </div>
         </>
     )
