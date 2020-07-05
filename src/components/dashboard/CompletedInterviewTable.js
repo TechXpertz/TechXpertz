@@ -20,26 +20,10 @@ const CompletedInterviewTable = (props) => {
                         <td>{item.topic}</td>
                         <td style={{ textAlign: 'center' }}>{!item.feedback ? '-' : item.feedback.rate.correctnessRate}</td>
                         <td style={{ textAlign: 'center' }}>{!item.feedback ? '-' : item.feedback.rate.clarityRate}</td>
-                        <td style={{ textAlign: 'cetner' }}>{!item.feedback ? '-' : item.feedback.rate.behaviouralRate}</td>
+                        <td style={{ textAlign: 'center' }}>{!item.feedback ? '-' : item.feedback.rate.behaviouralRate}</td>
                         <td><div className="ui primary button">View</div></td>
                     </tr>
                 })}
-                {/* <tr>
-                    <td>Thu, 21 May 2020</td>
-                    <td>Data Structure and Algorithm</td>
-                    <td style={{ textAlign: 'center'}}>10</td>
-                    <td style={{ textAlign: 'center'}}>6.5</td>
-                    <td style={{ textAlign: 'center'}}>8</td>
-                    <td><div className="ui primary button">View</div></td>
-                </tr>
-                <tr>
-                    <td>Wed, 26 May 2020</td>
-                    <td>System Design</td>
-                    <td style={{ textAlign: 'center'}}>9</td>
-                    <td style={{ textAlign: 'center'}}>10</td>
-                    <td style={{ textAlign: 'center'}}>8</td>
-                    <td><div className="ui primary button">View</div></td>
-                </tr> */}
             </tbody>
         </table>
     );

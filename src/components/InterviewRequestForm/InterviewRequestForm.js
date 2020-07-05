@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import NavBar from './NavBar';
 import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
+import Modal from '../Modal';
 import moment from 'moment/moment.js';
 import Axios from 'axios';
 import history from '../../history';
@@ -38,11 +39,14 @@ const InterviewRequestFrom = () => {
                 .map(element => element.progName)
             progLanguages.forEach(prog => progLangArray.push({ value: prog, label: prog }));
         });
-        // console.log('progArr', progLangArray);
 
     }, [interestArray, progLangArray]);
 
-    const [topicsState, setTopicsState] = useState([]);
+    const [topicsState, setTopicsState] = useState({
+        value: '',
+        label: ''
+    });
+    const [showModal, setShowModal] = useState(false);
     const [lang, setLang] = useState([]);
     const [userTiming, setUserTiming] = useState([]);
     const [isSubmit, setIsSubmit] = useState(false);
@@ -124,15 +128,96 @@ const InterviewRequestFrom = () => {
         <>
             <button className="ui button" onClick={() => history.push('/dashboard')}>Cancel</button>
             <button className={submitButton}
-                onClick={() => handleClick(true)}>
+                onClick={() => setShowModal(true)}>
                 Submit
             </button>
         </>
     )
 
+    const modalActions = (
+        <>
+            <div className="ui center aligned container">
+                <button
+                    className="ui button"
+                    onClick={() => setShowModal(false)}
+                >
+                    Back
+            </button>
+                <button
+                    className="ui primary button"
+                    onClick={() => handleClick(true)}
+                >
+                    Submit
+            </button>
+            </div>
+        </>
+    )
+
+    const modalHeader = (
+        <>
+            <div className="ui container">
+                <h2>Booking Summary</h2>
+            </div>
+        </>
+    )
+
+    const modalContent = (
+        <>
+            <div className="ui grid" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="row">
+                    <div className="three wide column" style={{ fontSize: '17px'}}>
+                        Practice with:
+                    </div>
+                    <div className="three wide column">
+                    <span style={{ fontSize: '17px'}}>{otherAccType}</span>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="three wide column" style={{ fontSize: '17px'}}>
+                        Topic:
+                    </div>
+                    <div className="three wide column">
+                        <span style={{ fontSize: '17px'}}>{topicsState.value}</span>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="three wide column" style={{ fontSize: '17px'}}>
+                        Programming Languages:
+                    </div>
+                    <div className="three wide column">
+                        {lang.length > 0 && lang.map((item, index) => {
+                            return <span key={index} style={{ fontSize: '17px'}}>{item.value}</span>;
+                        })}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="three wide column" style={{ fontSize: '17px'}}>
+                        Date:
+                    </div>
+                    <div className="three wide column">
+                        {userTiming.length > 0 && userTiming.map((time, index) => {
+                            return <span key={index} style={{ fontSize: '17px'}}>{time.date}</span>
+                        })}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="three wide column" style={{ fontSize: '17px'}}>
+                        Timeslots:
+                    </div>
+                    <div className="three wide column">
+                        {userTiming.length > 0 && userTiming.map((time, position) => {
+                            return time.timeSlots.map((timeSlot, index) => {
+                                return <span key={position+index} style={{ fontSize: '17px'}}>{timeSlot} &nbsp;</span>
+                            })
+                        })}
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+
     const userTimingHandler = (value) => {
         setUserTiming(value);
-        console.log(value);
     }
 
     const handleClick = (value) => {
@@ -167,8 +252,6 @@ const InterviewRequestFrom = () => {
                 timeslots: myTimeslots
             };
 
-            console.log(data);
-
             await Axios.post(bookingsUrl, data, header);
 
 
@@ -179,6 +262,13 @@ const InterviewRequestFrom = () => {
 
     return (
         <div>
+            {showModal && <Modal
+                color="#003EB6"
+                headerColor="white"
+                description={modalHeader}
+                content={modalContent}
+                actions={modalActions}
+            />}
             <NavBar />
             <div className="row" style={{ height: '3em' }} />
             <div className="ui two column grid" style={{ marginTop: "2em", marginLeft: "20px", width: '100vw' }}>
