@@ -1,9 +1,15 @@
 
+.video-container {
+  height: 100%;
+  width: 100%;
+}
+
 .remote-video {
   height: 100%;
   width: 100%;
   border-radius: 5px;
   border-color: hotpink;
+  background-color: indigo;
 }
 
 .local-video {

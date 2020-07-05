@@ -101,8 +101,11 @@ const Video = (props) => {
 
   return (
     <>
-      <video autoPlay className="remote-video" id="remote-video"></video>
-      <video autoPlay muted className="local-video" id="local-video"></video>
+      <button>Start call</button>
+      <div classNane="video-container">
+        <video autoPlay className="remote-video" id="remote-video"></video>
+        <video autoPlay muted className="local-video" id="local-video"></video>
+      </div>
     </>
   )
 
