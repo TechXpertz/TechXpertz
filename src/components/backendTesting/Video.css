@@ -1,0 +1,15 @@
+
+.remote-video {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  border-color: hotpink;
+}
+
+.local-video {
+  position: absolute;
+  bottom: 60px;
+  right: 40px;
+  border-radius: 5px;
+  border-color: hotpink;
+}

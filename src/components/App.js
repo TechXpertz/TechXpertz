@@ -11,6 +11,7 @@ import Callback from './callback';
 import InterviewRoom from './InterviewRoom/InterviewRoom';
 import SocketEditor from './backendTesting/socket/SocketEditor';
 import FeedbackFormPage from './Feedback/FeedbackFormPage';
+import Video from './backendTesting/Video';
 // import { useAuth0 } from "../react-auth0-spa";
 // import { register } from "../api_callers/apis.json";
 
@@ -37,6 +38,7 @@ const App = () => {
                         <Route path="/interview-room" component={InterviewRoom} />
                         <Route path="/socket-editor" component={SocketEditor} />
                         <Route path="/feedback-form-page" component={FeedbackFormPage} />
+                        <Route path="/video" component={Video} />
                     </Switch>
                 </div>
             </Router>
