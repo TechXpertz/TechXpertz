@@ -42,6 +42,7 @@ const AppointmentScheduler = ({ moment, userTiming }) => {
                     key={(index)}
                     dateObj={moment.clone().add(index, 'days')}
                     onDaysChange={dateHandler}
+                    disable={true}
                 />
             );
         })

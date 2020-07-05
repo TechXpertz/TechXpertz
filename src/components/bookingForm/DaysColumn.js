@@ -45,10 +45,10 @@ const DaysColumn = (props) => {
                     {props.dateObj.format('Do')}
                 </h3>
             </div>
-            {timeArr.map((time) => {
+            {timeArr.map((time, index) => {
                 return (
-                    <div className="row" style={{ marginTop: "1em" }}>
-                        <TimeBlock value={time} callbackFromDays={callbackForTime} />
+                    <div className="row" key={index} style={{ marginTop: "1em" }}>
+                        <TimeBlock value={time} callbackFromDays={callbackForTime} disableButton={props.disable}/>
                     </div>
                 );
             })}
