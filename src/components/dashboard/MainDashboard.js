@@ -92,15 +92,10 @@ const MainDashboard = () => {
                 };
 
                 const response = (await axios.get(getUpcomingBookings, header)).data;
-                console.log('response', response);
                 setBookings(splitBookings(response.bookings));
-                console.log(splitBookings(response.bookings));
-
-
             } catch (err) {
                 console.log(err);
             }
-
         };
 
         if (!loading || refresh) {
@@ -202,21 +197,29 @@ const MainDashboard = () => {
             console.log(err);
         }
     }
-    const noInterview = (
+    const noUpcomingInterview = (
         <>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div>
                 <span style={{ fontSize: '18px' }}>No upcoming interviews <br /> Book an interview now </span>
             </div>
+        </div>
+        </>
+    )
+
+    const haveUpcomingInterview =(
+        <>
+        <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
+            <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} />
+        </div>
         </>
     )
     
 
     const interviewItem = (
         <>
-            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
-                {bookings.length === 0 && noInterview}
-                {bookings.length !== 0 && <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} />}
-            </div>
+            {bookings.length === 0 && noUpcomingInterview}
+            {bookings.length !== 0 && haveUpcomingInterview}
         </>
     )
 
@@ -226,11 +229,28 @@ const MainDashboard = () => {
         </div>
     )
 
+    const noCompletedInterviewItem = (
+        <>
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div>
+                    <span style={{ fontSize: '18px' }}>No completed interviews <br /> Book an interview now </span>
+                </div>
+            </div>
+        </>
+    )
+
+    const haveCompletedInterviewItem = (
+        <>
+            <div className="ui container" style={{backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
+                <CompletedInterviewTable pastInterviewArray={pastInterviews}/>
+            </div>
+        </>
+    )
+
     const completedInterviewItem = (
         <>
-         <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
-            <CompletedInterviewTable pastInterviewArray={pastInterviews}/>
-         </div>
+            {pastInterviews.length === 0 && noCompletedInterviewItem}
+            {pastInterviews.length !== 0 && haveCompletedInterviewItem}
         </>
     )
 
