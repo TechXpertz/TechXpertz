@@ -5,17 +5,18 @@
 }
 
 .remote-video {
-  height: 100%;
+  border: 1px solid #cddfe7;
   width: 100%;
-  border-radius: 5px;
-  border-color: hotpink;
-  background-color: indigo;
+  height: 100%;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .local-video {
   position: absolute;
+  border: 1px solid #cddfe7;
   bottom: 60px;
   right: 40px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
-  border-color: hotpink;
+  width: 300px;
 }
