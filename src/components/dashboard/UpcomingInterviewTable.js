@@ -13,9 +13,9 @@ const UpcomingInterviewTable = (props) => {
         });
     }
 
-    const joinRoomButton = (value) => (
+    const joinRoomButton = (bookingId, date) => (
         <>
-            <button className="ui green button" onClick={() => joinRoom(value)}>
+            <button className="ui green button" onClick={() => joinRoom(bookingId, date)}>
                 Join
             </button>
         </>
@@ -27,9 +27,9 @@ const UpcomingInterviewTable = (props) => {
         </>
     )
 
-    const deleteButton = (value) => (
+    const deleteButton = (bookingId, date) => (
         <>
-            <button className="ui red button" onClick={() => props.onDelete(value)}>Cancel</button>
+            <button className="ui red button" onClick={() => props.onDelete(bookingId, date)}>Cancel</button>
         </>
     )
 
@@ -56,21 +56,21 @@ const UpcomingInterviewTable = (props) => {
             </thead>
             <tbody>
                 {props.bookingArray.map((booking, index) => {
-                        const { bookingId, date, otherBookingId, otherAccType, timings, topic, langs } = booking;
-                        return (
-                            <tr key={index}>
-                                <td>{date}</td>
-                                <td>{topic}</td>
-                                <td>{langsToString(langs)}</td>
-                                <td>{timingsToString(timings)}</td>
-                                <td>{joinRoomButton({bookingId: bookingId, otherBookingId: otherBookingId})}</td>
-                                <td>{ediButton}</td>
-                                <td>{deleteButton(bookingId)}</td>
-                            </tr>
-                        )
-                    })}
+                    const { bookingId, date, otherBookingId, otherAccType, timings, topic, langs } = booking;
+                    return (
+                        <tr key={index}>
+                            <td>{date}</td>
+                            <td>{topic}</td>
+                            <td>{langsToString(langs)}</td>
+                            <td>{timingsToString(timings)}</td>
+                            <td>{joinRoomButton({ bookingId: bookingId, otherBookingId: otherBookingId })}</td>
+                            <td>{ediButton}</td>
+                            <td>{deleteButton(bookingId, date)}</td>
+                        </tr>
+                    )
+                })}
             </tbody>
-    </table>
+        </table>
     );
 }
 

@@ -18,8 +18,8 @@ const MainDashboard = () => {
         height: window.innerHeight,
         width: window.innerWidth
     })
-    
-    function debounce(fn, ms){
+
+    function debounce(fn, ms) {
         let timer;
         return _ => {
             clearTimeout(timer)
@@ -162,7 +162,7 @@ const MainDashboard = () => {
         setHeaderWidth(width);
     }, [headerRef, headerWidth, dimensions]);
 
-    const handleDelete = async (booking) => {
+    const handleDelete = async (bookingId, date) => {
 
         try {
 
@@ -171,10 +171,11 @@ const MainDashboard = () => {
                 Authorization: `Bearer ${token}`
             };
             const data = {
-                bookingId: booking
+                bookingId,
+                date
             };
             await axios.delete(bookingsUrl, { headers, data });
-            setBookings(bookings.filter(item => item.bookingId !== booking));
+            setBookings(bookings.filter(item => item.bookingId !== bookingId));
             setRefresh(true);
 
         } catch (err) {
@@ -209,7 +210,7 @@ const MainDashboard = () => {
             </div>
         </>
     )
-    
+
 
     const interviewItem = (
         <>
@@ -228,9 +229,9 @@ const MainDashboard = () => {
 
     const completedInterviewItem = (
         <>
-         <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
-            <CompletedInterviewTable pastInterviewArray={pastInterviews}/>
-         </div>
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
+                <CompletedInterviewTable pastInterviewArray={pastInterviews} />
+            </div>
         </>
     )
 
