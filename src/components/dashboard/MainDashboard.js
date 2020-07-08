@@ -4,7 +4,7 @@ import CompletedInterviewTable from './CompletedInterviewTable';
 import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
-import { getUpcomingBookings, bookingsUrl, getPastInterviews } from '../../api_callers/apis.json';
+import { getUpcomingBookings, bookingsUrl, getPastInterviews, reschedule } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -190,8 +190,8 @@ const MainDashboard = () => {
             const data = {
                 bookingId: booking
             };
-            await axios.delete(bookingsUrl, { headers, data });
-            setBookings(bookings.filter(item => item.bookingId !== booking));
+            await axios.delete(reschedule, { headers, data });
+            history.push('/booking');
             // go to the booking form 
 
         } catch (err) {
@@ -211,7 +211,7 @@ const MainDashboard = () => {
     const haveUpcomingInterview = (
         <>
             <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
-                <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} />
+                <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} onReschedule={handleReschedule} />
             </div>
         </>
     )

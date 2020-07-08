@@ -11,39 +11,39 @@ const InterviewRoom = props => {
   //if it is lesser than they are assigned 'interviewee' role
   // if not they are assigned 'interviewer' role
   const [userRole, setUserRole] = useState(
-    props.bookingId < props.otherBookingId ? 'interviewee' : 'interviewer'
+    props.location.state.bookingId < props.location.state.otherBookingId ? 'interviewee' : 'interviewer'
   );
-  console.log(props.bookingId);
-  console.log(props.otherBookingId);
+  console.log(props.location.state.bookingId);
+  console.log(props.location.state.otherBookingId);
 
   if (userRole === 'interviewee') {
     return (
       <div>
         <Header
-          otherBookingId={this.props.location.state.otherBookingId}
-          bookingId={this.props.location.state.bookingId}
-          date={this.props.location.state.date}
-          time={this.props.location.state.time}
+          otherBookingId={props.location.state.otherBookingId}
+          bookingId={props.location.state.bookingId}
+          date={props.location.state.date}
+          time={props.location.state.time}
         />
         <SubHeader />
         <div className='ui two column grid'>
           <div className='six wide column'>
             <div className='row' style={{ height: '40vh' }}>
               <QuestionBox
-                bookingId={this.props.location.state.bookingId}
+                bookingId={props.location.state.bookingId}
                 role={userRole}
               />
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
                 <CommentSection
-                  bookingId={this.props.location.state.bookingId}
+                  bookingId={props.location.state.bookingId}
                 />
               </div>
             </div>
           </div>
           <div className='ten wide column'>
-            <CodeEditor bookingId={this.props.location.state.bookingId} />
+            <CodeEditor bookingId={props.location.state.bookingId} />
           </div>
         </div>
       </div>
@@ -54,30 +54,30 @@ const InterviewRoom = props => {
     return (
       <div>
         <Header
-          otherBookingId={this.props.location.state.otherBookingId}
-          bookingId={this.props.location.state.bookingId}
-          date={this.props.location.state.date}
-          time={this.props.location.state.time}
+          otherBookingId={props.location.state.otherBookingId}
+          bookingId={props.location.state.bookingId}
+          date={props.location.state.date}
+          time={props.location.state.time}
         />
         <SubHeader />
         <div className='ui two column grid'>
           <div className='six wide column'>
             <div className='row' style={{ height: '40vh' }}>
               <QuestionBox
-                bookingId={this.props.location.state.bookingId}
+                bookingId={props.location.state.bookingId}
                 role={userRole}
               />
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
                 <CommentSection
-                  bookingId={this.props.location.state.bookingId}
+                  bookingId={props.location.state.bookingId}
                 />
               </div>
             </div>
           </div>
           <div className='ten wide column'>
-            <CodeEditor bookingId={this.props.location.state.bookingId} />
+            <CodeEditor bookingId={props.location.state.bookingId} />
           </div>
         </div>
       </div>

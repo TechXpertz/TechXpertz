@@ -2,18 +2,16 @@ import React from 'react';
 import history from '../../history';
 
 const UpcomingInterviewTable = props => {
-    const joinRoom = ({ bookingId, otherBookingId }) => {
+    const joinRoom = ({ bookingId, otherBookingId, date, time }) => {
         history.push({
             pathname: '/interview-room',
             state: {
                 bookingId: bookingId,
-                otherBookingId: otherBookingId
+                otherBookingId: otherBookingId,
+                date,
+                time
             }
         });
-    };
-
-    const rescheduleHandler = () => {
-        history.push('/booking');
     };
 
     const joinRoomButton = value => (
@@ -24,9 +22,9 @@ const UpcomingInterviewTable = props => {
         </>
     );
 
-    const ediButton = (
+    const ediButton = (bookingId) => (
         <>
-            <button className='ui button' onClick={rescheduleHandler}>
+            <button className='ui button' onClick={() => props.onReschedule(bookingId)}>
                 Reschedule
       </button>
         </>
@@ -79,10 +77,12 @@ const UpcomingInterviewTable = props => {
                             <td>
                                 {joinRoomButton({
                                     bookingId: bookingId,
-                                    otherBookingId: otherBookingId
+                                    otherBookingId: otherBookingId,
+                                    date,
+                                    time: timings
                                 })}
                             </td>
-                            <td>{ediButton}</td>
+                            <td>{ediButton(bookingId)}</td>
                             <td>{deleteButton(bookingId, date)}</td>
                         </tr>
                     );

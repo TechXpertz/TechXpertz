@@ -166,5 +166,6 @@ const deleteBookingWithId = async (userId, bookingId, date) => {
 
 module.exports = {
   deleteBooking,
-  deleteOtherTimeslots
+  deleteOtherTimeslots,
+  cancelPartnerBooking
 }
