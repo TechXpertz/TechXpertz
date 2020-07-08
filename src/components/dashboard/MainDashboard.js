@@ -98,12 +98,12 @@ const MainDashboard = () => {
             }
         };
 
-        if (!loading || refresh) {
+        if (!loading) {
             getBookings();
             setRefresh(false);
         }
 
-    }, [refresh]);
+    }, []);
 
     //getting past interviews (must check for undefined feedback)
     useEffect(() => {

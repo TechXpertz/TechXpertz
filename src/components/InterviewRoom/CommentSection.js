@@ -68,10 +68,16 @@ const CommentSection = (props) => {
     }, [loading]);
 
     const currentTime = moment().format('LT');
+    const currentDate = moment().format('YYYY-MM-DD');
 
     const handleComment = (event) => {
         event.preventDefault();
-        socket.emit('comment', newComment);
+        socket.emit('comment', {
+            bookingId,
+            comment: newComment,
+            date: currentDate,
+            timeStamp: currentTime,
+        });
         setComments(prevState => {
             return [...prevState, {
                 commentContent: newComment,
