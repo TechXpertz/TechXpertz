@@ -4,7 +4,7 @@ import CompletedInterviewTable from './CompletedInterviewTable';
 import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
-import { getUpcomingBookings, bookingsUrl, getPastInterviews } from '../../api_callers/apis.json';
+import { getUpcomingBookings, bookingsUrl, getPastInterviews, reschedule } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -18,8 +18,8 @@ const MainDashboard = () => {
         height: window.innerHeight,
         width: window.innerWidth
     })
-    
-    function debounce(fn, ms){
+
+    function debounce(fn, ms) {
         let timer;
         return _ => {
             clearTimeout(timer)
@@ -157,7 +157,7 @@ const MainDashboard = () => {
         setHeaderWidth(width);
     }, [headerRef, headerWidth, dimensions]);
 
-    const handleDelete = async (booking) => {
+    const handleDelete = async (bookingId, date) => {
 
         try {
 
@@ -166,10 +166,11 @@ const MainDashboard = () => {
                 Authorization: `Bearer ${token}`
             };
             const data = {
-                bookingId: booking
+                bookingId,
+                date
             };
             await axios.delete(bookingsUrl, { headers, data });
-            setBookings(bookings.filter(item => item.bookingId !== booking));
+            setBookings(bookings.filter(item => item.bookingId !== bookingId));
             setRefresh(true);
 
         } catch (err) {
@@ -189,8 +190,8 @@ const MainDashboard = () => {
             const data = {
                 bookingId: booking
             };
-            await axios.delete(bookingsUrl, { headers, data });
-            setBookings(bookings.filter(item => item.bookingId !== booking));
+            await axios.delete(reschedule, { headers, data });
+            history.push('/booking');
             // go to the booking form 
 
         } catch (err) {
@@ -199,22 +200,22 @@ const MainDashboard = () => {
     }
     const noUpcomingInterview = (
         <>
-        <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div>
-                <span style={{ fontSize: '18px' }}>No upcoming interviews <br /> Book an interview now </span>
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div>
+                    <span style={{ fontSize: '18px' }}>No upcoming interviews <br /> Book an interview now </span>
+                </div>
             </div>
-        </div>
         </>
     )
 
-    const haveUpcomingInterview =(
+    const haveUpcomingInterview = (
         <>
-        <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
-            <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} />
-        </div>
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh', overflowY: 'auto', overflowX: 'hidden' }}>
+                <UpcomingInterviewTable bookingArray={bookings} onDelete={handleDelete} onReschedule={handleReschedule} />
+            </div>
         </>
     )
-    
+
 
     const interviewItem = (
         <>
@@ -241,8 +242,8 @@ const MainDashboard = () => {
 
     const haveCompletedInterviewItem = (
         <>
-            <div className="ui container" style={{backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
-                <CompletedInterviewTable pastInterviewArray={pastInterviews}/>
+            <div className="ui container" style={{ backgroundColor: '#F9F9F9', minWidth: `${headerWidth}px`, minHeight: '35vh', maxHeight: '35vh' }}>
+                <CompletedInterviewTable pastInterviewArray={pastInterviews} />
             </div>
         </>
     )

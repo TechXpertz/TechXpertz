@@ -104,12 +104,15 @@ const ioAuth = (socket, next) => {
 
 const editor = io.of('/editor');
 const comments = io.of('/comments');
+const video = io.of('/video');
 
 module.exports = {
   editor,
   comments,
+  video,
   ioAuth
 };
 
 require('./editor');
 require('./comments');
+require('./video');

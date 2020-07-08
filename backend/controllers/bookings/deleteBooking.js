@@ -7,15 +7,15 @@ const deleteBooking = async (req, res) => {
     return res.sendStatus(401);
   }
 
-  const { bookingId } = req.body;
+  const { bookingId, date } = req.body;
 
-  if (!bookingId) {
+  if (!bookingId || !date) {
     return res.sendStatus(400);
   }
 
   const userId = await getUserId(req.user);
 
-  const deleted = await deleteBookingWithId(userId, bookingId);
+  const deleted = await deleteBookingWithId(userId, bookingId, date);
   if (!deleted.success) {
     return res.sendStatus(403);
   }
@@ -28,7 +28,7 @@ const deleteBooking = async (req, res) => {
     if (cancelation.hasRemaining) {
       const { date, timeStart } = cancelation;
       // send cancelled TIMESLOT email
-      console.log('delete timeslot', deleted.otherBookingId);
+      console.log('delete timeslot', deleted.otherBookingId, date, timeStart);
     } else {
       // send cancelled BOOKING email
       console.log('delete booking', deleted.otherBookingId);
@@ -90,11 +90,10 @@ const deleteOtherTimeslotsOf = async (userId, bookingId, date, time) => {
 
 }
 
-
-
 const cancelPartnerBooking = async (otherBookingId) => {
 
-  const timeslots = await pool.query('SELECT date_col, time_start FROM timeslots WHERE booking_id = $1',
+  const timeslots = await pool.query('SELECT date_col, time_start FROM timeslots WHERE booking_id = $1'
+    + 'ORDER BY (date_col, time_start)',
     [otherBookingId]);
 
   if (timeslots.rowCount < 2) {
@@ -112,33 +111,61 @@ const cancelPartnerBooking = async (otherBookingId) => {
       timeStart: timeslots.rows[0].time_start
     };
   }
-
-
 }
 
-const deleteBookingWithId = async (userId, bookingId) => {
+const deleteBookingWithId = async (userId, bookingId, date) => {
 
-  const deleted = await pool.query(
-    'DELETE FROM bookings WHERE booking_id = $1 AND user_id = $2 '
-    + 'RETURNING other_booking_id',
+  let otherBookingId;
+
+  const beDate = parseFEInterviewDate(date);
+  const other = await pool.query(
+    'SELECT other_booking_id FROM bookings WHERE booking_id = $1 AND user_id = $2',
     [bookingId, userId]
   );
 
-  if (deleted.rowCount === 0) {
+  if (other.rowCount === 0) {
     return {
-      success: false,
-      otherBookingId: undefined
-    };
-  } else {
-    return {
-      success: true,
-      otherBookingId: deleted.rows[0].other_booking_id
-    };
+      success: false
+    }
+  }
+
+  if (other.rows[0].other_booking_id !== null) {
+    // const matchedDate = (await pool.query(
+    //   'SELECT date_col FROM timeslots WHERE booking_id = $1 ORDER BY date_col',
+    //   [bookingId]
+    // )).rows[0].date_col;
+    otherBookingId = other.rows[0].other_booking_id;
+    await pool.query(
+      'UPDATE bookings SET other_booking_id = NULL WHERE booking_id = $1',
+      [bookingId]
+    );
+  }
+
+  await pool.query(
+    'DELETE FROM timeslots WHERE booking_id = $1 AND date_col = $2',
+    [bookingId, beDate]
+  );
+
+  const remainingTimeslots = await pool.query(
+    'SELECT booking_id FROM timeslots WHERE booking_id = $1',
+    [bookingId]
+  );
+  if (remainingTimeslots.rowCount === 0) {
+    await pool.query(
+      'DELETE FROM bookings WHERE booking_id = $1 AND user_id = $2',
+      [bookingId, userId]
+    );
+  }
+
+  return {
+    success: true,
+    otherBookingId
   }
 
 }
 
 module.exports = {
   deleteBooking,
-  deleteOtherTimeslots
+  deleteOtherTimeslots,
+  cancelPartnerBooking
 }
