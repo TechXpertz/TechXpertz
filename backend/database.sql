@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS feedbacks(
 CREATE TABLE IF NOT EXISTS comments(
     comment_id SERIAL PRIMARY KEY,
     booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE CASCADE NOT NULL,
-    comment TEXT NOT NULL
+    comment TEXT NOT NULL,
+    date_col DATE NOT NULL,
     time_stamp TIME NOT NULL
 );
