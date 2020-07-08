@@ -1,8 +1,7 @@
 import React from 'react';
 import history from '../../history';
 
-const UpcomingInterviewTable = (props) => {
-
+const UpcomingInterviewTable = props => {
     const joinRoom = ({ bookingId, otherBookingId }) => {
         history.push({
             pathname: '/interview-room',
@@ -11,21 +10,27 @@ const UpcomingInterviewTable = (props) => {
                 otherBookingId: otherBookingId
             }
         });
-    }
+    };
 
-    const joinRoomButton = (bookingId, date) => (
+    const rescheduleHandler = () => {
+        history.push('/booking');
+    };
+
+    const joinRoomButton = value => (
         <>
-            <button className="ui green button" onClick={() => joinRoom(bookingId, date)}>
+            <button className='ui green button' onClick={() => joinRoom(value)}>
                 Join
-            </button>
+      </button>
         </>
-    )
+    );
 
     const ediButton = (
         <>
-            <button className="ui button">Reschedule</button>
+            <button className='ui button' onClick={rescheduleHandler}>
+                Reschedule
+      </button>
         </>
-    )
+    );
 
     const deleteButton = (bookingId, date) => (
         <>
@@ -42,36 +47,49 @@ const UpcomingInterviewTable = (props) => {
     };
 
     return (
-        <table className="ui seven column compact table">
+        <table className='ui seven column compact table'>
             <thead>
                 <tr>
-                    <th className="three wide">Date</th>
-                    <th className="three wide">Topic</th>
-                    <th className="three wide">Language</th>
-                    <th className="four wide">Timing</th>
-                    <th className="one wide"></th>
-                    <th className="one wide"></th>
-                    <th className="one wide"></th>
+                    <th className='three wide'>Date</th>
+                    <th className='three wide'>Topic</th>
+                    <th className='three wide'>Language</th>
+                    <th className='four wide'>Timing</th>
+                    <th className='one wide'></th>
+                    <th className='one wide'></th>
+                    <th className='one wide'></th>
                 </tr>
             </thead>
             <tbody>
                 {props.bookingArray.map((booking, index) => {
-                    const { bookingId, date, otherBookingId, otherAccType, timings, topic, langs } = booking;
+                    const {
+                        bookingId,
+                        date,
+                        otherBookingId,
+                        otherAccType,
+                        timings,
+                        topic,
+                        langs
+                    } = booking;
                     return (
                         <tr key={index}>
                             <td>{date}</td>
                             <td>{topic}</td>
                             <td>{langsToString(langs)}</td>
                             <td>{timingsToString(timings)}</td>
-                            <td>{joinRoomButton({ bookingId: bookingId, otherBookingId: otherBookingId })}</td>
+                            <td>
+                                {joinRoomButton({
+                                    bookingId: bookingId,
+                                    otherBookingId: otherBookingId
+                                })}
+                            </td>
                             <td>{ediButton}</td>
                             <td>{deleteButton(bookingId, date)}</td>
                         </tr>
-                    )
+                    );
                 })}
             </tbody>
         </table>
     );
-}
+};
 
 export default UpcomingInterviewTable;
