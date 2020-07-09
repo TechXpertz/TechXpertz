@@ -1,8 +1,5 @@
 import React from 'react';
 import history from '../../history';
-import { useAuth0 } from '../../react-auth0-spa';
-import { reschedule } from '../../api_callers/apis.json';
-import axios from 'axios';
 
 const UpcomingInterviewTable = props => {
     const joinRoom = ({ bookingId, otherBookingId, date, time }) => {
