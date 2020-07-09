@@ -1,33 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DaysColumn from './DaysColumn';
 
-const AppointmentScheduler = ({ moment, userTiming }) => {
+const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
   const [click, setClick] = useState(0);
-  const [period, setPeriod] = useState([{ date: '', timings: [] }]);
+  const [period, setPeriod] = useState([{ date: '', timeSlots: [] }]);
   let shiftArr = [0, 1, 2, 3, 4, 5, 6];
 
   const dateHandler = useCallback(childProp => {
-    setPeriod(prevState => {
-      return [
-        ...prevState.filter(value => {
-          return value.date !== childProp.date;
-        }),
-        (prevState[
-          prevState.findIndex(item => {
-            return item.date === childProp.date;
-          })
-        ] = childProp)
-      ];
-    });
+    if (childProp.timeSlots.length <= 0) {
+      setPeriod(prevState => {
+        return prevState.filter(time => {
+          return time.date !== childProp.date;
+        });
+      });
+    } else {
+      setPeriod(prevState => {
+        return [
+          ...prevState.filter(value => {
+            return value.date !== childProp.date && value.date !== '';
+          }),
+          (prevState[
+            prevState.findIndex(item => {
+              return item.date === childProp.date;
+            })
+          ] = childProp)
+        ];
+      });
+    }
   }, []);
 
   useEffect(() => {
-    userTiming(
-      period.filter(timings => {
-        return timings.date !== '';
+    userTimingCallback(
+      period.filter(timing => {
+        return (
+          timing.timeSlots &&
+          timing.timeSlots.length > 0 &&
+          !timing.timeSlots.includes('"')
+        );
       })
     );
-  }, [period, click]);
+  }, [period]);
 
   const renderDays = arr => {
     const newArr = arr.map(i => {
