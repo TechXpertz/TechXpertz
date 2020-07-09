@@ -1,5 +1,8 @@
 import React from 'react';
 import history from '../../history';
+import { useAuth0 } from '../../react-auth0-spa';
+import { reschedule } from '../../api_callers/apis.json';
+import axios from 'axios';
 
 const UpcomingInterviewTable = props => {
     const joinRoom = ({ bookingId, otherBookingId, date, time }) => {
@@ -24,7 +27,13 @@ const UpcomingInterviewTable = props => {
 
     const ediButton = (bookingId) => (
         <>
-            <button className='ui button' onClick={() => props.onReschedule(bookingId)}>
+            <button className='ui button' onClick={() => history.push({
+                pathname: '/booking',
+                state: {
+                    reschedule: true,
+                    bookingId
+                }
+            })}>
                 Reschedule
       </button>
         </>

@@ -6,8 +6,7 @@ import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
 import { normalBackground, postAccType } from '../../api_callers/apis.json';
 import { useAuth0 } from "../../react-auth0-spa";
-
-
+import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
 
 const NormalForm = (props) => {
 
@@ -23,7 +22,7 @@ const NormalForm = (props) => {
         }
 
         const fetchTopics = async () => {
-            const response = await Axios.get('http://localhost:5000/info/topics');
+            const response = await Axios.get(topicsAPI);
             return response.data;
         }
 
@@ -35,7 +34,7 @@ const NormalForm = (props) => {
         // console.log('interestArr', interestArray);
 
         const fetchProgLanguages = async () => {
-            const response = await Axios.get('http://localhost:5000/info/prog-languages');
+            const response = await Axios.get(progsAPI);
             return response.data;
         }
 
@@ -94,9 +93,9 @@ const NormalForm = (props) => {
     const [lang, setLang] = useState([]);
     const [currentLevel, setCurrentLevel] = useState(0);
 
-   
+
     const submitButton = (check === '' || educationType.length === 0 || topics.length === 0 || lang.length === 0) ? "ui primary disabled button" : "ui primary button"
-    
+
 
     const educationArray = [
         { value: 'No Degree', label: 'No Degree' },
@@ -125,7 +124,7 @@ const NormalForm = (props) => {
         setLang(keyPair);
     }
 
-    const handleRate = (e, {rating, maxRating }) => {
+    const handleRate = (e, { rating, maxRating }) => {
         setCurrentLevel(rating);
     }
     console.log(currentLevel);
@@ -211,10 +210,10 @@ const NormalForm = (props) => {
                 <div className="four wide column" style={{ paddingRight: '3px', display: 'flex', alignItems: 'center' }}>
                     <h3 style={{ marginTop: '5px' }}>Rate Your Current Level At Technical Interviews</h3>
                 </div>
-                <div className="five wide column" style={{ display: "flex", alignItems: 'center'}}>
-                    <Rating 
-                        icon="star" 
-                        maxRating={5} 
+                <div className="five wide column" style={{ display: "flex", alignItems: 'center' }}>
+                    <Rating
+                        icon="star"
+                        maxRating={5}
                         size="massive"
                         onRate={handleRate}
                     />

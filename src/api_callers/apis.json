@@ -1,14 +1,16 @@
 {
-  "register": "http://localhost:5000/auth/register",
-  "dashboard": "http://localhost:5000/user/dashboard",
-  "normalBackground": "http://localhost:5000/user/normal-background",
-  "postAccType": "http://localhost:5000/user/account-type",
-  "bookingsUrl": "http://localhost:5000/bookings",
-  "hasSubmittedBackground": "http://localhost:5000/user/has-submitted-background",
-  "getUpcomingBookings": "http://localhost:5000/bookings/upcoming",
-  "postFeedback": "http://localhost:5000/feedback",
-  "deleteOtherTimeslots": "http://localhost:5000/bookings/other-timeslots",
-  "getOrInsertQuestion": "http://localhost:5000/questions",
-  "getPastInterviews": "http://localhost:5000/bookings/past",
-  "reschedule": "http://localhost:5000/bookings/reschedule"
+  "register": "/api/auth/register",
+  "dashboard": "/api/user/dashboard",
+  "topicsAPI": "/api/info/topics",
+  "progsAPI": "/api/info/prog-languages",
+  "normalBackground": "/api/user/normal-background",
+  "postAccType": "/api/user/account-type",
+  "bookingsUrl": "/api/bookings",
+  "hasSubmittedBackground": "/api/user/has-submitted-background",
+  "getUpcomingBookings": "/api/bookings/upcoming",
+  "postFeedback": "/api/feedback",
+  "deleteOtherTimeslots": "/api/bookings/other-timeslots",
+  "getOrInsertQuestion": "/api/questions",
+  "getPastInterviews": "/api/bookings/past",
+  "reschedule": "/api/bookings/reschedule"
 }
