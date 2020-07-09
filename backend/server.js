@@ -19,7 +19,6 @@ app.use('/auth', require('./routes/auth'));
 app.use('/user', require('./routes/user'));
 app.use('/info', require('./routes/info'));
 app.use('/bookings', require('./routes/bookings'));
-app.use('/editor', require('./routes/pusher'));
 app.use('/questions', require('./routes/questions'));
 app.use('/feedback', require('./routes/feedbacks'));
 
