@@ -14,12 +14,16 @@ const onRedirectCallback = appState => {
   );
 };
 
+const redirect_uri = process.env.NODE_ENV === 'production'
+  ? 'https://techxpertz.herokuapp.com/callback'
+  : 'http://localhost:3000/callback';
+
 
 ReactDOM.render(
   <Auth0Provider
     domain={config.domain}
     client_id={config.clientId}
-    redirect_uri="/callback"
+    redirect_uri={redirect_uri}
     audience={config.audience}
     onRedirectCallback={onRedirectCallback}
   >
