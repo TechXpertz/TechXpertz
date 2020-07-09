@@ -20,24 +20,26 @@ const DaysColumn = props => {
 
   const callbackForTime = useCallback(timeValues => {
     setTimings(prevState => {
-      if (!prevState.timeSlots.includes(timeValues)) {
+      if (timeValues.set) {
         return {
-          ...prevState,
-          timeSlots: [...prevState.timeSlots, timeValues]
+          date: props.dateObj.format('DD/MM/YYYY'),
+          timeSlots: [...prevState.timeSlots, timeValues.value]
         };
       } else {
         return {
-          ...prevState,
-          timeSlots: prevState.timeSlots.filter(time => time !== timeValues)
+          date: props.dateObj.format('DD/MM/YYYY'),
+          timeSlots: prevState.timeSlots.filter(
+            time => time !== timeValues.value
+          )
         };
       }
     });
   }, []);
 
   useEffect(() => {
-    if (timings.timeSlots.length <= 0) {
-      return;
-    }
+    // if (timings.timeSlots.length <= 0) {
+    //   return;
+    // }
     props.onDaysChange(timings);
   }, [timings]);
 
@@ -62,6 +64,7 @@ const DaysColumn = props => {
         </h3>
       </div>
       {timeArr.map((time, index) => {
+        //console.log('slotsSelected', props.slotsSelected[0]);
         const result =
           props.slotsSelected[0].timeSlots &&
           props.slotsSelected[0].timeSlots.filter(x => x === time);

@@ -352,7 +352,8 @@ const InterviewRequestFrom = () => {
           <div className='row' style={{ height: '9em' }} />
           <AppointmentScheduler
             moment={currentMoment}
-            userTiming={userTimingHandler}
+            userTimingCallback={userTimingHandler}
+            userTiming={userTiming}
           />
         </div>
       </div>
