@@ -4,12 +4,7 @@ import CompletedInterviewTable from './CompletedInterviewTable';
 import LoaderPage from '../LoaderPage';
 import history from '../../history';
 import './Dashboard.css';
-import {
-  getUpcomingBookings,
-  bookingsUrl,
-  getPastInterviews,
-  reschedule
-} from '../../api_callers/apis.json';
+import { getUpcomingBookings, bookingsUrl, getPastInterviews } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from '../../react-auth0-spa';
 

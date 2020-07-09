@@ -4,6 +4,7 @@ import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
 import { checkPropTypes } from 'prop-types';
+import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
 
 
 const ExpertForm = (props) => {
@@ -14,12 +15,12 @@ const ExpertForm = (props) => {
     const progLangArray = [];
 
     const fetchTopics = async () => {
-        const response = await Axios.get('http://localhost:5000/info/topics');
+        const response = await Axios.get(topicsAPI);
         return response.data;
     }
 
     const fetchProgLanguages = async () => {
-        const response = await Axios.get('http://localhost:5000/info/prog-languages');
+        const response = await Axios.get(progsAPI);
         return response.data;
     }
 

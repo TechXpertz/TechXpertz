@@ -14,14 +14,20 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use('/', require('./routes/general'));
-app.use('/auth', require('./routes/auth'));
-app.use('/user', require('./routes/user'));
-app.use('/info', require('./routes/info'));
-app.use('/bookings', require('./routes/bookings'));
-app.use('/editor', require('./routes/pusher'));
-app.use('/questions', require('./routes/questions'));
-app.use('/feedback', require('./routes/feedbacks'));
+app.use('/api', require('./routes/general'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/user'));
+app.use('/api/info', require('./routes/info'));
+app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/questions', require('./routes/questions'));
+app.use('/api/feedback', require('./routes/feedbacks'));
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../build')));
+  app.use((req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'))
+  })
+}
 
 const { port } = require('./config');
 
