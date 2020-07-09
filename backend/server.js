@@ -22,6 +22,13 @@ app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/questions', require('./routes/questions'));
 app.use('/api/feedback', require('./routes/feedbacks'));
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../build')));
+  app.use((req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'))
+  })
+}
+
 const { port } = require('./config');
 
 // Start server
