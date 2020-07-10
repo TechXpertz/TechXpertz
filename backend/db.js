@@ -17,6 +17,7 @@ if (process.env.DATABASE_URL) {
     database: params.pathname.split('/')[1],
     ssl: true
   };
+  console.log(config);
 } else {
   config = {
     user: db_user,
@@ -28,10 +29,5 @@ if (process.env.DATABASE_URL) {
 }
 
 const pool = new Pool(config);
-
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on postgres client', err);
-  process.exit(-1);
-})
 
 module.exports = pool;
