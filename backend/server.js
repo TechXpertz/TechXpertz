@@ -5,9 +5,7 @@ const server = http.createServer(app);
 const cors = require('cors');
 const path = require('path');
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ path: 'backend/.env' });
-}
+require('dotenv').config({ path: 'backend/.env' });
 
 // middleware
 app.use(express.json());
