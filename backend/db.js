@@ -15,9 +15,11 @@ if (process.env.DATABASE_URL) {
     host: params.hostname,
     port: params.port,
     database: params.pathname.split('/')[1],
-    ssl: true
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   };
-  console.log(config);
 } else {
   config = {
     user: db_user,
