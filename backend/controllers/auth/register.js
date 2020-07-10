@@ -21,10 +21,15 @@ const register = async (req, res) => {
         return res.sendStatus(401);
     }
 
+    console.log('before insert', req.user);
+
     const sub = req.user.sub;
+    console.log('sub', sub);
     const user = await pool.query(
         'SELECT * FROM users WHERE auth0_id = $1',
         [sub]);
+
+    console.log('checking db', user.rows);
 
     if (user.rows.length === 0) {
         await pool.query('INSERT INTO users (auth0_id) VALUES ($1)', [sub]);
