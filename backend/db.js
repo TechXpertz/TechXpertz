@@ -1,4 +1,5 @@
 const Pool = require('pg').Pool;
+const url = require('url');
 
 const { db_user, db_password, db_host, db_port, db_name } = require('./config');
 
