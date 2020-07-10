@@ -94,7 +94,11 @@ const NormalForm = (props) => {
     const [currentLevel, setCurrentLevel] = useState(0);
 
 
-    const submitButton = (check === '' || educationType.length === 0 || topics.length === 0 || lang.length === 0) ? "ui primary disabled button" : "ui primary button"
+    const submitButton = (check === ''
+        || (educationType && educationType.length === 0)
+        || (topics && topics.length === 0)
+        || (lang && lang.length === 0))
+        ? "ui primary disabled button" : "ui primary button"
 
 
     const educationArray = [

@@ -17,7 +17,6 @@ const checkJwt = jwt({
 });
 
 const register = async (req, res) => {
-    console.log(req);
     if (!req.user) {
         return res.sendStatus(401);
     }
