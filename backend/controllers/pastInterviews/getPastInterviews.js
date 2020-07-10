@@ -34,18 +34,37 @@ const pastInterviewsIn = async (bookings) => {
     const bookingId = booking.booking_id;
     const timeslots = (await pool.query(
       'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
-      + 'AND (date_col < CURRENT_DATE '
-      + "OR (date_col = CURRENT_DATE AND time_start < (CURRENT_TIME - INTERVAL '2 hours'))) "
       + 'GROUP BY (date_col) ORDER BY date_col',
       [bookingId]
     ));
 
-    if (timeslots.rowCount === 0) {
+    const comparison = new Date(Date.now());
+    comparison.setHours(comparison.getHours() - 2);
+    const validTimeslots = [];
+    for (dateSlot of timeslots.rows) {
+      const pgDate = dateSlot.date_col;
+      const validTimes = dateSlot.array_agg.filter(time => {
+        const hour = time.split(':')[0];
+        const pgCopy = new Date(pgDate);
+        pgCopy.setHours(hour);
+        return pgCopy <= comparison;
+      });
+      if (validTimes.length === 0) {
+        continue;
+      }
+      const dateItem = {
+        date: pgDate,
+        timings: validTimes
+      };
+      validTimeslots.push(dateItem);
+    }
+
+    if (validTimeslots.length === 0) {
       continue;
     }
 
-    const date = parseDateForFE(timeslots.rows[0].date_col);
-    const time = parseTimeForFE(timeslots.rows[0].array_agg[0]);
+    const date = parseDateForFE(validTimeslots[0].date);
+    const time = parseTimeForFE(validTimeslots[0].timings[0]);
 
     const topic = (await pool.query(
       'SELECT topic_name FROM topics WHERE topic_id = $1',
