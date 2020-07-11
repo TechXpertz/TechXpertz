@@ -69,7 +69,7 @@ const NormalForm = (props) => {
                 hasExperience: check,
                 topics: myTopics,
                 progLanguages,
-                interviewLevel: rating
+                interviewLevel: currentLevel
             }
 
             console.log('data', data);
