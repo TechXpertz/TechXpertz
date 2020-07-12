@@ -3,15 +3,15 @@ import TimeBlock from './TimeBlock';
 
 const DaysColumn = props => {
   const timeArr = [
-    '7:00 AM',
-    '9:00 AM',
-    '11:00 AM',
-    '1:00 PM',
-    '3:00 PM',
-    '5:00 PM',
-    '7:00 PM',
-    '9:00 PM',
-    '11:00 PM'
+    '7:00AM',
+    '9:00AM',
+    '11:00AM',
+    '1:00PM',
+    '3:00PM',
+    '5:00PM',
+    '7:00PM',
+    '9:00PM',
+    '11:00PM'
   ];
   const [timings, setTimings] = useState({
     date: props.dateObj.format('DD/MM/YYYY'),
@@ -37,9 +37,6 @@ const DaysColumn = props => {
   }, []);
 
   useEffect(() => {
-    // if (timings.timeSlots.length <= 0) {
-    //   return;
-    // }
     props.onDaysChange(timings);
   }, [timings]);
 
@@ -64,7 +61,6 @@ const DaysColumn = props => {
         </h3>
       </div>
       {timeArr.map((time, index) => {
-        //console.log('slotsSelected', props.slotsSelected[0]);
         const result =
           props.slotsSelected[0].timeSlots &&
           props.slotsSelected[0].timeSlots.filter(x => x === time);

@@ -9,7 +9,7 @@ import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
 import { bookingsUrl } from '../../api_callers/apis.json';
 
-const InterviewRequestFrom = props => {
+const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
   const [progLangArray, setProgLangArray] = useState([]);
   const [interestArray, setInterestArray] = useState([]);
@@ -48,28 +48,63 @@ const InterviewRequestFrom = props => {
     });
   }, []);
 
-  const [topicsState, setTopicsState] = useState({});
+  const [topicsState, setTopicsState] = useState({
+    value: props.location.state.topic ? props.location.state.topic : '',
+    label: props.location.state.topic ? props.location.state.topic : ''
+  });
   const [showModal, setShowModal] = useState(false);
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [otherAccType, setOtherAccType] = useState('');
+  const [otherAccType, setOtherAccType] = useState(
+    props.location.state.otherAccType ? props.location.state.otherAccType : ''
+  );
+
+  const initialUserTiming = [];
+
+  const parseDate = date => {
+    const m = moment(date, 'ddd, D MMM YYYY');
+    return m.format('DD/MM/YYYY');
+  };
+
+  props.location.state.timingsByBookingId[0].timeslots.forEach(slot => {
+    initialUserTiming.push({
+      date: parseDate(slot.date),
+      timingSlots: slot.timings
+    });
+  });
+
+  //update prog lang state, once component is mounted, according to initial booking information
+  useEffect(() => {
+    props.location.state.langs.map(item => {
+      setLang(prevstate => {
+        return [...prevstate, { value: item, label: item }];
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    setTopicsState({
+      value: props.location.state.topic,
+      topic: props.location.state.topic
+    });
+  }, []);
 
   const submitButton =
-    !topicsState ||
-    lang.length <= 0 ||
+    topicsState.length === 0 ||
+    lang.length === 0 ||
     otherAccType === '' ||
     userTiming.length === 0
       ? 'ui primary disabled button'
       : 'ui primary button';
 
-  const topicHandler = keyPair => {
+  const topicHandler = useCallback(keyPair => {
     setTopicsState(keyPair);
-  };
+  }, []);
 
-  const langHandler = keyPair => {
+  const langHandler = useCallback(keyPair => {
     setLang(keyPair);
-  };
+  }, []);
 
   const accountHeader = (
     <>
@@ -83,12 +118,13 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
+            onChange={() =>
               otherAccType ? setOtherAccType('') : setOtherAccType('Normal')
             }
             disabled={
               otherAccType && otherAccType !== 'Normal' ? 'disabled' : null
             }
+            checked={otherAccType === 'Normal' ? 'checked' : ''}
           />
           <label>Normal</label>
         </div>
@@ -97,12 +133,13 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
+            onChange={() =>
               otherAccType ? setOtherAccType('') : setOtherAccType('Expert')
             }
             disabled={
               otherAccType && otherAccType !== 'Expert' ? 'disabled' : null
             }
+            checked={otherAccType === 'Expert' ? 'checked' : ''}
           />
           <label>Expert</label>
         </div>
@@ -117,9 +154,12 @@ const InterviewRequestFrom = props => {
       </div>
       <div className='row' style={{ paddingTop: '6px' }}>
         <DropdownMenu
+          defaultValue={[
+            { value: topicsState.value, label: topicsState.value }
+          ]}
           array={interestArray}
-          content='Please select one topic'
           valueChanged={topicHandler}
+          multi={false}
         />
       </div>
     </>
@@ -132,6 +172,7 @@ const InterviewRequestFrom = props => {
       </div>
       <div className='row' style={{ paddingTop: '6px' }}>
         <DropdownMenu
+          defaultValue={lang}
           array={progLangArray}
           content='Choose your programming languages'
           multi={true}
@@ -197,8 +238,7 @@ const InterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang &&
-              lang.length > 0 &&
+            {lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
@@ -233,16 +273,17 @@ const InterviewRequestFrom = props => {
                       </span>
                     </div>
                     <div className='two wide column'>
-                      {item.timeSlots.map((timeSlot, index) => {
-                        return (
-                          <span
-                            key={position + index}
-                            style={{ fontSize: '17px' }}
-                          >
-                            {timeSlot} &nbsp;
-                          </span>
-                        );
-                      })}
+                      {item.timeSlots &&
+                        item.timeSlots.map((timeSlot, index) => {
+                          return (
+                            <span
+                              key={position + index}
+                              style={{ fontSize: '17px' }}
+                            >
+                              {timeSlot} &nbsp;
+                            </span>
+                          );
+                        })}
                     </div>
                   </div>
                 );
@@ -257,11 +298,11 @@ const InterviewRequestFrom = props => {
     setUserTiming(value);
   }, []);
 
-  const handleClick = value => {
+  const handleClick = useCallback(value => {
     setIsSubmit(value);
     submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
-  };
+  }, []);
 
   const { getTokenSilently } = useAuth0();
   const submitBookingForm = async (
@@ -356,7 +397,7 @@ const InterviewRequestFrom = props => {
           <AppointmentScheduler
             moment={currentMoment}
             userTimingCallback={userTimingHandler}
-            userTiming={userTiming}
+            userTiming={initialUserTiming}
           />
         </div>
       </div>
@@ -364,4 +405,4 @@ const InterviewRequestFrom = props => {
   );
 };
 
-export default InterviewRequestFrom;
+export default UpdateInterviewRequestFrom;

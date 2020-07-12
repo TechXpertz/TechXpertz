@@ -3,7 +3,7 @@ import DaysColumn from './DaysColumn';
 
 const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
   const [click, setClick] = useState(0);
-  const [period, setPeriod] = useState([{ date: '', timeSlots: [] }]);
+  const [period, setPeriod] = useState([]);
   let shiftArr = [0, 1, 2, 3, 4, 5, 6];
 
   const dateHandler = useCallback(childProp => {
@@ -50,6 +50,15 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
       return i + click;
     });
     return newArr.map(index => {
+      const temp = userTiming.filter(x => {
+        return (
+          x.date ===
+          moment
+            .clone()
+            .add(index, 'days')
+            .format('DD/MM/YYYY')
+        );
+      });
       return (
         <DaysColumn
           key={index}
@@ -74,6 +83,7 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
                 )
               : [{ date: '', timeSlots: '' }]
           }
+          initialTimingSelected={temp}
         />
       );
     });
