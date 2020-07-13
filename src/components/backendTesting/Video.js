@@ -6,8 +6,8 @@ import './Video.css';
 
 const Video = props => {
   const { RTCPeerConnection, RTCSessionDescription } = window;
-  const endpoint = 'http://localhost:5000/video';
-  //TODO: change booking_id and other_booking_id from props as in the interview room
+  const endpoint = '/video';
+  //TODO bookingID and otherBookingID
   const bookingId = querySearch(props.location.search).booking_id;
   const otherBookingId = querySearch(props.location.search).other_booking_id;
 

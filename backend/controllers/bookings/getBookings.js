@@ -39,21 +39,39 @@ const getBookingsAfterNow = async (bookings) => {
     const bookingId = booking.booking_id;
     const timeslotsRes = (await pool.query(
       'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
-      + 'AND (date_col > CURRENT_DATE '
-      + "OR (date_col = CURRENT_DATE AND time_start >= (CURRENT_TIME - INTERVAL '2 hours'))) "
       + 'GROUP BY (date_col) ORDER BY date_col',
       [bookingId]
     ))
       .rows;
 
-    if (timeslotsRes.length === 0) {
+    const comparison = new Date(Date.now());
+    comparison.setHours(comparison.getHours() - 2);
+    const validTimeslots = [];
+    for (dateSlot of timeslotsRes) {
+      const pgDate = dateSlot.date_col;
+      const validTimes = dateSlot.array_agg.filter(time => {
+        const hour = time.split(':')[0];
+        const pgCopy = new Date(pgDate);
+        pgCopy.setHours(hour);
+        return pgCopy > comparison;
+      });
+      if (validTimes.length === 0) {
+        continue;
+      }
+      const dateItem = {
+        date: pgDate,
+        timings: validTimes
+      };
+      validTimeslots.push(dateItem);
+    }
+
+    if (validTimeslots.length === 0) {
       continue;
     }
 
-    let timeslots = timeslotsRes.map(timeslot => {
-      const { date_col, array_agg: timings } = timeslot;
-      const parsedTimings = timings.map(parseTimeForFE);
-      const date = parseDateForFE(date_col);
+    let timeslots = validTimeslots.map(timeslot => {
+      const parsedTimings = timeslot.timings.map(parseTimeForFE);
+      const date = parseDateForFE(timeslot.date);
       return {
         date,
         timings: parsedTimings

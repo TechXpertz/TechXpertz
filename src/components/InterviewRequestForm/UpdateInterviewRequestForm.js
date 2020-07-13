@@ -8,15 +8,16 @@ import Axios from 'axios';
 import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
 import { bookingsUrl } from '../../api_callers/apis.json';
+import { topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
 
 const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
   const [progLangArray, setProgLangArray] = useState([]);
   const [interestArray, setInterestArray] = useState([]);
-
+  console.log(interestArray);
   useEffect(() => {
     const fetchTopics = async () => {
-      const response = await Axios.get('http://localhost:5000/info/topics');
+      const response = await Axios.get(topicsAPI);
       return response.data;
     };
 
@@ -32,9 +33,7 @@ const UpdateInterviewRequestFrom = props => {
 
   useEffect(() => {
     const fetchProgLanguages = async () => {
-      const response = await Axios.get(
-        'http://localhost:5000/info/prog-languages'
-      );
+      const response = await Axios.get(progsAPI);
       return response.data;
     };
 
@@ -49,34 +48,24 @@ const UpdateInterviewRequestFrom = props => {
   }, []);
 
   const [topicsState, setTopicsState] = useState({
-    value: props.location.state.topic ? props.location.state.topic : '',
-    label: props.location.state.topic ? props.location.state.topic : ''
+    value: props.location.state.topicSelected
+      ? props.location.state.topicSelected
+      : '',
+    label: props.location.state.topicSelected
+      ? props.location.state.topicSelected
+      : ''
   });
   const [showModal, setShowModal] = useState(false);
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
   const [otherAccType, setOtherAccType] = useState(
-    props.location.state.otherAccType ? props.location.state.otherAccType : ''
+    props.location.state.accSelected ? props.location.state.accSelected : ''
   );
 
-  const initialUserTiming = [];
-
-  const parseDate = date => {
-    const m = moment(date, 'ddd, D MMM YYYY');
-    return m.format('DD/MM/YYYY');
-  };
-
-  props.location.state.timingsByBookingId[0].timeslots.forEach(slot => {
-    initialUserTiming.push({
-      date: parseDate(slot.date),
-      timingSlots: slot.timings
-    });
-  });
-
-  //update prog lang state, once component is mounted, according to initial booking information
+  //update prog lang state, once component is mounted, according to initial booking information
   useEffect(() => {
-    props.location.state.langs.map(item => {
+    props.location.state.langsSelected.map(item => {
       setLang(prevstate => {
         return [...prevstate, { value: item, label: item }];
       });
@@ -85,16 +74,13 @@ const UpdateInterviewRequestFrom = props => {
 
   useEffect(() => {
     setTopicsState({
-      value: props.location.state.topic,
-      topic: props.location.state.topic
+      value: props.location.state.topicSelected,
+      topic: props.location.state.topicSelected
     });
   }, []);
 
   const submitButton =
-    topicsState.length === 0 ||
-    lang.length === 0 ||
-    otherAccType === '' ||
-    userTiming.length === 0
+    !topicsState || !lang || otherAccType === '' || userTiming.length === 0
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -146,7 +132,6 @@ const UpdateInterviewRequestFrom = props => {
       </div>
     </>
   );
-
   const topics = (
     <>
       <div className='row'>
@@ -158,8 +143,8 @@ const UpdateInterviewRequestFrom = props => {
             { value: topicsState.value, label: topicsState.value }
           ]}
           array={interestArray}
+          content='Please select one topic'
           valueChanged={topicHandler}
-          multi={false}
         />
       </div>
     </>
@@ -238,11 +223,12 @@ const UpdateInterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang.length > 0 &&
+            {lang &&
+              lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
-                    {item.value} &nbsp;
+                    {item.value}
                   </span>
                 );
               })}
@@ -273,17 +259,16 @@ const UpdateInterviewRequestFrom = props => {
                       </span>
                     </div>
                     <div className='two wide column'>
-                      {item.timeSlots &&
-                        item.timeSlots.map((timeSlot, index) => {
-                          return (
-                            <span
-                              key={position + index}
-                              style={{ fontSize: '17px' }}
-                            >
-                              {timeSlot} &nbsp;
-                            </span>
-                          );
-                        })}
+                      {item.timeSlots.map((timeSlot, index) => {
+                        return (
+                          <span
+                            key={position + index}
+                            style={{ fontSize: '17px' }}
+                          >
+                            {timeSlot} &nbsp;
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -300,11 +285,20 @@ const UpdateInterviewRequestFrom = props => {
 
   const handleClick = useCallback(value => {
     setIsSubmit(value);
+    if (
+      props &&
+      props.location &&
+      props.location.state &&
+      props.location.state.reschedule
+    ) {
+      handleReschedule(props.location.state.bookingId);
+    }
     submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
   }, []);
 
   const { getTokenSilently } = useAuth0();
+
   const submitBookingForm = async (
     otherAccType,
     topic,
@@ -315,7 +309,7 @@ const UpdateInterviewRequestFrom = props => {
       const token = await getTokenSilently();
       const header = {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       };
 
@@ -335,6 +329,21 @@ const UpdateInterviewRequestFrom = props => {
       };
 
       await Axios.post(bookingsUrl, data, header);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleReschedule = async booking => {
+    try {
+      const token = await getTokenSilently();
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+      const data = {
+        bookingId: booking
+      };
+      await Axios.delete(reschedule, { headers, data });
     } catch (err) {
       console.log(err);
     }
@@ -388,7 +397,6 @@ const UpdateInterviewRequestFrom = props => {
             </div>
           </div>
         </div>
-
         <div
           className='twelve wide column'
           style={{ height: '95vh', borderLeft: '1px solid' }}
@@ -397,7 +405,7 @@ const UpdateInterviewRequestFrom = props => {
           <AppointmentScheduler
             moment={currentMoment}
             userTimingCallback={userTimingHandler}
-            userTiming={initialUserTiming}
+            userTiming={userTiming}
           />
         </div>
       </div>

@@ -7,8 +7,7 @@ import './Dashboard.css';
 import {
   getUpcomingBookings,
   bookingsUrl,
-  getPastInterviews,
-  reschedule
+  getPastInterviews
 } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from '../../react-auth0-spa';
@@ -23,10 +22,6 @@ const MainDashboard = () => {
     height: window.innerHeight,
     width: window.innerWidth
   });
-  const [
-    upcomingInterviewItemsGroupedInSameBookingId,
-    setUpcomingInterviewItemsGroupedInSameBookingId
-  ] = useState([]);
 
   function debounce(fn, ms) {
     let timer;
@@ -81,13 +76,7 @@ const MainDashboard = () => {
     return ans;
   };
 
-  // const splitBookingsByBookingId = bookings => {
-  //   console.log(bookings);
-  //   set
-  // };
-
   const splitBookings = bookings => {
-    //console.log(bookings);
     let finalBookings = [];
     bookings.forEach(
       booking =>
@@ -95,7 +84,17 @@ const MainDashboard = () => {
           splitBookingIntoSeparateDates(booking)
         ))
     );
-    //console.log(finalBookings);
+    finalBookings.sort((first, second) => {
+      const firstDate = new Date(first.date);
+      const secondDate = new Date(second.date);
+      if (firstDate < secondDate) {
+        return -1;
+      } else if (firstDate > secondDate) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
     return finalBookings;
   };
 
@@ -111,7 +110,6 @@ const MainDashboard = () => {
         };
 
         const response = (await axios.get(getUpcomingBookings, header)).data;
-        setUpcomingInterviewItemsGroupedInSameBookingId(response.bookings);
         setBookings(splitBookings(response.bookings));
       } catch (err) {
         console.log(err);
@@ -204,32 +202,6 @@ const MainDashboard = () => {
     }
   };
 
-  const handleReschedule = async value => {
-    try {
-      const token = await getTokenSilently();
-      const headers = {
-        Authorization: `Bearer ${token}`
-      };
-      const data = {
-        bookingId: value.bookingId
-      };
-      await axios.delete(reschedule, { headers, data });
-      history.push({
-        pathname: '/update-booking',
-        state: {
-          otherAccType: value.accountTypeSelected,
-          topic: value.topicSelected,
-          langs: value.langSelected,
-          timings: value.timings,
-          date: value.dateSelected,
-          timingsByBookingId: value.timingsByBookingId
-        }
-      });
-      // go to the booking form
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const noUpcomingInterview = (
     <>
       <div
@@ -270,11 +242,7 @@ const MainDashboard = () => {
       >
         <UpcomingInterviewTable
           bookingArray={bookings}
-          bookingsByBookingIdArray={
-            upcomingInterviewItemsGroupedInSameBookingId
-          }
           onDelete={handleDelete}
-          onReschedule={handleReschedule}
         />
       </div>
     </>

@@ -17,6 +17,7 @@
     "moment": "^2.26.0",
     "node-cron": "^2.0.3",
     "nodemon": "^2.0.4",
+    "path": "^0.12.7",
     "pusher": "^3.0.1",
     "pusher-js": "^6.0.3",
     "pushid": "^1.0.0",
@@ -35,15 +36,18 @@
     "stringquery": "^1.0.8"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node ./backend/server.js",
+    "heroku-postbuild": "npm install && npm run build",
+    "client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:backend": "mocha --timeout 10000 ./backend",
     "test:matching": "mocha --timeout 10000 ./backend/controllers/matching/testing",
     "eject": "react-scripts eject",
     "server": "nodemon ./backend/server.js",
-    "dev": "concurrently \"npm run server\" \"npm run start\""
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "extends": "react-app"
   },

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import NavBar from './NavBar';
 import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
@@ -8,47 +8,43 @@ import Axios from 'axios';
 import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
 import { bookingsUrl } from '../../api_callers/apis.json';
+import { topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
 
 const InterviewRequestFrom = props => {
   const currentMoment = moment();
-  const [progLangArray, setProgLangArray] = useState([]);
-  const [interestArray, setInterestArray] = useState([]);
+  const interestArray = [];
+  const progLangArray = [];
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchTopics = async () => {
-      const response = await Axios.get('http://localhost:5000/info/topics');
+      const response = await Axios.get(topicsAPI);
       return response.data;
     };
 
     fetchTopics().then(data => {
       const topics = data.topics.map(element => element.topicName);
-      topics.forEach(topic => {
-        setInterestArray(prevState => {
-          return [...prevState, { value: topic, label: topic }];
-        });
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    const fetchProgLanguages = async () => {
-      const response = await Axios.get(
-        'http://localhost:5000/info/prog-languages'
+      topics.forEach(topic =>
+        interestArray.push({ value: topic, label: topic })
       );
+    });
+
+    const fetchProgLanguages = async () => {
+      const response = await Axios.get(progsAPI);
       return response.data;
     };
 
     fetchProgLanguages().then(data => {
       const progLanguages = data.progLanguages.map(element => element.progName);
       progLanguages.forEach(prog =>
-        setProgLangArray(prevState => {
-          return [...prevState, { value: prog, label: prog }];
-        })
+        progLangArray.push({ value: prog, label: prog })
       );
     });
-  }, []);
+  }, [interestArray, progLangArray]);
 
-  const [topicsState, setTopicsState] = useState({});
+  const [topicsState, setTopicsState] = useState({
+    value: '',
+    label: ''
+  });
   const [showModal, setShowModal] = useState(false);
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
@@ -56,8 +52,8 @@ const InterviewRequestFrom = props => {
   const [otherAccType, setOtherAccType] = useState('');
 
   const submitButton =
-    !topicsState ||
-    lang.length <= 0 ||
+    topicsState.length === 0 ||
+    lang.length === 0 ||
     otherAccType === '' ||
     userTiming.length === 0
       ? 'ui primary disabled button'
@@ -69,6 +65,22 @@ const InterviewRequestFrom = props => {
 
   const langHandler = keyPair => {
     setLang(keyPair);
+  };
+
+  const { getTokenSilently } = useAuth0();
+  const handleReschedule = async booking => {
+    try {
+      const token = await getTokenSilently();
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+      const data = {
+        bookingId: booking
+      };
+      await Axios.delete(reschedule, { headers, data });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const accountHeader = (
@@ -197,12 +209,11 @@ const InterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang &&
-              lang.length > 0 &&
+            {lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
-                    {item.value} &nbsp;
+                    {item.value}
                   </span>
                 );
               })}
@@ -259,11 +270,18 @@ const InterviewRequestFrom = props => {
 
   const handleClick = value => {
     setIsSubmit(value);
+    if (
+      props &&
+      props.location &&
+      props.location.state &&
+      props.location.state.reschedule
+    ) {
+      handleReschedule(props.location.state.bookingId);
+    }
     submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
   };
 
-  const { getTokenSilently } = useAuth0();
   const submitBookingForm = async (
     otherAccType,
     topic,

@@ -1,8 +1,8 @@
 import React from 'react';
 import history from '../../history';
+import { lang } from 'moment';
 
 const UpcomingInterviewTable = props => {
-  console.log(props);
   const joinRoom = ({ bookingId, otherBookingId, date, time }) => {
     history.push({
       pathname: '/interview-room',
@@ -15,6 +15,24 @@ const UpcomingInterviewTable = props => {
     });
   };
 
+  const editBookingForm = ({
+    bookingId,
+    topicSelected,
+    langsSelected,
+    accSelected
+  }) => {
+    history.push({
+      pathname: '/update-booking',
+      state: {
+        bookingId: bookingId,
+        topicSelected: topicSelected,
+        langsSelected: langsSelected,
+        accSelected: accSelected,
+        reschedule: true
+      }
+    });
+  };
+
   const joinRoomButton = value => (
     <>
       <button className='ui green button' onClick={() => joinRoom(value)}>
@@ -23,30 +41,9 @@ const UpcomingInterviewTable = props => {
     </>
   );
 
-  const ediButton = ({
-    bookingId,
-    timings,
-    topic,
-    langs,
-    otherAccType,
-    date,
-    timingsByBookingId
-  }) => (
+  const editButton = value => (
     <>
-      <button
-        className='ui button'
-        onClick={() =>
-          props.onReschedule({
-            bookingId: bookingId,
-            topicSelected: topic,
-            accountTypeSelected: otherAccType,
-            langSelected: langs,
-            timings: timings,
-            timingsByBookingId: timingsByBookingId,
-            dateSelected: date
-          })
-        }
-      >
+      <button className='ui button' onClick={() => editBookingForm(value)}>
         Reschedule
       </button>
     </>
@@ -95,11 +92,6 @@ const UpcomingInterviewTable = props => {
             topic,
             langs
           } = booking;
-          console.log(
-            props.bookingsByBookingIdArray.filter(
-              item => item.bookingId === bookingId
-            )
-          );
           return (
             <tr key={index}>
               <td>{date}</td>
@@ -115,16 +107,11 @@ const UpcomingInterviewTable = props => {
                 })}
               </td>
               <td>
-                {ediButton({
+                {editButton({
                   bookingId: bookingId,
-                  timings: timings,
-                  timingsByBookingId: props.bookingsByBookingIdArray.filter(
-                    item => item.bookingId === bookingId
-                  ),
-                  topic: topic,
-                  langs: langs,
-                  otherAccType: otherAccType,
-                  date: date
+                  topicSelected: topic,
+                  langsSelected: langs,
+                  accSelected: otherAccType
                 })}
               </td>
               <td>{deleteButton(bookingId, date)}</td>
@@ -137,3 +124,14 @@ const UpcomingInterviewTable = props => {
 };
 
 export default UpcomingInterviewTable;
+
+// history.push({
+//   pathname: '/update-booking',
+//   state: {
+//     reschedule: true,
+//     bookingId: bookingId,
+//     topicSelected: topicSelected,
+//     langsSelected: langsSelected,
+//     accSelected: accSelected
+//   }
+// })

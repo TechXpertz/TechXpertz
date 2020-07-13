@@ -13,8 +13,8 @@ import InterviewRoom from './InterviewRoom/InterviewRoom';
 import SocketEditor from './backendTesting/socket/SocketEditor';
 import FeedbackFormPage from './Feedback/FeedbackFormPage';
 import Video from './backendTesting/Video';
-// import { useAuth0 } from "../react-auth0-spa";
-// import { register } from "../api_callers/apis.json";
+// import { useAuth0 } from "../react-auth0-spa";
+// import { register } from "../api_callers/apis.json";
 
 const App = () => {
   return (
@@ -26,12 +26,12 @@ const App = () => {
             <Route path='/about' component={About} />
             <Route path='/FAQ' component={FAQ} />
             <Route path='/profile' component={Profile} />
-            {/* <Route
-                            path='/dashboard'
-                            render={(props) => (
-                                <UserDashboard {...props} status={registerStatus[0]} />
-                            )}
-                        /> */}
+            {/* <Route
+                            path='/dashboard'
+                            render={(props) => (
+                                <UserDashboard {...props} status={registerStatus[0]} />
+                            )}
+                        /> */}
             <Route path='/dashboard' component={UserDashboard} />
             <Route path='/callback' component={Callback} />
             <Route path='/booking' component={InterviewRequestForm} />
