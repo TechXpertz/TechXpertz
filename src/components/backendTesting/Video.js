@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth0 } from "../../react-auth0-spa";
-import io from "socket.io-client";
-import querySearch from "stringquery";
+import { useAuth0 } from '../../react-auth0-spa';
+import io from 'socket.io-client';
+import querySearch from 'stringquery';
 import './Video.css';
 
-const Video = (props) => {
-
+const Video = props => {
   const { RTCPeerConnection, RTCSessionDescription } = window;
-  const endpoint = "/video";
+  const endpoint = '/video';
+  //TODO bookingID and otherBookingID
   const bookingId = querySearch(props.location.search).booking_id;
   const otherBookingId = querySearch(props.location.search).other_booking_id;
 
@@ -33,27 +33,24 @@ const Video = (props) => {
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun2.l.google.com:19302' },
       { urls: 'stun:stun3.l.google.com:19302' },
-      { urls: 'stun:stun4.l.google.com:19302' },
-    ],
-  }
+      { urls: 'stun:stun4.l.google.com:19302' }
+    ]
+  };
 
   const { getTokenSilently, loading } = useAuth0();
 
   useEffect(() => {
-
     try {
-
       if (!loading) {
         getTokenSilently().then(tokenRes => {
-
           const socket = io.connect(endpoint, {
             query: {
-              bookingId,
+              bookingId
             },
             transportOptions: {
               polling: {
                 extraHeaders: {
-                  'Authorization': `Bearer ${tokenRes}`
+                  Authorization: `Bearer ${tokenRes}`
                 }
               }
             }
@@ -65,7 +62,7 @@ const Video = (props) => {
             // redirect user out of the room
           });
 
-          socket.on('message', (msg) => {
+          socket.on('message', msg => {
             console.log(msg);
           });
 
@@ -80,7 +77,7 @@ const Video = (props) => {
           socket.on('duplicate users', () => {
             console.log('you are already inside the session!');
             socket.close();
-            // alert user and close video 
+            // alert user and close video
           });
 
           socket.on('any users response', async data => {
@@ -90,27 +87,33 @@ const Video = (props) => {
               peerConnection = new RTCPeerConnection(iceServers);
               addLocalTracks(peerConnection);
               peerConnection.ontrack = setRemoteStream;
-              peerConnection.onicecandidate = event => sendIceCandidate(event, socket);
+              peerConnection.onicecandidate = event =>
+                sendIceCandidate(event, socket);
               await sendOffer(peerConnection, socket, data.socketId);
             } else {
               console.log('waiting for user to join');
             }
           });
 
-          socket.on('receive offer', async (data) => {
+          socket.on('receive offer', async data => {
             console.log('receive offer');
             peerConnection = new RTCPeerConnection(iceServers);
             addLocalTracks(peerConnection);
             peerConnection.ontrack = event => setRemoteStream(event);
-            peerConnection.onicecandidate = event => sendIceCandidate(event, socket);
-            peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+            peerConnection.onicecandidate = event =>
+              sendIceCandidate(event, socket);
+            peerConnection.setRemoteDescription(
+              new RTCSessionDescription(data.offer)
+            );
             await sendAnswer(peerConnection, socket, data.from);
             console.log('sending answer');
           });
 
-          socket.on('receive answer', (data) => {
+          socket.on('receive answer', data => {
             console.log('received answer');
-            peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+            peerConnection.setRemoteDescription(
+              new RTCSessionDescription(data.answer)
+            );
             if (!isCalling) {
               sendOffer(peerConnection, socket, data.from);
               isCalling = true;
@@ -130,23 +133,20 @@ const Video = (props) => {
             console.log('other user disconnected');
             hideVideoConference();
           });
-
         });
       }
-
     } catch (err) {
       console.log(err);
     }
-
   }, [loading]);
 
   // functions
 
   const hideVideoConference = () => {
     remoteVideo.srcObject = null;
-  }
+  };
 
-  const setLocalStream = async (mediaConstraints) => {
+  const setLocalStream = async mediaConstraints => {
     let stream;
     try {
       stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
@@ -155,13 +155,13 @@ const Video = (props) => {
     }
     localStream = stream;
     localVideo.srcObject = stream;
-  }
+  };
 
-  const addLocalTracks = (peerConnection) => {
+  const addLocalTracks = peerConnection => {
     localStream.getTracks().forEach(track => {
       peerConnection.addTrack(track, localStream);
     });
-  }
+  };
 
   const sendOffer = async (peerConnection, socket, to) => {
     let offer;
@@ -175,7 +175,7 @@ const Video = (props) => {
       offer,
       to
     });
-  }
+  };
 
   const sendAnswer = async (peerConnection, socket, to) => {
     let answer;
@@ -190,12 +190,12 @@ const Video = (props) => {
       answer,
       to
     });
-  }
+  };
 
   const setRemoteStream = event => {
     remoteVideo.srcObject = event.streams[0];
     remoteStream = event.stream;
-  }
+  };
 
   const sendIceCandidate = (event, socket) => {
     if (event.candidate) {
@@ -204,18 +204,16 @@ const Video = (props) => {
         candidate: event.candidate.candidate
       });
     }
-  }
+  };
 
   return (
     <>
-      <div className="video-container" id="video-container">
-        <video autoPlay className="remote-video" id="remote-video"></video>
-        <video autoPlay muted className="local-video" id="local-video"></video>
+      <div className='video-container' id='video-container'>
+        <video autoPlay className='remote-video' id='remote-video'></video>
+        <video autoPlay muted className='local-video' id='local-video'></video>
       </div>
     </>
-  )
-
-
-}
+  );
+};
 
 export default Video;

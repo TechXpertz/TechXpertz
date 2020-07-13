@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import NavBar from './NavBar';
 import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
@@ -10,12 +10,12 @@ import { useAuth0 } from '../../react-auth0-spa';
 import { bookingsUrl } from '../../api_callers/apis.json';
 import { topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
 
-const InterviewRequestFrom = props => {
+const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
-  const interestArray = [];
-  const progLangArray = [];
-
-  React.useEffect(() => {
+  const [progLangArray, setProgLangArray] = useState([]);
+  const [interestArray, setInterestArray] = useState([]);
+  console.log(interestArray);
+  useEffect(() => {
     const fetchTopics = async () => {
       const response = await Axios.get(topicsAPI);
       return response.data;
@@ -23,11 +23,15 @@ const InterviewRequestFrom = props => {
 
     fetchTopics().then(data => {
       const topics = data.topics.map(element => element.topicName);
-      topics.forEach(topic =>
-        interestArray.push({ value: topic, label: topic })
-      );
+      topics.forEach(topic => {
+        setInterestArray(prevState => {
+          return [...prevState, { value: topic, label: topic }];
+        });
+      });
     });
+  }, []);
 
+  useEffect(() => {
     const fetchProgLanguages = async () => {
       const response = await Axios.get(progsAPI);
       return response.data;
@@ -36,52 +40,57 @@ const InterviewRequestFrom = props => {
     fetchProgLanguages().then(data => {
       const progLanguages = data.progLanguages.map(element => element.progName);
       progLanguages.forEach(prog =>
-        progLangArray.push({ value: prog, label: prog })
+        setProgLangArray(prevState => {
+          return [...prevState, { value: prog, label: prog }];
+        })
       );
     });
-  }, [interestArray, progLangArray]);
+  }, []);
 
   const [topicsState, setTopicsState] = useState({
-    value: '',
-    label: ''
+    value: props.location.state.topicSelected
+      ? props.location.state.topicSelected
+      : '',
+    label: props.location.state.topicSelected
+      ? props.location.state.topicSelected
+      : ''
   });
   const [showModal, setShowModal] = useState(false);
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [otherAccType, setOtherAccType] = useState('');
+  const [otherAccType, setOtherAccType] = useState(
+    props.location.state.accSelected ? props.location.state.accSelected : ''
+  );
+
+  //update prog lang state, once component is mounted, according to initial booking information
+  useEffect(() => {
+    props.location.state.langsSelected.map(item => {
+      setLang(prevstate => {
+        return [...prevstate, { value: item, label: item }];
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    setTopicsState({
+      value: props.location.state.topicSelected,
+      topic: props.location.state.topicSelected
+    });
+  }, []);
 
   const submitButton =
-    topicsState.length === 0 ||
-    lang.length === 0 ||
-    otherAccType === '' ||
-    userTiming.length === 0
+    !topicsState || !lang || otherAccType === '' || userTiming.length === 0
       ? 'ui primary disabled button'
       : 'ui primary button';
 
-  const topicHandler = keyPair => {
+  const topicHandler = useCallback(keyPair => {
     setTopicsState(keyPair);
-  };
+  }, []);
 
-  const langHandler = keyPair => {
+  const langHandler = useCallback(keyPair => {
     setLang(keyPair);
-  };
-
-  const { getTokenSilently } = useAuth0();
-  const handleReschedule = async booking => {
-    try {
-      const token = await getTokenSilently();
-      const headers = {
-        Authorization: `Bearer ${token}`
-      };
-      const data = {
-        bookingId: booking
-      };
-      await Axios.delete(reschedule, { headers, data });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  }, []);
 
   const accountHeader = (
     <>
@@ -95,12 +104,13 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
+            onChange={() =>
               otherAccType ? setOtherAccType('') : setOtherAccType('Normal')
             }
             disabled={
               otherAccType && otherAccType !== 'Normal' ? 'disabled' : null
             }
+            checked={otherAccType === 'Normal' ? 'checked' : ''}
           />
           <label>Normal</label>
         </div>
@@ -109,19 +119,19 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
+            onChange={() =>
               otherAccType ? setOtherAccType('') : setOtherAccType('Expert')
             }
             disabled={
               otherAccType && otherAccType !== 'Expert' ? 'disabled' : null
             }
+            checked={otherAccType === 'Expert' ? 'checked' : ''}
           />
           <label>Expert</label>
         </div>
       </div>
     </>
   );
-
   const topics = (
     <>
       <div className='row'>
@@ -129,6 +139,9 @@ const InterviewRequestFrom = props => {
       </div>
       <div className='row' style={{ paddingTop: '6px' }}>
         <DropdownMenu
+          defaultValue={[
+            { value: topicsState.value, label: topicsState.value }
+          ]}
           array={interestArray}
           content='Please select one topic'
           valueChanged={topicHandler}
@@ -144,6 +157,7 @@ const InterviewRequestFrom = props => {
       </div>
       <div className='row' style={{ paddingTop: '6px' }}>
         <DropdownMenu
+          defaultValue={lang}
           array={progLangArray}
           content='Choose your programming languages'
           multi={true}
@@ -209,7 +223,8 @@ const InterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang.length > 0 &&
+            {lang &&
+              lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
@@ -268,7 +283,7 @@ const InterviewRequestFrom = props => {
     setUserTiming(value);
   }, []);
 
-  const handleClick = value => {
+  const handleClick = useCallback(value => {
     setIsSubmit(value);
     if (
       props &&
@@ -280,7 +295,9 @@ const InterviewRequestFrom = props => {
     }
     submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
-  };
+  }, []);
+
+  const { getTokenSilently } = useAuth0();
 
   const submitBookingForm = async (
     otherAccType,
@@ -292,7 +309,7 @@ const InterviewRequestFrom = props => {
       const token = await getTokenSilently();
       const header = {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       };
 
@@ -312,6 +329,21 @@ const InterviewRequestFrom = props => {
       };
 
       await Axios.post(bookingsUrl, data, header);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleReschedule = async booking => {
+    try {
+      const token = await getTokenSilently();
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+      const data = {
+        bookingId: booking
+      };
+      await Axios.delete(reschedule, { headers, data });
     } catch (err) {
       console.log(err);
     }
@@ -365,7 +397,6 @@ const InterviewRequestFrom = props => {
             </div>
           </div>
         </div>
-
         <div
           className='twelve wide column'
           style={{ height: '95vh', borderLeft: '1px solid' }}
@@ -382,4 +413,4 @@ const InterviewRequestFrom = props => {
   );
 };
 
-export default InterviewRequestFrom;
+export default UpdateInterviewRequestFrom;
