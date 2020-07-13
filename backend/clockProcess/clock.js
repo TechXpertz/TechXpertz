@@ -11,6 +11,11 @@ const JOBS = [{
   message: { 'taskName': 'matching', 'queue': 'worker-queue' },
   cronTime: '0 0 5,7,9,11,13,15,17,19,21 * * *',
   repeat: 1
+}, {
+  name: 'test job',
+  message: { 'taskName': 'test', 'queue': 'worker-queue' },
+  cronTime: '0 2 * * * *',
+  repeat: 1
 }];
 
 // Create a new connection manager from AMQP
