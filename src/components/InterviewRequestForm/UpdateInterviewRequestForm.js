@@ -7,14 +7,13 @@ import moment from 'moment/moment.js';
 import Axios from 'axios';
 import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
-import { bookingsUrl } from '../../api_callers/apis.json';
-import { topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
+import { bookingsUrl, topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
 
 const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
   const [progLangArray, setProgLangArray] = useState([]);
   const [interestArray, setInterestArray] = useState([]);
-  console.log(interestArray);
+
   useEffect(() => {
     const fetchTopics = async () => {
       const response = await Axios.get(topicsAPI);
@@ -309,7 +308,7 @@ const UpdateInterviewRequestFrom = props => {
       const token = await getTokenSilently();
       const header = {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       };
 
@@ -329,6 +328,7 @@ const UpdateInterviewRequestFrom = props => {
       };
 
       await Axios.post(bookingsUrl, data, header);
+
     } catch (err) {
       console.log(err);
     }
