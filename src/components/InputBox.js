@@ -7,8 +7,10 @@ const InputBox = (props) => {
                 <h3 style={{ marginTop: '5.5px' }}>{props.description}</h3>
             </div>
             <div className="eight wide column">
-                <div className="ui input" style={{ width: '443px'}}>
-                    <input type="text" placefold={props.placeholder} />
+                <div className="ui input" style={{ width: '443px' }}>
+                    <input type="text"
+                        placefold={props.placeholder}
+                        onChange={props.valueChanged} />
                 </div>
             </div>
         </>

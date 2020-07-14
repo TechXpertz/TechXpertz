@@ -4,6 +4,7 @@
   "topicsAPI": "/api/info/topics",
   "progsAPI": "/api/info/prog-languages",
   "normalBackground": "/api/user/normal-background",
+  "expertBackground": "/api/user/expert-background",
   "postAccType": "/api/user/account-type",
   "bookingsUrl": "/api/bookings",
   "hasSubmittedBackground": "/api/user/has-submitted-background",

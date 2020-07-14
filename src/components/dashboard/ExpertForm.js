@@ -4,7 +4,9 @@ import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
 import { checkPropTypes } from 'prop-types';
-import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
+import { topicsAPI, progsAPI, expertBackground, postAccType } from '../../api_callers/apis.json';
+import { useAuth0 } from "../../react-auth0-spa";
+
 
 
 const ExpertForm = (props) => {
@@ -51,20 +53,92 @@ const ExpertForm = (props) => {
         { value: '7', label: '7 years' },
         { value: '8', label: '8 years' },
         { value: '9', label: '9 years' },
-        { value: 'more than 10', label: '10+ years' }
-    ]
+        { value: '10', label: '10+ years' }
+    ];
+
+    const { getTokenSilently } = useAuth0();
+    const [topics, setTopics] = useState([]);
+    const [lang, setLang] = useState([]);
+    const [exp, setExp] = useState();
+    const [company, setCompany] = useState('');
+    const [role, setRole] = useState('');
+
+    const topicHandler = (keyPair) => {
+        setTopics(keyPair);
+    }
+
+    const langHandler = (keyPair) => {
+        setLang(keyPair);
+    }
+
+    const expHandler = (keyPair) => {
+        setExp(keyPair);
+    }
+
+    const companyHandler = (event) => {
+        setCompany(event.target.value);
+    }
+
+    const roleHandler = (event) => {
+        setRole(event.target.value);
+    }
+
+    const sendForm = async (topics, progLang, company, role, workingExp) => {
+        try {
+            const token = await getTokenSilently();
+            const header = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+
+            const myTopics = topics.map(topic => {
+                return { topicName: topic.value };
+            });
+
+            const progLanguages = progLang.map(prog => {
+                return { progName: prog.value };
+            });
+
+            const data = {
+                company,
+                companyRole: role,
+                workingExp: workingExp.value,
+                topics: myTopics,
+                progLanguages
+            }
+
+            // console.log('data', data);
+
+            const normBackground = Axios.post(expertBackground, data, header);
+            const accType = Axios.post(postAccType, { accountType: 'expert' }, header);
+            await Promise.all([normBackground, accType])
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const checkType = (value) => {
         props.onTypeClick(value);
     }
 
     const handleClick = (value) => {
+        sendForm(topics, lang, company, role, exp);
         setHasSubmit(value);
     }
 
     useEffect(() => {
         props.onSubmitClick(hasSubmit);
-    })
+    });
+
+    const submitBtn = company !== ''
+        && role !== ''
+        && (exp || exp === 0)
+        && (topics && topics.length !== 0)
+        && (lang && lang.length !== 0)
+        ? 'ui red button'
+        : 'ui red disabled button';
 
     const action = (
         <>
@@ -76,7 +150,7 @@ const ExpertForm = (props) => {
                     Cancel
             </button>
                 <button
-                    className="ui red button"
+                    className={submitBtn}
                     onClick={() => handleClick(true)}
                 >
                     Submit
@@ -100,6 +174,7 @@ const ExpertForm = (props) => {
                 <InputBox
                     description="Current Company:"
                     placeholder="Current Company"
+                    valueChanged={companyHandler}
                 />
             </div>
         </>
@@ -111,6 +186,7 @@ const ExpertForm = (props) => {
                 <InputBox
                     description="Current Role:"
                     placeholder="Current Role"
+                    valueChanged={roleHandler}
                 />
             </div>
         </>
@@ -127,6 +203,7 @@ const ExpertForm = (props) => {
                         array={period}
                         content="Select your experience"
                         multi={false}
+                        valueChanged={expHandler}
                     />
                 </div>
             </div>
@@ -144,6 +221,7 @@ const ExpertForm = (props) => {
                         array={interestArray}
                         content="Interests"
                         multi={true}
+                        valueChanged={topicHandler}
                     />
                 </div>
             </div>
@@ -161,6 +239,7 @@ const ExpertForm = (props) => {
                         array={progLangArray}
                         content="Programming Languages"
                         multi={true}
+                        valueChanged={langHandler}
                     />
                 </div>
             </div>
