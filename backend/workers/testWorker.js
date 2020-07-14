@@ -5,7 +5,8 @@ const { matchAlgo } = require('../controllers/matching/matching');
 
 const doTaskAtTime = async (now) => {
 
-  console.log('now', now.toDateString());
+  console.log('date', now.toDateString());
+  console.log('time', now.toTimeString());
   const currentTimeslot = toISO(now);
   const targetTimeslot = toISO(add2Minutes(now));
   console.log('current timeslot', currentTimeslot);
