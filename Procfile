@@ -1,2 +1,2 @@
-worker: node backend/clockProcess/worker.js
-clock:  node backend/clockProcess/clock.js
+worker: node backend/workers/worker.js
+testWorker: node backend/workers/testWorker.js
