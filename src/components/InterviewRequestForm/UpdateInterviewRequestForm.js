@@ -7,7 +7,12 @@ import moment from 'moment/moment.js';
 import Axios from 'axios';
 import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
-import { bookingsUrl, topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
+import {
+  bookingsUrl,
+  topicsAPI,
+  progsAPI,
+  reschedule
+} from '../../api_callers/apis.json';
 
 const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
@@ -227,7 +232,7 @@ const UpdateInterviewRequestFrom = props => {
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
-                    {item.value}
+                    {item.value} &nbsp;
                   </span>
                 );
               })}
@@ -282,7 +287,7 @@ const UpdateInterviewRequestFrom = props => {
     setUserTiming(value);
   }, []);
 
-  const handleClick = useCallback(value => {
+  const handleClick = value => {
     setIsSubmit(value);
     if (
       props &&
@@ -294,7 +299,7 @@ const UpdateInterviewRequestFrom = props => {
     }
     submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
-  }, []);
+  };
 
   const { getTokenSilently } = useAuth0();
 
@@ -328,7 +333,6 @@ const UpdateInterviewRequestFrom = props => {
       };
 
       await Axios.post(bookingsUrl, data, header);
-
     } catch (err) {
       console.log(err);
     }
