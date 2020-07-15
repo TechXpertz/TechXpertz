@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserNavBar from './UserNavBar';
 import MainDashboard from './MainDashboard';
 import NormalForm from './NormalForm';
@@ -14,14 +14,10 @@ const UserDashboard = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
   const [loader, setLoader] = useState(true);
-
-  // const [experienceLevel, setExperienceLevel] = useState(0);
-  // const [interest, setInterest] = useState(null);
-  // const [programmingLang, setProgrammingLang] = useState(null);
-
   const { loading, isAuthenticated, getTokenSilently } = useAuth0();
+  console.log(type);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchHasSubmittedForm = async () => {
       try {
         const token = await getTokenSilently();
@@ -33,7 +29,6 @@ const UserDashboard = () => {
 
         const response = await Axios.get(hasSubmittedBackground, header);
         const { hasSubmittedForm } = response.data;
-        //console.log('hasSubmittedForm', hasSubmittedForm);
         setHasSubmittedForm(hasSubmittedForm);
         if (!hasSubmittedForm) {
           setType('AccountType');
