@@ -11,7 +11,9 @@ const InterviewRoom = props => {
   //if it is lesser than they are assigned 'interviewee' role
   // if not they are assigned 'interviewer' role
   const [userRole, setUserRole] = useState(
-    props.location.state.bookingId < props.location.state.otherBookingId ? 'interviewee' : 'interviewer'
+    props.location.state.bookingId < props.location.state.otherBookingId
+      ? 'interviewee'
+      : 'interviewer'
   );
   console.log(props.location.state.bookingId);
   console.log(props.location.state.otherBookingId);
@@ -36,9 +38,7 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection
-                  bookingId={props.location.state.bookingId}
-                />
+                <CommentSection bookingId={props.location.state.bookingId} />
               </div>
             </div>
           </div>
@@ -70,9 +70,7 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection
-                  bookingId={props.location.state.bookingId}
-                />
+                <CommentSection bookingId={props.location.state.bookingId} />
               </div>
             </div>
           </div>

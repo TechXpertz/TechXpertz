@@ -1,11 +1,17 @@
-.img rounded {
-  object-fit: cover;
-  border-radius: 50%;
-  height: 100px;
-  width: 100px;
-}
-
 .booking-interview-header {
   color: white;
   font-weight: lighter;
 }
+
+/* .dropdown-menu {
+  position: absolute;
+  top: 58px;
+  width: 300px;
+  transform: translateX(-45%);
+  background-color: var(--bg);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  overflow: hidden;
+  z-index: 100 !important;
+} */

@@ -1,19 +1,22 @@
 import React from 'react';
+import history from '../../history';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '../../react-auth0-spa';
 import Logo from '../../images/Logo.png';
 import '../App.css';
 import './Dashboard.css';
 
-const NavBar = () => {
-  const { isAuthenticated, logout } = useAuth0();
+const NavBar = props => {
+  const { logout } = useAuth0();
+
   return (
-    <div className='ui inverted top fixed menu borderless'>
+    <div className='ui inverted top menu borderless'>
       <img
         src={Logo}
         alt='Application logo'
         className='logo'
-        style={{ marginTop: '12px', marginLeft: '40px' }}
+        style={{ marginTop: '12px', marginLeft: '40px', cursor: 'pointer' }}
+        onClick={() => history.push('/dashboard')}
       />
       <div className='right menu'>
         <Link
@@ -26,17 +29,40 @@ const NavBar = () => {
         </Link>
         <Link
           to='/FAQ'
-          className='item'
+          className={props.selected.FAQ ? 'active item' : 'item'}
           id='fonts'
           style={{ paddingRight: '30px', paddingLeft: '30px' }}
         >
           FAQ
         </Link>
         <div className='item'>
-          <i className='grey bell icon' />
+          <i className='grey bell icon'></i>
         </div>
-        <div className='item'>
-          <div className='ui dropdown'>
+        <Link
+          to='/profile'
+          className={props.selected.profile ? 'active item' : 'item'}
+          id='fonts'
+          style={{ paddingRight: '30px', paddingLeft: '30px' }}
+        >
+          My Profile
+        </Link>
+        <div
+          className='link item'
+          onClick={() => logout()}
+          style={{ marginRight: '10px' }}
+        >
+          Log Out
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NavBar;
+
+{
+  /* <div className='item'>
+          <div className='ui dropdown' onClick={openDropdown}>
             <button className='circular ui icon black button'>
               <i className='caret down icon' />
             </button>
@@ -47,10 +73,13 @@ const NavBar = () => {
               <div className='item'>Log out</div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+        </div> */
+}
 
-export default NavBar;
+{
+  /* <button className='circular ui icon black button'>
+            <i className='caret down icon' onClick={() => setOpen(!open)} />
+          </button>
+          {open && dropdownMenu}
+        </div> */
+}
