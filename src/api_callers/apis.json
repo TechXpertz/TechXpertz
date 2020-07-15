@@ -13,5 +13,6 @@
   "deleteOtherTimeslots": "/api/bookings/other-timeslots",
   "getOrInsertQuestion": "/api/questions",
   "getPastInterviews": "/api/bookings/past",
-  "reschedule": "/api/bookings/reschedule"
+  "reschedule": "/api/bookings/reschedule",
+  "getBackground": "/api/user/background"
 }

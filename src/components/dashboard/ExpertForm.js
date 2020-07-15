@@ -3,7 +3,8 @@ import InputBox from '../InputBox';
 import Modal from '../Modal';
 import DropdownMenu from '../DropdownMenu';
 import Axios from 'axios';
-import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
+import { topicsAPI, progsAPI, expertBackground, postAccType } from '../../api_callers/apis.json';
+import { useAuth0 } from '../../react-auth0-spa';
 
 const ExpertForm = props => {
     const [hasSubmit, setHasSubmit] = useState(false);
@@ -53,6 +54,8 @@ const ExpertForm = props => {
             );
         });
     }
+
+    const { getTokenSilently } = useAuth0();
 
     const sendForm = async (topics, progLang, company, role, workingExp) => {
         try {

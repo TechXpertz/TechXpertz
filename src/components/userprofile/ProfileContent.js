@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '../../react-auth0-spa';
 import { Rating } from 'semantic-ui-react';
 import LoaderPage from '../LoaderPage';
 import './index.css';
+import { getBackground } from '../../api_callers/apis.json';
+import axios from 'axios';
 
 const ProfileContent = () => {
-  const { loading, user, logout, isAuthenticated } = useAuth0();
-  console.log(user);
+
+  const { loading, user, logout, isAuthenticated, getTokenSilently } = useAuth0();
+  // console.log(user);
+
+  const [background, setBackground] = useState();
+
+  const getUserBackground = async () => {
+    try {
+      const token = await getTokenSilently();
+      const header = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get(getBackground, header);
+      setBackground(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    if (!loading) {
+      getUserBackground();
+    }
+  }, [loading]);
 
   const actions = (
     <>
@@ -54,7 +81,7 @@ const ProfileContent = () => {
           <div className='row' style={{ marginBottom: '10px' }}>
             <div className='two wide column information-content'>Education</div>
             <div className='two wide column information-content'>
-              Undergraduate
+              {background.background.education}
             </div>
           </div>
           <div
@@ -74,7 +101,7 @@ const ProfileContent = () => {
                 icon='star'
                 maxRating={5}
                 size='massive'
-                defaultRating={3}
+                defaultRating={background.background.interviewLevel}
                 disabled
               />
             </div>
@@ -93,8 +120,13 @@ const ProfileContent = () => {
               className='two wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
-              <div className='interest-button'>Frontend</div>
-              <div className='interest-button'>Backend</div>
+              {background.topics.map((value, index) => (
+                <div
+                  className='interest-button'
+                  key={index}>
+                  {value}
+                </div>
+              ))}
             </div>
           </div>
           <div
@@ -113,8 +145,13 @@ const ProfileContent = () => {
               className='two wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
-              <div className='interest-button'>Java</div>
-              <div className='interest-button'>JavaScript</div>
+              {background.progLanguages.map((value, index) => (
+                <div
+                  className='interest-button'
+                  key={index}>
+                  {value}
+                </div>
+              ))}
             </div>
           </div>
           <div className='row' />
@@ -123,9 +160,11 @@ const ProfileContent = () => {
     );
   };
 
-  if (loading || !user) {
+  if (loading || !user || !background) {
     return <LoaderPage />;
   }
+
+  console.log(background);
 
   return (
     <>
