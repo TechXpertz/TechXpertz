@@ -1,5 +1,6 @@
 import React from 'react';
 import history from '../../history';
+import moment from 'moment';
 import { lang } from 'moment';
 
 const UpcomingInterviewTable = props => {
@@ -99,12 +100,13 @@ const UpcomingInterviewTable = props => {
               <td>{langsToString(langs)}</td>
               <td>{timingsToString(timings)}</td>
               <td>
-                {joinRoomButton({
-                  bookingId: bookingId,
-                  otherBookingId: otherBookingId,
-                  date,
-                  time: timings
-                })}
+                {otherBookingId &&
+                  joinRoomButton({
+                    bookingId: bookingId,
+                    otherBookingId: otherBookingId,
+                    date,
+                    time: timings
+                  })}
               </td>
               <td>
                 {editButton({
@@ -124,14 +126,3 @@ const UpcomingInterviewTable = props => {
 };
 
 export default UpcomingInterviewTable;
-
-// history.push({
-//   pathname: '/update-booking',
-//   state: {
-//     reschedule: true,
-//     bookingId: bookingId,
-//     topicSelected: topicSelected,
-//     langsSelected: langsSelected,
-//     accSelected: accSelected
-//   }
-// })

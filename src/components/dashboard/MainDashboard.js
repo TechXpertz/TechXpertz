@@ -22,6 +22,10 @@ const MainDashboard = () => {
     height: window.innerHeight,
     width: window.innerWidth
   });
+  const [accType, setAccType] = useState('Normal');
+  const { getTokenSilently, loading } = useAuth0();
+  const tableHeaderColor = accType === 'Normal' ? '#4085CA' : ' #CA3333';
+  console.log(tableHeaderColor);
 
   function debounce(fn, ms) {
     let timer;
@@ -49,8 +53,6 @@ const MainDashboard = () => {
       window.removeEventListener('resize', debouncedHandleResize);
     };
   });
-
-  const { getTokenSilently, loading } = useAuth0();
 
   const splitBookingIntoSeparateDates = booking => {
     const {
@@ -146,6 +148,11 @@ const MainDashboard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const width = headerRef.current.offsetWidth;
+    setHeaderWidth(width);
+  }, [headerRef, headerWidth, dimensions]);
+
   const button = (
     <>
       <div className='row'>
@@ -163,7 +170,11 @@ const MainDashboard = () => {
   const header = (
     <div
       className='row'
-      style={{ marginTop: '2em', backgroundColor: '#4085CA', height: '5em' }}
+      style={{
+        marginTop: '2em',
+        backgroundColor: `${tableHeaderColor}`,
+        height: '5em'
+      }}
       ref={headerRef}
     >
       <h2
@@ -178,11 +189,6 @@ const MainDashboard = () => {
       </h2>
     </div>
   );
-
-  useEffect(() => {
-    const width = headerRef.current.offsetWidth;
-    setHeaderWidth(width);
-  }, [headerRef, headerWidth, dimensions]);
 
   const handleDelete = async (bookingId, date) => {
     try {
@@ -258,7 +264,11 @@ const MainDashboard = () => {
   const completedInterviewHeader = (
     <div
       className='row'
-      style={{ marginTop: '2em', backgroundColor: '#4085CA', height: '5em' }}
+      style={{
+        marginTop: '2em',
+        backgroundColor: `${tableHeaderColor}`,
+        height: '5em'
+      }}
       ref={headerRef}
     >
       <h2
