@@ -4,6 +4,7 @@
   "topicsAPI": "/api/info/topics",
   "progsAPI": "/api/info/prog-languages",
   "normalBackground": "/api/user/normal-background",
+  "expertBackground": "/api/user/expert-background",
   "postAccType": "/api/user/account-type",
   "bookingsUrl": "/api/bookings",
   "hasSubmittedBackground": "/api/user/has-submitted-background",
@@ -12,5 +13,6 @@
   "deleteOtherTimeslots": "/api/bookings/other-timeslots",
   "getOrInsertQuestion": "/api/questions",
   "getPastInterviews": "/api/bookings/past",
-  "reschedule": "/api/bookings/reschedule"
+  "reschedule": "/api/bookings/reschedule",
+  "getBackground": "/api/user/background"
 }
