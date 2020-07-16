@@ -4,6 +4,7 @@ import SubHeader from './SubHeader';
 import QuestionBox from './QuestionBox';
 import CommentSection from './CommentSection';
 import CodeEditor from './CodeEditor';
+import VideoComponent from './VideoComponent';
 //import querySearch from 'stringquery';
 
 const InterviewRoom = props => {
@@ -29,7 +30,7 @@ const InterviewRoom = props => {
         />
         <SubHeader />
         <div className='ui two column grid'>
-          <div className='six wide column'>
+          <div className='five wide column'>
             <div className='row' style={{ height: '40vh' }}>
               <QuestionBox
                 bookingId={props.location.state.bookingId}
@@ -42,9 +43,19 @@ const InterviewRoom = props => {
               </div>
             </div>
           </div>
-          <div className='ten wide column'>
+          <div className='eleven wide column'>
             <CodeEditor bookingId={props.location.state.bookingId} />
+            <VideoComponent
+              bookingId={props.location.state.bookingId}
+              otherBookingId={props.location.state.otherBookingId}
+            />
           </div>
+          {/* <div className='two wide column'>
+            <VideoComponent
+              bookingId={props.location.state.bookingId}
+              otherBookingId={props.location.state.otherBookingId}
+            />
+          </div> */}
         </div>
       </div>
     );
@@ -61,7 +72,7 @@ const InterviewRoom = props => {
         />
         <SubHeader />
         <div className='ui two column grid'>
-          <div className='six wide column'>
+          <div className='five wide column'>
             <div className='row' style={{ height: '40vh' }}>
               <QuestionBox
                 bookingId={props.location.state.bookingId}
@@ -74,9 +85,19 @@ const InterviewRoom = props => {
               </div>
             </div>
           </div>
-          <div className='ten wide column'>
+          <div className='eleven wide column'>
             <CodeEditor bookingId={props.location.state.bookingId} />
+            <VideoComponent
+              bookingId={props.location.state.bookingId}
+              otherBookingId={props.location.state.otherBookingId}
+            />
           </div>
+          {/* <div className='two wide column'>
+            <VideoComponent
+              bookingId={props.location.state.bookingId}
+              otherBookingId={props.location.state.otherBookingId}
+            />
+          </div> */}
         </div>
       </div>
     );

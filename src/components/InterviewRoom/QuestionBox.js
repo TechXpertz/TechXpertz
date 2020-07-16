@@ -149,7 +149,7 @@ const QuestionBox = props => {
         </div>
         <div
           className='ui bottom attached active tab segment'
-          style={{ height: '35vh', overflow: 'scroll' }}
+          style={{ height: '35vh', overflow: 'auto' }}
         >
           <span>{question && question.content}</span>
         </div>
