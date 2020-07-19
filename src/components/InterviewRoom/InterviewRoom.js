@@ -34,6 +34,7 @@ const InterviewRoom = props => {
         />
         <SubHeader
           role='interviewee'
+          otherRole='Interviewee'
           onClick={onChangeRoleHandler}
           hasSwitched={switchedRole}
         />
@@ -47,7 +48,11 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection bookingId={props.location.state.bookingId} />
+                <CommentSection
+                  bookingId={props.location.state.bookingId}
+                  role='Interviewee'
+                  otherRole='Interviewer'
+                />
               </div>
             </div>
           </div>
@@ -87,12 +92,19 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection bookingId={props.location.state.bookingId} />
+                <CommentSection
+                  bookingId={props.location.state.bookingId}
+                  role='Interviewer'
+                  otherRole='Interviewee'
+                />
               </div>
             </div>
           </div>
           <div className='eleven wide column'>
-            <CodeEditor bookingId={props.location.state.bookingId} />
+            <CodeEditor
+              bookingId={props.location.state.bookingId}
+              role={userRole}
+            />
             <VideoComponent
               bookingId={props.location.state.bookingId}
               otherBookingId={props.location.state.otherBookingId}

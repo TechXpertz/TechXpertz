@@ -16,6 +16,8 @@ const Video = props => {
   const endpoint = '/video';
   const bookingId = props.bookingId;
   const otherBookingId = props.otherBookingId;
+  console.log(bookingId);
+  console.log(otherBookingId);
 
   //Drag handlers
   const handleDrag = (e, ui) => {
