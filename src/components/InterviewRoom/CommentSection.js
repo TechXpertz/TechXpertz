@@ -6,18 +6,19 @@ import io from 'socket.io-client';
 import './InterviewRoom.css';
 
 const CommentSection = props => {
-  console.log(props);
+  const { bookingId, role, otherRole } = props;
+  console.log(role);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState([
     {
       commentContent: '',
-      commentTime: ''
+      commentTime: '',
+      commentAuthor: ''
     }
   ]);
   const [socket, setSocket] = useState();
   const { getTokenSilently, loading } = useAuth0();
   const endpoint = '/comments';
-  const bookingId = props.bookingId;
   const currentTime = moment().format('LT');
   const currentDate = moment().format('YYYY-MM-DD');
 
@@ -55,7 +56,8 @@ const CommentSection = props => {
                 ...prevState,
                 {
                   commentContent: newComment,
-                  commentTime: currentTime
+                  commentTime: currentTime,
+                  commentAuthor: otherRole
                 }
               ];
             });
@@ -81,7 +83,8 @@ const CommentSection = props => {
         ...prevState,
         {
           commentContent: newComment,
-          commentTime: currentTime
+          commentTime: currentTime,
+          commentAuthor: role
         }
       ];
     });
@@ -94,10 +97,10 @@ const CommentSection = props => {
         <div className='ui dividing header'>Comment Section</div>
       </div>
       <div
-        className='content'
+        className='comments'
         style={{
-          minHeight: '20vh',
-          maxHeight: '20vh',
+          minHeight: '22vh',
+          maxHeight: '22vh',
           overflow: 'auto',
           padding: '0px 10px'
         }}
@@ -108,28 +111,32 @@ const CommentSection = props => {
               time={item.commentTime}
               key={Math.random()}
               comment={item.commentContent}
+              role={item.commentAuthor}
             />
           );
         })}
       </div>
-      <form style={{ padding: '20px 18px' }} onSubmit={handleComment}>
-        <div className='field'>
-          <textarea
-            placeholder='Please type in your comment here'
-            value={newComment}
-            style={{
-              position: 'relative',
-              width: `450px`,
-              height: '90px',
-              overflow: 'hidden'
-            }}
-            onChange={event => setNewComment(event.target.value)}
-          />
-        </div>
-        <button className='ui primary submit labeled icon button' type='submit'>
-          <i className='icon edit'></i> Add Comment
-        </button>
-      </form>
+      <div className='ui container'>
+        <form
+          className='ui reply form'
+          style={{ padding: '20px 18px' }}
+          onSubmit={handleComment}
+        >
+          <div className='field'>
+            <textarea
+              placeholder='Please type in your comment here'
+              value={newComment}
+              onChange={event => setNewComment(event.target.value)}
+            />
+          </div>
+          <button
+            className='ui primary submit labeled icon button'
+            type='submit'
+          >
+            <i className='icon edit'></i> Add Comment
+          </button>
+        </form>
+      </div>
     </>
   );
 };

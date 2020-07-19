@@ -47,7 +47,6 @@ const QuestionBox = props => {
   }, [loading]);
 
   const tabHandler = value => {
-    console.log('value', value);
     switch (value) {
       case 'QUESTION':
         setQuestionTabState({

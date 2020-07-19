@@ -5,7 +5,6 @@ import QuestionBox from './QuestionBox';
 import CommentSection from './CommentSection';
 import CodeEditor from './CodeEditor';
 import VideoComponent from './VideoComponent';
-//import querySearch from 'stringquery';
 
 const InterviewRoom = props => {
   //check if the user booking id is < than the other person booking id
@@ -16,8 +15,13 @@ const InterviewRoom = props => {
       ? 'interviewee'
       : 'interviewer'
   );
-  console.log(props.location.state.bookingId);
-  console.log(props.location.state.otherBookingId);
+  const [switchedRole, setSwitchedRole] = useState(false);
+
+  //handlers
+  const onChangeRoleHandler = childProp => {
+    setUserRole(childProp);
+    setSwitchedRole(true);
+  };
 
   if (userRole === 'interviewee') {
     return (
@@ -28,7 +32,12 @@ const InterviewRoom = props => {
           date={props.location.state.date}
           time={props.location.state.time}
         />
-        <SubHeader />
+        <SubHeader
+          role='interviewee'
+          otherRole='Interviewee'
+          onClick={onChangeRoleHandler}
+          hasSwitched={switchedRole}
+        />
         <div className='ui two column grid'>
           <div className='five wide column'>
             <div className='row' style={{ height: '40vh' }}>
@@ -39,7 +48,11 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection bookingId={props.location.state.bookingId} />
+                <CommentSection
+                  bookingId={props.location.state.bookingId}
+                  role='Interviewee'
+                  otherRole='Interviewer'
+                />
               </div>
             </div>
           </div>
@@ -50,12 +63,6 @@ const InterviewRoom = props => {
               otherBookingId={props.location.state.otherBookingId}
             />
           </div>
-          {/* <div className='two wide column'>
-            <VideoComponent
-              bookingId={props.location.state.bookingId}
-              otherBookingId={props.location.state.otherBookingId}
-            />
-          </div> */}
         </div>
       </div>
     );
@@ -70,7 +77,11 @@ const InterviewRoom = props => {
           date={props.location.state.date}
           time={props.location.state.time}
         />
-        <SubHeader />
+        <SubHeader
+          role='interviewer'
+          onClick={onChangeRoleHandler}
+          hasSwitched={switchedRole}
+        />
         <div className='ui two column grid'>
           <div className='five wide column'>
             <div className='row' style={{ height: '40vh' }}>
@@ -81,23 +92,24 @@ const InterviewRoom = props => {
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
-                <CommentSection bookingId={props.location.state.bookingId} />
+                <CommentSection
+                  bookingId={props.location.state.bookingId}
+                  role='Interviewer'
+                  otherRole='Interviewee'
+                />
               </div>
             </div>
           </div>
           <div className='eleven wide column'>
-            <CodeEditor bookingId={props.location.state.bookingId} />
+            <CodeEditor
+              bookingId={props.location.state.bookingId}
+              role={userRole}
+            />
             <VideoComponent
               bookingId={props.location.state.bookingId}
               otherBookingId={props.location.state.otherBookingId}
             />
           </div>
-          {/* <div className='two wide column'>
-            <VideoComponent
-              bookingId={props.location.state.bookingId}
-              otherBookingId={props.location.state.otherBookingId}
-            />
-          </div> */}
         </div>
       </div>
     );
