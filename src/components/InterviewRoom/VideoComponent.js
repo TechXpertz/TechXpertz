@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import Draggable from 'react-draggable';
 import { useAuth0 } from '../../react-auth0-spa';
 import io from 'socket.io-client';
 import querySearch from 'stringquery';
 import './InterviewRoom.css';
 
 const Video = props => {
-  console.log(props.bookingId);
-  console.log(props.otherBookingId);
+  const [activeDrags, setActiveDrags] = useState(0);
+  const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
+  const [controlledPosition, setControlledPosition] = useState({
+    x: -400,
+    y: 200
+  });
   const { RTCPeerConnection, RTCSessionDescription } = window;
   const endpoint = '/video';
-  //TODO bookingID and otherBookingID
   const bookingId = props.bookingId;
   const otherBookingId = props.otherBookingId;
+
+  //Drag handlers
+  const handleDrag = (e, ui) => {
+    const { x, y } = deltaPosition;
+    setDeltaPosition({ x: x + ui.deltaX, y: y + ui.deltaY });
+  };
+
+  const onStart = () => {
+    let temp = activeDrags + 1;
+    setActiveDrags(temp);
+  };
+
+  const onStop = () => {
+    let temp = activeDrags - 1;
+    setActiveDrags(temp);
+  };
 
   // DOM elements
   const localVideo = document.getElementById('local-video');
@@ -207,14 +227,14 @@ const Video = props => {
       });
     }
   };
-
+  const dragHandlers = { onStart: onStart, onStop: onStop };
   return (
-    <>
+    <Draggable onStart={onStart} onStop={onStop} onDrag={handleDrag}>
       <div className='video-container' id='video-container'>
         <video autoPlay className='remote-video' id='remote-video'></video>
         <video autoPlay muted className='local-video' id='local-video'></video>
       </div>
-    </>
+    </Draggable>
   );
 };
 
