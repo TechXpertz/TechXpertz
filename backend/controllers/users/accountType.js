@@ -1,5 +1,16 @@
 const pool = require('../../db');
 
+const accountType = async (req, res) => {
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const userIsExpert = await isExpert(req.user);
+  const accType = userIsExpert ? 'Expert' : 'Normal';
+  return res.status(200).json(accType);
+
+}
+
 const isExpert = async (user) => {
   const sub = user.sub;
   const is_expert = (await pool.query(
@@ -11,5 +22,6 @@ const isExpert = async (user) => {
 };
 
 module.exports = {
-  isExpert
+  isExpert,
+  accountType
 }
