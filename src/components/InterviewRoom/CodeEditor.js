@@ -11,7 +11,6 @@ import './InterviewRoom.css';
 
 const CodeEditor = props => {
   const [js, setJs] = useState('');
-  const [id, setId] = useState('');
   const [socket, setSocket] = useState();
 
   const { getTokenSilently, loading } = useAuth0();

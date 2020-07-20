@@ -10,12 +10,12 @@ comments.on('connection', socket => {
 
   socket.on('comment', data => {
     // insertComment(data.bookingId, data.comment, data.date, data.timeStamp);
-    socket.to(Object.keys(socket.rooms)[0]).emit('receive comment', data.comment);
+    socket.to(Object.keys(socket.rooms)[0]).emit('receive comment', data);
   });
 
   socket.on('disconnect', () => {
     socket.leave(Object.keys(socket.rooms)[0]);
-    console.log('user disconnected')
+    console.log('user disconnected from comments')
   });
 
 });

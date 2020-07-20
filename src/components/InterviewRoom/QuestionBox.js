@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useAuth0 } from '../../react-auth0-spa';
 import LoaderPage from '../LoaderPage';
-import { getOrInsertQuestion } from '../../api_callers/apis.json';
 
 const QuestionBox = props => {
-  const [question, setQuestion] = useState();
-  const [isLoading, setIsLoading] = useState(true);
   const [questionTabState, setQuestionTabState] = useState({
     header: 'active item',
     tabContent: 'ui bottom attached active tab segment'
@@ -19,32 +14,15 @@ const QuestionBox = props => {
     header: 'item',
     tabContent: 'ui bottom attached tab segment'
   });
-  const { getTokenSilently, loading } = useAuth0();
 
-  useEffect(() => {
-    const getQuestion = async () => {
-      const token = await getTokenSilently();
-      const header = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      const response = await axios.post(
-        getOrInsertQuestion,
-        { bookingId: props.bookingId },
-        header
-      );
-      return response.data.question;
-    };
+  const question = props.question;
+  console.log(question);
 
-    if (!loading) {
-      getQuestion().then(function(qn) {
-        setQuestion(qn);
-        setIsLoading(false);
-        console.log(qn);
-      });
-    }
-  }, [loading]);
+  if (!question) {
+    return (
+      <LoaderPage />
+    );
+  }
 
   const tabHandler = value => {
     switch (value) {
