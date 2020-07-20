@@ -10,7 +10,7 @@ const matchAlgo = async function (now) {
 
   const bookings = await preprocessBookings(date, time);
   const normalLeftover = await normalNormalMatching(bookings.normalNormals);
-  const expertLeftover = normalExpertMatching(bookings.normalExperts);
+  const expertLeftover = await normalExpertMatching(bookings.normalExperts, bookings.expertBookings);
   return { bookings, normalLeftover, expertLeftover };
 
 };
@@ -45,7 +45,7 @@ const normalNormalMatching = async function (fullBookings) {
 
 };
 
-const normalExpertMatching = function (bookings) {
+const normalExpertMatching = async function (bookings) {
 
 };
 
