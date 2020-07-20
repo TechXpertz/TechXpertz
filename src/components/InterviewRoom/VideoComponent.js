@@ -35,10 +35,9 @@ const Video = props => {
     setActiveDrags(temp);
   };
 
-  // DOM elements
+  // DOM
   const localVideo = document.getElementById('local-video');
   const remoteVideo = document.getElementById('remote-video');
-  const videoContainer = document.getElementById('video-container');
 
   // variables
   const mediaConstraints = {
@@ -167,7 +166,7 @@ const Video = props => {
   // functions
 
   const hideVideoConference = () => {
-    remoteVideo.srcObject = null;
+    document.getElementById('remote-video').srcObject = null;
   };
 
   const setLocalStream = async mediaConstraints => {
@@ -178,7 +177,7 @@ const Video = props => {
       console.log(error);
     }
     localStream = stream;
-    localVideo.srcObject = stream;
+    document.getElementById('local-video').srcObject = stream;
   };
 
   const addLocalTracks = peerConnection => {
@@ -217,7 +216,7 @@ const Video = props => {
   };
 
   const setRemoteStream = event => {
-    remoteVideo.srcObject = event.streams[0];
+    document.getElementById('remote-video').srcObject = event.streams[0];
     remoteStream = event.stream;
   };
 

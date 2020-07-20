@@ -46,9 +46,11 @@ video.on('connection', socket => {
 
   socket.on('disconnecting', () => {
     socket.to(Object.keys(socket.rooms)[0]).emit('user disconnected');
-    socket.emit('message', 'you disconnected!');
-    socket.leave(Object.keys(socket.rooms)[0]);
-    console.log('user disconnected');
   });
+
+  socket.on('disconnect', () => {
+    socket.leave(Object.keys(socket.rooms)[0]);
+    console.log('user disconnected from video');
+  })
 
 });

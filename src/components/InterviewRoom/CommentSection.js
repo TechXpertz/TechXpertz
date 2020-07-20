@@ -6,8 +6,7 @@ import io from 'socket.io-client';
 import './InterviewRoom.css';
 
 const CommentSection = props => {
-  const { bookingId, role, otherRole } = props;
-  console.log(role);
+  const { bookingId, role } = props;
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState([
     {
@@ -49,15 +48,14 @@ const CommentSection = props => {
             console.log(msg);
           });
 
-          socket.on('receive comment', newComment => {
-            console.log('comments', comments);
+          socket.on('receive comment', data => {
             setComments(prevState => {
               return [
                 ...prevState,
                 {
-                  commentContent: newComment,
+                  commentContent: data.comment,
                   commentTime: currentTime,
-                  commentAuthor: otherRole
+                  commentAuthor: data.author
                 }
               ];
             });
@@ -76,7 +74,8 @@ const CommentSection = props => {
       bookingId,
       comment: newComment,
       date: currentDate,
-      timeStamp: currentTime
+      timeStamp: currentTime,
+      author: role
     });
     setComments(prevState => {
       return [

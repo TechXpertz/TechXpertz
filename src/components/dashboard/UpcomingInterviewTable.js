@@ -69,6 +69,8 @@ const UpcomingInterviewTable = props => {
     return langs.join(', ');
   };
 
+  console.log(props.bookingArray);
+
   return (
     <table className='ui seven column compact table'>
       <thead>
