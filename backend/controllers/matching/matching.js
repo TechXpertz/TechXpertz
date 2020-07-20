@@ -2,7 +2,7 @@ const { preprocessBookings } = require('./preprocess');
 const pool = require('../../db');
 const { constructGraph, connectWithinGraph } = require('./graph');
 const { getBookingsWithTopic } = require('./helper');
-
+const { expertProcess } = require('./expertMatching');
 
 const matchAlgo = async function (now) {
 
@@ -45,8 +45,31 @@ const normalNormalMatching = async function (fullBookings) {
 
 };
 
-const normalExpertMatching = async function (bookings) {
+const normalExpertMatching = async function (normals, experts) {
 
+  let noSameTopics = {
+    normals: [],
+    experts: []
+  };
+  const topics = (await pool.query(
+    'SELECT topic_id FROM topics'
+  ))
+    .rows
+    .map(topic => topic.topic_id);
+
+  for (topicId of topics) {
+    const left = await getBookingsWithTopic(topicId, normals);
+    const right = await getBookingsWithTopic(topicId, experts);
+    const leftover = await expertProcess(left, right);
+    console.log('leftover', leftover);
+    noSameTopics.normals = noSameTopics.normals.concat(leftover.normals);
+    noSameTopics.experts = noSameTopics.experts.concat(leftover.experts);
+  }
+
+  console.log(noSameTopics);
+
+  const unmatched = await expertProcess(noSameTopics.normals, noSameTopics.experts);
+  return unmatched;
 };
 
 module.exports = {
