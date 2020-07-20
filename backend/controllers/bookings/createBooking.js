@@ -1,5 +1,6 @@
 const pool = require('../../db');
 const { getUserId } = require('../users/helper');
+const { isExpert } = require('../users/isExpert');
 
 const createBooking = async (req, res) => {
 
@@ -17,7 +18,10 @@ const createBooking = async (req, res) => {
   const userId = await getUserId(req.user);
   const otherIsExpert = otherAccType.toLowerCase() === 'expert' ? true : false;
 
-  const bookingId = await addBooking(userId, otherIsExpert, topic);
+  const isExpertRes = await isExpert(req.user);
+  const accType = isExpertRes ? 'expert' : 'normal';
+
+  const bookingId = await addBooking(userId, otherIsExpert, topic, accType);
   if (!bookingId) return res.status(422).send('Invalid topic');
 
   await addBookingProgLanguages(bookingId, progLanguages)
@@ -25,7 +29,7 @@ const createBooking = async (req, res) => {
   return res.sendStatus(201);
 };
 
-const addBooking = async (userId, otherIsExpert, topic) => {
+const addBooking = async (userId, otherIsExpert, topic, accType) => {
 
   const topicRes = await pool
     .query('SELECT topic_id from topics WHERE topic_name = $1',
@@ -37,8 +41,10 @@ const addBooking = async (userId, otherIsExpert, topic) => {
 
   const topicId = topicRes.rows[0].topic_id;
   const bookingRes = await pool
-    .query('INSERT INTO bookings (user_id, topic_id, other_is_expert) VALUES ($1, $2, $3) RETURNING booking_id',
-      [userId, topicId, otherIsExpert]);
+    .query(
+      'INSERT INTO bookings (user_id, account_type, topic_id, other_is_expert) '
+      + 'VALUES ($1, $2, $3, $4) RETURNING booking_id',
+      [userId, accType, topicId, otherIsExpert]);
 
   return bookingRes.rows[0].booking_id;
 

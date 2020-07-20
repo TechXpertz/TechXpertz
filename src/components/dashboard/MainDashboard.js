@@ -112,6 +112,7 @@ const MainDashboard = () => {
         };
 
         const response = (await axios.get(getUpcomingBookings, header)).data;
+        console.log('response', response.bookings);
         setBookings(splitBookings(response.bookings));
       } catch (err) {
         console.log(err);
