@@ -62,7 +62,8 @@ const MainDashboard = () => {
       otherAccType,
       otherBookingId,
       timeslots,
-      langs
+      langs,
+      isConfirmed
     } = booking;
 
     const ans = timeslots.map(timeslot => {
@@ -73,7 +74,8 @@ const MainDashboard = () => {
         otherBookingId,
         langs,
         date: timeslot.date,
-        timings: timeslot.timings
+        timings: timeslot.timings,
+        isConfirmed
       };
     });
     return ans;

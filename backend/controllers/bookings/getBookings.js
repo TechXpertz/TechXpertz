@@ -115,7 +115,8 @@ const getBookingsAfterNow = async (bookings) => {
       otherAccType,
       otherBookingId: booking.other_booking_id,
       timeslots,
-      langs: progLanguages[0].array_agg
+      langs: progLanguages[0].array_agg,
+      isConfirmed: booking.is_confirmed
     }
 
     result.push(bookingRes);
