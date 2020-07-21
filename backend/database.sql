@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS bookings(
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
     topic_id INTEGER REFERENCES topics(topic_id) NOT NULL,
     other_is_expert BOOLEAN NOT NULL,
-    other_booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE SET NULL
+    other_booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE SET NULL,
+    is_confirmed BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS booking_prog_languages(

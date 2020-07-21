@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "axois": "0.0.1-security",
     "backend": "file:backend",
+    "chai": "^4.2.0",
     "codemirror": "^5.55.0",
     "concurrently": "^5.2.0",
     "cors": "^2.8.5",

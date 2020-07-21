@@ -7,7 +7,8 @@ import './Dashboard.css';
 import {
   getUpcomingBookings,
   bookingsUrl,
-  getPastInterviews
+  getPastInterviews,
+  getAccType
 } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from '../../react-auth0-spa';
@@ -112,6 +113,7 @@ const MainDashboard = () => {
         };
 
         const response = (await axios.get(getUpcomingBookings, header)).data;
+        console.log('response', response.bookings);
         setBookings(splitBookings(response.bookings));
       } catch (err) {
         console.log(err);
@@ -145,6 +147,27 @@ const MainDashboard = () => {
 
     if (!loading) {
       callPastInterviews();
+    }
+  }, []);
+
+  useEffect(() => {
+    const callAccType = async () => {
+      try {
+        const token = await getTokenSilently();
+        const header = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+        const type = (await axios.get(getAccType, header)).data;
+        setAccType(type);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    if (!loading) {
+      callAccType();
     }
   }, []);
 

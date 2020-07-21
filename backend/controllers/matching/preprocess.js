@@ -8,9 +8,16 @@ const preprocessBookings = async (date, time) => {
   // console.log('unmatchedBookings', unmatchedBookings);
   const uniqueBookings = await filterOutRepeatUsers(unmatchedBookings);
   // console.log('uniqueBookings', uniqueBookings);
-  const separatedBookings = await separateOtherAccType(uniqueBookings);
+  const { normalBookings, expertBookings } = await separateAccType(uniqueBookings);
+  console.log('normal', normalBookings);
+  console.log('expert', expertBookings);
+  const separatedBookings = await separateOtherAccType(normalBookings);
   console.log('separatedBookings', separatedBookings);
-  return separatedBookings;
+  return {
+    expertBookings,
+    normalNormals: separatedBookings.normalNormals,
+    normalExperts: separatedBookings.normalExperts
+  };
 
 };
 
@@ -58,6 +65,37 @@ const filterOutRepeatUsers = async (bookingIds) => {
 
   return bookings;
 };
+
+const separateAccType = async (bookings) => {
+
+  const normalBookings = [];
+  const expertBookings = [];
+
+  for (booking of bookings) {
+
+    const userId = (await pool.query(
+      'SELECT user_id FROM bookings WHERE booking_id = $1',
+      [booking]
+    )).rows[0].user_id;
+
+    const isExpert = (await pool.query(
+      'SELECT is_expert FROM users WHERE user_id = $1',
+      [userId]
+    )).rows[0].is_expert;
+
+    if (isExpert) {
+      expertBookings.push(booking);
+    } else {
+      normalBookings.push(booking);
+    }
+  }
+
+  return {
+    normalBookings,
+    expertBookings
+  }
+
+}
 
 const separateOtherAccType = async (bookings) => {
 
