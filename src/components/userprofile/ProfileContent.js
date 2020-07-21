@@ -7,9 +7,13 @@ import { getBackground } from '../../api_callers/apis.json';
 import axios from 'axios';
 
 const ProfileContent = () => {
-
-  const { loading, user, logout, isAuthenticated, getTokenSilently } = useAuth0();
-  // console.log(user);
+  const {
+    loading,
+    user,
+    logout,
+    isAuthenticated,
+    getTokenSilently
+  } = useAuth0();
 
   const [background, setBackground] = useState();
 
@@ -27,7 +31,7 @@ const ProfileContent = () => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     if (!loading) {
@@ -117,13 +121,11 @@ const ProfileContent = () => {
           >
             <div className='two wide column information-content'>Interests</div>
             <div
-              className='two wide column'
+              className='six wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
               {background.topics.map((value, index) => (
-                <div
-                  className='interest-button'
-                  key={index}>
+                <div className='interest-button' key={index}>
                   {value}
                 </div>
               ))}
@@ -142,13 +144,11 @@ const ProfileContent = () => {
               Programming Languages
             </div>
             <div
-              className='two wide column'
+              className='six wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
               {background.progLanguages.map((value, index) => (
-                <div
-                  className='interest-button'
-                  key={index}>
+                <div className='interest-button' key={index}>
                   {value}
                 </div>
               ))}
