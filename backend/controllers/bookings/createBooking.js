@@ -46,9 +46,9 @@ const addExpertBookings = async (userId, topic, timeslots, progLanguages) => {
     for (timeStart of timings) {
 
       const bookingId = (await pool.query(
-        'INSERT INTO bookings (user_id, topic_id, other_is_expert) '
-        + 'VALUES ($1, $2, $3) RETURNING booking_id',
-        [userId, topicId, false]
+        'INSERT INTO bookings (user_id, topic_id, other_is_expert, is_confirmed) '
+        + 'VALUES ($1, $2, $3, $4) RETURNING booking_id',
+        [userId, topicId, false, false]
       )).rows[0].booking_id;
 
       await pool.query('INSERT INTO timeslots (booking_id, date_col, time_start)'
@@ -75,9 +75,9 @@ const addBooking = async (userId, otherIsExpert, topic) => {
   const topicId = topicRes.rows[0].topic_id;
   const bookingRes = await pool
     .query(
-      'INSERT INTO bookings (user_id, topic_id, other_is_expert) '
-      + 'VALUES ($1, $2, $3) RETURNING booking_id',
-      [userId, topicId, otherIsExpert]);
+      'INSERT INTO bookings (user_id, topic_id, other_is_expert, is_confirmed) '
+      + 'VALUES ($1, $2, $3, $4) RETURNING booking_id',
+      [userId, topicId, otherIsExpert, !otherIsExpert]);
 
   return bookingRes.rows[0].booking_id;
 
