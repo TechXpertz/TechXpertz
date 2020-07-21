@@ -67,3 +67,7 @@ const accept = async (userId, bookingId) => {
   }
 
 }
+
+const decline = async (userId, bookingId) => {
+
+}
