@@ -19,17 +19,50 @@ const createBooking = async (req, res) => {
   const otherIsExpert = otherAccType.toLowerCase() === 'expert' ? true : false;
 
   const isExpertRes = await isExpert(req.user);
-  const accType = isExpertRes ? 'expert' : 'normal';
-
-  const bookingId = await addBooking(userId, otherIsExpert, topic, accType);
-  if (!bookingId) return res.status(422).send('Invalid topic');
-
-  await addBookingProgLanguages(bookingId, progLanguages)
-  await addTimeslots(bookingId, timeslots);
+  if (!isExpertRes) {
+    const bookingId = await addBooking(userId, otherIsExpert, topic);
+    if (!bookingId) return res.status(422).send('Invalid topic');
+    await addBookingProgLanguages(bookingId, progLanguages)
+    await addTimeslots(bookingId, timeslots);
+  } else {
+    await addExpertBookings(userId, topic, timeslots, progLanguages);
+  }
   return res.sendStatus(201);
 };
 
-const addBooking = async (userId, otherIsExpert, topic, accType) => {
+const addExpertBookings = async (userId, topic, timeslots, progLanguages) => {
+  const topicRes = await pool
+    .query('SELECT topic_id from topics WHERE topic_name = $1',
+      [topic]);
+
+  if (topicRes.rowCount === 0) {
+    return;
+  }
+  const topicId = topicRes.rows[0].topic_id;
+
+  for (timeslot of timeslots) {
+    const { date, timings } = timeslot;
+    const parsedDate = parseDateFromFE(date);
+    for (timeStart of timings) {
+
+      const bookingId = (await pool.query(
+        'INSERT INTO bookings (user_id, topic_id, other_is_expert) '
+        + 'VALUES ($1, $2, $3) RETURNING booking_id',
+        [userId, topicId, false]
+      )).rows[0].booking_id;
+
+      await pool.query('INSERT INTO timeslots (booking_id, date_col, time_start)'
+        + 'VALUES ($1, $2, $3)',
+        [bookingId, parsedDate, timeStart]);
+
+      await addBookingProgLanguages(bookingId, progLanguages);
+
+    }
+  }
+
+}
+
+const addBooking = async (userId, otherIsExpert, topic) => {
 
   const topicRes = await pool
     .query('SELECT topic_id from topics WHERE topic_name = $1',
@@ -42,9 +75,9 @@ const addBooking = async (userId, otherIsExpert, topic, accType) => {
   const topicId = topicRes.rows[0].topic_id;
   const bookingRes = await pool
     .query(
-      'INSERT INTO bookings (user_id, account_type, topic_id, other_is_expert) '
-      + 'VALUES ($1, $2, $3, $4) RETURNING booking_id',
-      [userId, accType, topicId, otherIsExpert]);
+      'INSERT INTO bookings (user_id, topic_id, other_is_expert) '
+      + 'VALUES ($1, $2, $3) RETURNING booking_id',
+      [userId, topicId, otherIsExpert]);
 
   return bookingRes.rows[0].booking_id;
 

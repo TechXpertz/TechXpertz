@@ -72,17 +72,21 @@ const separateAccType = async (bookings) => {
   const expertBookings = [];
 
   for (booking of bookings) {
-    const accType = (await pool.query(
-      'SELECT account_type FROM bookings WHERE booking_id = $1',
-      [booking]
-    ))
-      .rows[0]
-      .account_type;
 
-    if (accType === 'normal') {
-      normalBookings.push(booking);
-    } else {
+    const userId = (await pool.query(
+      'SELECT user_id FROM bookings WHERE booking_id = $1',
+      [booking]
+    )).rows[0].user_id;
+
+    const isExpert = (await pool.query(
+      'SELECT is_expert FROM users WHERE user_id = $1',
+      [userId]
+    )).rows[0].is_expert;
+
+    if (isExpert) {
       expertBookings.push(booking);
+    } else {
+      normalBookings.push(booking);
     }
   }
 

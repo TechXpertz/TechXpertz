@@ -61,7 +61,6 @@ CREATE TABLE IF NOT EXISTS expert_backgrounds(
 CREATE TABLE IF NOT EXISTS bookings(
     booking_id SERIAL PRIMARY KEY,
     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
-    account_type TEXT NOT NULL CHECK (account_type IN ('normal', 'expert')),
     topic_id INTEGER REFERENCES topics(topic_id) NOT NULL,
     other_is_expert BOOLEAN NOT NULL,
     other_booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE SET NULL
