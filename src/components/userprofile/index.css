@@ -42,15 +42,16 @@
 }
 
 .interest-button {
-  width: 160px;
-  height: 40px;
+  font-size: 12px;
+  width: 200px;
+  height: 50px;
   color: white;
   background: orange;
   border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 50px;
+  padding: 0 40px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
