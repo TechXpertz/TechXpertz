@@ -102,5 +102,7 @@ const submitExpertBackground = async (req, res) => {
 
 module.exports = {
   submitNormalBackground,
-  submitExpertBackground
+  submitExpertBackground,
+  addUserProgLanguages,
+  addUserTopics
 }
