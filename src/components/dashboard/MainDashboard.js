@@ -23,10 +23,14 @@ const MainDashboard = () => {
     height: window.innerHeight,
     width: window.innerWidth
   });
-  const [accType, setAccType] = useState('Normal');
+  const [accType, setAccType] = useState('');
   const { getTokenSilently, loading } = useAuth0();
   const tableHeaderColor = accType === 'Normal' ? '#4085CA' : ' #CA3333';
-  console.log(tableHeaderColor);
+  const buttonColor = accType === 'Normal' ? 'ui blue button' : 'ui red button';
+  const buttonContent =
+    accType === 'Normal'
+      ? 'Book an interview'
+      : 'Indicate your preferred timings';
 
   function debounce(fn, ms) {
     let timer;
@@ -164,7 +168,7 @@ const MainDashboard = () => {
       } catch (err) {
         console.log(err);
       }
-    }
+    };
 
     if (!loading) {
       callAccType();
@@ -180,11 +184,14 @@ const MainDashboard = () => {
     <>
       <div className='row'>
         <button
-          className='ui blue button'
-          style={{ width: '250px', height: '50px' }}
+          className={buttonColor}
+          style={{
+            width: '300px',
+            height: '50px'
+          }}
           onClick={() => history.push('/booking')}
         >
-          <h3 className='booking-interview'>Book an interview</h3>
+          <h3 className='booking-interview'>{buttonContent}</h3>
         </button>
       </div>
     </>
