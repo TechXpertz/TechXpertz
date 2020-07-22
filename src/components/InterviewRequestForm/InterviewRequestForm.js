@@ -14,6 +14,7 @@ const InterviewRequestFrom = props => {
   const currentMoment = moment();
   const interestArray = [];
   const progLangArray = [];
+  console.log(props.location.state);
 
   React.useEffect(() => {
     const fetchTopics = async () => {
@@ -49,7 +50,9 @@ const InterviewRequestFrom = props => {
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [otherAccType, setOtherAccType] = useState('');
+  const [otherAccType, setOtherAccType] = useState(
+    props.location.state.accType === 'Expert' ? 'Normal' : ''
+  );
   console.log(otherAccType);
 
   //TODO for expert, set otherAccType to be normal
@@ -331,9 +334,11 @@ const InterviewRequestFrom = props => {
         <div className='five wide column'>
           <div className='row' style={{ height: '16em' }} />
           <div className='ui three column grid' style={{ paddingLeft: '25px' }}>
-            <div className='seven wide column'>{accountHeader}</div>
+            <div className='seven wide column'>
+              {props.location.state.accType === 'Normal' && accountHeader}
+            </div>
             <div className='six wide column' style={{ marginTop: '4px' }}>
-              {accountCheckbox}
+              {props.location.state.accType === 'Normal' && accountCheckbox}
             </div>
           </div>
           <div

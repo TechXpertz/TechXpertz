@@ -189,7 +189,12 @@ const MainDashboard = () => {
             width: '300px',
             height: '50px'
           }}
-          onClick={() => history.push('/booking')}
+          onClick={() =>
+            history.push({
+              pathname: '/booking',
+              state: { accType: accType }
+            })
+          }
         >
           <h3 className='booking-interview'>{buttonContent}</h3>
         </button>

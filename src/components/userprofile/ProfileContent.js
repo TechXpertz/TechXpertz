@@ -16,6 +16,8 @@ const ProfileContent = () => {
   } = useAuth0();
 
   const [background, setBackground] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+  console.log(background);
 
   const getUserBackground = async () => {
     try {
@@ -71,23 +73,47 @@ const ProfileContent = () => {
       <>
         <div className='ui grid' style={{ height: '70vh' }}>
           <div className='row' style={{ marginBottom: '10px' }}>
-            <div className='two wide column information-content'>Name</div>
-            <div className='two wide column information-content'>
+            <div className='three wide column information-content'>Name</div>
+            <div className='four wide column information-content'>
               {user.name}
             </div>
           </div>
           <div className='row' style={{ marginBottom: '10px' }}>
-            <div className='two wide column information-content'>Email</div>
-            <div className='two wide column information-content'>
+            <div className='three wide column information-content'>Email</div>
+            <div className='four wide column information-content'>
               {user.email}
             </div>
           </div>
-          <div className='row' style={{ marginBottom: '10px' }}>
-            <div className='two wide column information-content'>Education</div>
-            <div className='two wide column information-content'>
-              {background.background.education}
+          {!background.isExpert && (
+            <div className='row' style={{ marginBottom: '10px' }}>
+              <div className='three wide column information-content'>
+                Education
+              </div>
+              <div className='four wide column information-content'>
+                {background.background.education}
+              </div>
             </div>
-          </div>
+          )}
+          {background.isExpert && (
+            <div className='row' style={{ marginBottom: '10px' }}>
+              <div className='three wide column information-content'>
+                Company
+              </div>
+              <div className='four wide column information-content'>
+                {background.background.company}
+              </div>
+            </div>
+          )}
+          {background.isExpert && (
+            <div className='row' style={{ marginBottom: '10px' }}>
+              <div className='three wide column information-content'>
+                Company Role
+              </div>
+              <div className='four wide column information-content'>
+                {background.background.companyRole}
+              </div>
+            </div>
+          )}
           <div
             className='row'
             style={{
@@ -97,10 +123,10 @@ const ProfileContent = () => {
               marginBottom: '10px'
             }}
           >
-            <div className='two wide column information-content'>
+            <div className='three wide column information-content'>
               Interview Confidence Level
             </div>
-            <div className='two wide column information-content'>
+            <div className='four wide column information-content'>
               <Rating
                 icon='star'
                 maxRating={5}
@@ -119,9 +145,11 @@ const ProfileContent = () => {
               marginBottom: '10px'
             }}
           >
-            <div className='two wide column information-content'>Interests</div>
+            <div className='three wide column information-content'>
+              Interests
+            </div>
             <div
-              className='six wide column'
+              className='eight wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
               {background.topics.map((value, index) => (
@@ -140,11 +168,11 @@ const ProfileContent = () => {
               marginBottom: '10px'
             }}
           >
-            <div className='two wide column information-content'>
+            <div className='three wide column information-content'>
               Programming Languages
             </div>
             <div
-              className='six wide column'
+              className='eight wide column'
               style={{ display: 'flex', flexDirection: 'row' }}
             >
               {background.progLanguages.map((value, index) => (
@@ -160,6 +188,130 @@ const ProfileContent = () => {
     );
   };
 
+  const EditProfilePage = () => {
+    if (loading || !user) {
+      return <LoaderPage />;
+    } else {
+      return (
+        <>
+          <div className='ui grid' style={{ height: '70vh' }}>
+            <div className='row' style={{ marginBottom: '10px' }}>
+              <div className='three wide column information-content'>Name</div>
+              <div className='four wide column information-content'>
+                {user.name}
+              </div>
+            </div>
+            <div className='row' style={{ marginBottom: '10px' }}>
+              <div className='three wide column information-content'>Email</div>
+              <div className='four wide column information-content'>
+                {user.email}
+              </div>
+            </div>
+            {!background.isExpert && (
+              <div className='row' style={{ marginBottom: '10px' }}>
+                <div className='three wide column information-content'>
+                  Education
+                </div>
+                <div className='four wide column information-content'>
+                  {background.background.education}
+                </div>
+              </div>
+            )}
+            {background.isExpert && (
+              <div className='row' style={{ marginBottom: '10px' }}>
+                <div className='three wide column information-content'>
+                  Company
+                </div>
+                <div className='four wide column information-content'>
+                  {background.background.company}
+                </div>
+              </div>
+            )}
+            {background.isExpert && (
+              <div className='row' style={{ marginBottom: '10px' }}>
+                <div className='three wide column information-content'>
+                  Company Role
+                </div>
+                <div className='four wide column information-content'>
+                  {background.background.companyRole}
+                </div>
+              </div>
+            )}
+            <div
+              className='row'
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: '10px'
+              }}
+            >
+              <div className='three wide column information-content'>
+                Interview Confidence Level
+              </div>
+              <div className='four wide column information-content'>
+                <Rating
+                  icon='star'
+                  maxRating={5}
+                  size='massive'
+                  defaultRating={background.background.interviewLevel}
+                  disabled
+                />
+              </div>
+            </div>
+            <div
+              className='row'
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: '10px'
+              }}
+            >
+              <div className='three wide column information-content'>
+                Interests
+              </div>
+              <div
+                className='eight wide column'
+                style={{ display: 'flex', flexDirection: 'row' }}
+              >
+                {background.topics.map((value, index) => (
+                  <div className='interest-button' key={index}>
+                    {value}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div
+              className='row'
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: '10px'
+              }}
+            >
+              <div className='three wide column information-content'>
+                Programming Languages
+              </div>
+              <div
+                className='eight wide column'
+                style={{ display: 'flex', flexDirection: 'row' }}
+              >
+                {background.progLanguages.map((value, index) => (
+                  <div className='interest-button' key={index}>
+                    {value}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className='row' />
+          </div>
+        </>
+      );
+    }
+  };
+
   if (loading || !user || !background) {
     return <LoaderPage />;
   }
@@ -173,7 +325,8 @@ const ProfileContent = () => {
           <LeftBar />
         </div>
         <div className='ten wide column' style={{ marginLeft: '20px' }}>
-          <RightBar />
+          {!isEdit && <RightBar />}
+          {isEdit && <EditProfilePage />}
         </div>
       </div>
       <div className='actions-style'>{actions}</div>
