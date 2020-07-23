@@ -35,8 +35,8 @@ server.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
 
-const { realTask } = require('./controllers/cronJobs/schedule');
-realTask.start();
+// const { realTask } = require('./controllers/cronJobs/schedule');
+// realTask.start();
 
 module.exports = {
   server

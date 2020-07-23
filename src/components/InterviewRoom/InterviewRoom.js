@@ -21,13 +21,31 @@ const InterviewRoom = props => {
   );
   const [switchedRole, setSwitchedRole] = useState(false);
   const [question, setQuestion] = useState();
-  const [socket, setSocket] = useState();
+  const [qnSocket, setQnSocket] = useState();
+  const [commentSocket, setCommentSocket] = useState();
+  const [videoSocket, setVideoSocket] = useState();
+  const [editorSocket, setEditorSocket] = useState();
+  const [first, setFirst] = useState(true);
+
+  const endpoints = {
+    question: '/question',
+    comments: '/comments',
+    video: '/video',
+    editor: '/editor'
+  };
 
   //handlers
   const onChangeRoleHandler = childProp => {
     setUserRole(childProp);
     setSwitchedRole(true);
-    socket.emit('switch');
+    qnSocket.emit('switch');
+  };
+
+  const onExitHandler = () => {
+    qnSocket.close();
+    commentSocket.close();
+    videoSocket.close();
+    editorSocket.close();
   };
 
   const { getTokenSilently, loading } = useAuth0();
@@ -48,10 +66,11 @@ const InterviewRoom = props => {
 
   useEffect(() => {
 
-    if (!loading) {
+    if (!loading && first) {
+      setFirst(false);
       getTokenSilently().then(token => {
-        const endpoint = '/question';
-        const socket = io.connect(endpoint, {
+
+        const config = {
           query: {
             bookingId: props.location.state.bookingId
           },
@@ -62,21 +81,28 @@ const InterviewRoom = props => {
               }
             }
           }
-        });
+        };
 
-        setSocket(socket);
+        const qnSocket = io.connect(endpoints.question, config);
+        const commentSocket = io.connect(endpoints.comments, config);
+        const videoSocket = io.connect(endpoints.video, config);
+        const editorSocket = io.connect(endpoints.editor, config);
+        setQnSocket(qnSocket);
+        setCommentSocket(commentSocket);
+        setVideoSocket(videoSocket);
+        setEditorSocket(editorSocket);
 
-        socket.on('message', msg => {
+        qnSocket.on('message', msg => {
           console.log(msg);
         });
 
-        socket.on('receive question', qn => {
+        qnSocket.on('receive question', qn => {
           console.log('receive question', qn);
           setQuestion(qn);
           console.log(question);
         });
 
-        socket.on('receive switch', () => {
+        qnSocket.on('receive switch', () => {
           console.log('other user switched roles');
           setUserRole(userRole === 'interviewee' ? 'interviewer' : 'interviewee');
           setSwitchedRole(true);
@@ -86,17 +112,17 @@ const InterviewRoom = props => {
           getQuestion(token).then(function (qn) {
             setQuestion(qn);
             console.log(qn);
-            socket.emit('question', qn);
+            qnSocket.emit('question', qn);
 
-            socket.on('receive get question', () => {
-              socket.emit('question', qn);
+            qnSocket.on('receive get question', () => {
+              qnSocket.emit('question', qn);
             });
 
           });
         }
 
         if (userRole === 'interviewer' && !question) {
-          socket.emit('get question');
+          qnSocket.emit('get question');
         }
       });
     }
@@ -116,6 +142,7 @@ const InterviewRoom = props => {
           bookingId={props.location.state.bookingId}
           date={props.location.state.date}
           time={props.location.state.time}
+          onExit={onExitHandler}
         />
         <SubHeader
           role='interviewee'
@@ -126,22 +153,27 @@ const InterviewRoom = props => {
         <div className='ui two column grid'>
           <div className='five wide column'>
             <div className='row' style={{ height: '40vh' }}>
-              {question && questionBox}
+              {questionBox}
             </div>
             <div className='row' style={{ height: '40vh' }}>
               <div className='ui container'>
                 <CommentSection
                   bookingId={props.location.state.bookingId}
                   role='Interviewee'
+                  socket={commentSocket}
                 />
               </div>
             </div>
           </div>
           <div className='eleven wide column'>
-            <CodeEditor bookingId={props.location.state.bookingId} />
+            <CodeEditor
+              bookingId={props.location.state.bookingId}
+              socket={editorSocket}
+            />
             <VideoComponent
               bookingId={props.location.state.bookingId}
               otherBookingId={props.location.state.otherBookingId}
+              socket={videoSocket}
             />
           </div>
         </div>
@@ -157,6 +189,7 @@ const InterviewRoom = props => {
           bookingId={props.location.state.bookingId}
           date={props.location.state.date}
           time={props.location.state.time}
+          onExit={onExitHandler}
         />
         <SubHeader
           role='interviewer'
@@ -173,6 +206,7 @@ const InterviewRoom = props => {
                 <CommentSection
                   bookingId={props.location.state.bookingId}
                   role='Interviewer'
+                  socket={commentSocket}
                 />
               </div>
             </div>
@@ -181,10 +215,12 @@ const InterviewRoom = props => {
             <CodeEditor
               bookingId={props.location.state.bookingId}
               role={userRole}
+              socket={editorSocket}
             />
             <VideoComponent
               bookingId={props.location.state.bookingId}
               otherBookingId={props.location.state.otherBookingId}
+              socket={videoSocket}
             />
           </div>
         </div>

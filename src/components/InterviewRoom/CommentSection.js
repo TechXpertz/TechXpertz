@@ -15,58 +15,41 @@ const CommentSection = props => {
       commentAuthor: ''
     }
   ]);
-  const [socket, setSocket] = useState();
-  const { getTokenSilently, loading } = useAuth0();
-  const endpoint = '/comments';
+  const { loading } = useAuth0();
   const currentTime = moment().format('LT');
   const currentDate = moment().format('YYYY-MM-DD');
+  const socket = props.socket;
 
   useEffect(() => {
     try {
-      if (!loading) {
-        getTokenSilently().then(tokenRes => {
-          const socket = io.connect(endpoint, {
-            query: {
-              bookingId
-            },
-            transportOptions: {
-              polling: {
-                extraHeaders: {
-                  Authorization: `Bearer ${tokenRes}`
-                }
+      if (!loading && socket) {
+
+        socket.on('error', error => {
+          console.log('error', error);
+        });
+
+        socket.on('message', msg => {
+          console.log(msg);
+        });
+
+        socket.on('receive comment', data => {
+          setComments(prevState => {
+            return [
+              ...prevState,
+              {
+                commentContent: data.comment,
+                commentTime: currentTime,
+                commentAuthor: data.author
               }
-            }
+            ];
           });
-
-          setSocket(socket);
-
-          socket.on('error', error => {
-            console.log('error', error);
-          });
-
-          socket.on('message', msg => {
-            console.log(msg);
-          });
-
-          socket.on('receive comment', data => {
-            setComments(prevState => {
-              return [
-                ...prevState,
-                {
-                  commentContent: data.comment,
-                  commentTime: currentTime,
-                  commentAuthor: data.author
-                }
-              ];
-            });
-            console.log(newComment);
-          });
+          console.log(newComment);
         });
       }
     } catch (err) {
       console.log(err);
     }
-  }, [loading]);
+  }, [loading, socket]);
 
   const handleComment = event => {
     event.preventDefault();
