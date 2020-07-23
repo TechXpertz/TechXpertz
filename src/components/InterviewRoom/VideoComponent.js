@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import { useAuth0 } from '../../react-auth0-spa';
-import io from 'socket.io-client';
-import querySearch from 'stringquery';
 import './InterviewRoom.css';
 
 const Video = props => {
@@ -136,6 +133,10 @@ const Video = props => {
         socket.on('user disconnected', () => {
           console.log('other user disconnected');
           hideVideoConference();
+        });
+
+        socket.on('disconnect', () => {
+          localStream && localStream.getTracks().forEach(track => track.stop());
         });
       }
     } catch (err) {
