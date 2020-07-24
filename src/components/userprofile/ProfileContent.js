@@ -26,7 +26,7 @@ const ProfileContent = () => {
   const [isEdit, setIsEdit] = useState(false);
 
   const workingExpStr = (exp) => {
-    return period[exp].label;
+    return exp === undefined ? exp : period[exp].label;
   };
 
   const getUserBackground = async () => {
@@ -101,7 +101,7 @@ const ProfileContent = () => {
             >
               <div className='three wide column information-content'>Name</div>
               <div className='four wide column information-content'>
-                {user.name}
+                {background.background.username}
               </div>
             </div>
             <div
@@ -295,7 +295,10 @@ const ProfileContent = () => {
     const [editedCompany, setEditedCompany] = useState(userCompany);
     const [editedCompanyRole, setEditedCompanyRole] = useState(userCompanyRole);
     const [editedInterview, setEditedInterview] = useState(userInterviewLevel);
-    const [editedWorkingExp, setEditedWorkingExp] = useState(userWorkingExp);
+    const [editedWorkingExp, setEditedWorkingExp] = useState({
+      value: userWorkingExp,
+      label: workingExpStr(userWorkingExp)
+    });
 
     const onNameChange = event => {
       setEditedName(event.target.value);
@@ -346,6 +349,7 @@ const ProfileContent = () => {
 
       if (background.isExpert) {
         const editedExpertBackground = {
+          username: editedName,
           company: editedCompany,
           companyRole: editedCompanyRole,
           workingExp: editedWorkingExp.value,
@@ -354,6 +358,7 @@ const ProfileContent = () => {
         };
         setBackground({
           background: {
+            username: editedName,
             company: editedCompany,
             companyRole: editedCompanyRole,
             workingExp: editedWorkingExp.value
@@ -365,6 +370,7 @@ const ProfileContent = () => {
         await axios.patch(expertBackground, editedExpertBackground, header);
       } else {
         const editedNormalBackground = {
+          username: editedName,
           education: editedEducation,
           interviewLevel: editedInterview,
           hasExperience: background.background.hasExperience,
@@ -373,6 +379,7 @@ const ProfileContent = () => {
         };
         setBackground({
           background: {
+            username: editedName,
             education: editedEducation,
             interviewLevel: editedInterview,
             hasExperience: background.background.hasExperience
@@ -630,7 +637,7 @@ const ProfileContent = () => {
   } else {
     return (
       <ProfileEditPage
-        userName={user.name}
+        userName={background.background.username}
         userEmail={user.email}
         userCompany={background.background.company}
         userCompanyRole={background.background.companyRole}

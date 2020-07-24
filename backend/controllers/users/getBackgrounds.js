@@ -55,8 +55,9 @@ const getBackground = async (userId, isExpert) => {
     if (expertRes.rowCount === 0) {
       return { error: 'User has not submitted background' };
     } else {
-      const { is_verified, company, company_role, working_exp } = expertRes.rows[0];
+      const { is_verified, company, company_role, working_exp, username } = expertRes.rows[0];
       return {
+        username,
         isVerified: is_verified,
         company,
         companyRole: company_role,
@@ -73,9 +74,10 @@ const getBackground = async (userId, isExpert) => {
     if (normalRes.rowCount === 0) {
       return { error: 'User has not submitted background' };
     } else {
-      const { education, has_experience, interview_level } = normalRes.rows[0];
+      const { education, has_experience, interview_level, username } = normalRes.rows[0];
       const hasExperience = has_experience ? 'Yes' : 'No';
       return {
+        username,
         education,
         hasExperience,
         interviewLevel: interview_level

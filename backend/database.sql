@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS normal_backgrounds(
     user_id uuid PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
     education VARCHAR(255) NOT NULL,
     has_experience BOOLEAN NOT NULL,
-    interview_level INTEGER NOT NULL CHECK(interview_level BETWEEN 0 AND 5)
+    interview_level INTEGER NOT NULL CHECK(interview_level BETWEEN 0 AND 5),
+    username TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS expert_backgrounds(
@@ -55,7 +56,8 @@ CREATE TABLE IF NOT EXISTS expert_backgrounds(
     is_verified BOOLEAN NOT NULL DEFAULT false,
     company TEXT NOT NULL,
     company_role TEXT NOT NULL,
-    working_exp INTEGER NOT NULL CHECK (working_exp BETWEEN 0 AND 10)
+    working_exp INTEGER NOT NULL CHECK (working_exp BETWEEN 0 AND 10),
+    username TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bookings(
