@@ -29,7 +29,7 @@ const CompletedInterviewTable = props => {
           <div className='ten wide column'>
             {modalContentIndex !== null
               ? pastInterviewArray[modalContentIndex].feedback.comment
-                  .correctnessFeedback
+                .correctnessFeedback
               : null}
           </div>
         </div>
@@ -38,7 +38,7 @@ const CompletedInterviewTable = props => {
           <div className='ten wide column'>
             {modalContentIndex !== null
               ? pastInterviewArray[modalContentIndex].feedback.comment
-                  .clarityFeedback
+                .clarityFeedback
               : null}
           </div>
         </div>
@@ -47,7 +47,7 @@ const CompletedInterviewTable = props => {
           <div className='ten wide column'>
             {modalContentIndex !== null
               ? pastInterviewArray[modalContentIndex].feedback.comment
-                  .behaviouralFeedback
+                .behaviouralFeedback
               : null}
           </div>
         </div>
@@ -108,7 +108,7 @@ const CompletedInterviewTable = props => {
                 </td>
                 <td>
                   <button
-                    className='ui primary button'
+                    className={item.feedback ? 'ui primary button' : 'ui primary disabled button'}
                     onClick={() => viewHandler(index)}
                   >
                     View

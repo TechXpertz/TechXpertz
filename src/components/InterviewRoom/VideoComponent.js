@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import { useAuth0 } from '../../react-auth0-spa';
-import io from 'socket.io-client';
-import querySearch from 'stringquery';
 import './InterviewRoom.css';
 
 const Video = props => {
@@ -13,9 +10,9 @@ const Video = props => {
     y: 200
   });
   const { RTCPeerConnection, RTCSessionDescription } = window;
-  const endpoint = '/video';
   const bookingId = props.bookingId;
   const otherBookingId = props.otherBookingId;
+  const socket = props.socket;
   console.log(bookingId);
   console.log(otherBookingId);
 
@@ -34,10 +31,6 @@ const Video = props => {
     let temp = activeDrags - 1;
     setActiveDrags(temp);
   };
-
-  // DOM
-  const localVideo = document.getElementById('local-video');
-  const remoteVideo = document.getElementById('remote-video');
 
   // variables
   const mediaConstraints = {
@@ -60,108 +53,97 @@ const Video = props => {
     ]
   };
 
-  const { getTokenSilently, loading } = useAuth0();
-
   useEffect(() => {
     try {
-      if (!loading) {
-        getTokenSilently().then(tokenRes => {
-          const socket = io.connect(endpoint, {
-            query: {
-              bookingId
-            },
-            transportOptions: {
-              polling: {
-                extraHeaders: {
-                  Authorization: `Bearer ${tokenRes}`
-                }
-              }
-            }
-          });
+      if (socket) {
 
-          // socket event callbacks
-          socket.on('error', error => {
-            console.log('error', error);
-            // redirect user out of the room
-          });
+        // socket event callbacks
+        socket.on('error', error => {
+          console.log('error', error);
+          // redirect user out of the room
+        });
 
-          socket.on('message', msg => {
-            console.log(msg);
-          });
+        socket.on('message', msg => {
+          console.log(msg);
+        });
 
-          socket.on('join room', () => {
-            console.log('joining room');
-            socket.emit('any users', {
-              bookingId,
-              otherBookingId
-            });
+        socket.on('join room', () => {
+          console.log('Welcome to video!');
+          socket.emit('any users', {
+            bookingId,
+            otherBookingId
           });
+        });
 
-          socket.on('duplicate users', () => {
-            console.log('you are already inside the session!');
-            socket.close();
-            // alert user and close video
-          });
+        socket.on('duplicate users', () => {
+          console.log('you are already inside the session!');
+          socket.close();
+          // alert user and close video
+        });
 
-          socket.on('any users response', async data => {
-            await setLocalStream(mediaConstraints);
-            if (data.hasUser) {
-              console.log('sending offer');
-              peerConnection = new RTCPeerConnection(iceServers);
-              addLocalTracks(peerConnection);
-              peerConnection.ontrack = setRemoteStream;
-              peerConnection.onicecandidate = event =>
-                sendIceCandidate(event, socket);
-              await sendOffer(peerConnection, socket, data.socketId);
-            } else {
-              console.log('waiting for user to join');
-            }
-          });
-
-          socket.on('receive offer', async data => {
-            console.log('receive offer');
+        socket.on('any users response', async data => {
+          await setLocalStream(mediaConstraints);
+          if (data.hasUser) {
+            console.log('sending offer');
             peerConnection = new RTCPeerConnection(iceServers);
             addLocalTracks(peerConnection);
-            peerConnection.ontrack = event => setRemoteStream(event);
+            peerConnection.ontrack = setRemoteStream;
             peerConnection.onicecandidate = event =>
               sendIceCandidate(event, socket);
-            peerConnection.setRemoteDescription(
-              new RTCSessionDescription(data.offer)
-            );
-            await sendAnswer(peerConnection, socket, data.from);
-            console.log('sending answer');
-          });
+            await sendOffer(peerConnection, socket, data.socketId);
+          } else {
+            console.log('waiting for user to join');
+          }
+        });
 
-          socket.on('receive answer', data => {
-            console.log('received answer');
-            peerConnection.setRemoteDescription(
-              new RTCSessionDescription(data.answer)
-            );
-            if (!isCalling) {
-              sendOffer(peerConnection, socket, data.from);
-              isCalling = true;
-            }
-          });
+        socket.on('receive offer', async data => {
+          console.log('receive offer');
+          peerConnection = new RTCPeerConnection(iceServers);
+          addLocalTracks(peerConnection);
+          peerConnection.ontrack = event => setRemoteStream(event);
+          peerConnection.onicecandidate = event =>
+            sendIceCandidate(event, socket);
+          peerConnection.setRemoteDescription(
+            new RTCSessionDescription(data.offer)
+          );
+          await sendAnswer(peerConnection, socket, data.from);
+          console.log('sending answer');
+        });
 
-          socket.on('receive ice candidate', data => {
-            console.log('receive ice candidate');
-            const candidate = new RTCIceCandidate({
-              sdpMLineIndex: data.label,
-              candidate: data.candidate
-            });
-            peerConnection.addIceCandidate(candidate);
-          });
+        socket.on('receive answer', data => {
+          console.log('received answer');
+          peerConnection.setRemoteDescription(
+            new RTCSessionDescription(data.answer)
+          );
+          if (!isCalling) {
+            sendOffer(peerConnection, socket, data.from);
+            isCalling = true;
+          }
+        });
 
-          socket.on('user disconnected', () => {
-            console.log('other user disconnected');
-            hideVideoConference();
+        socket.on('receive ice candidate', data => {
+          console.log('receive ice candidate');
+          const candidate = new RTCIceCandidate({
+            sdpMLineIndex: data.label,
+            candidate: data.candidate
           });
+          peerConnection.addIceCandidate(candidate);
+        });
+
+        socket.on('user disconnected', () => {
+          console.log('other user disconnected');
+          hideVideoConference();
+        });
+
+        socket.on('disconnect', () => {
+          localStream && localStream.getTracks().forEach(track => track.stop());
         });
       }
     } catch (err) {
       console.log(err);
     }
-  }, [loading]);
+
+  }, [socket]);
 
   // functions
 

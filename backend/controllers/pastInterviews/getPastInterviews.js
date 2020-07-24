@@ -32,39 +32,6 @@ const pastInterviewsIn = async (bookings) => {
 
   for (booking of bookings) {
     const bookingId = booking.booking_id;
-    const timeslots = (await pool.query(
-      'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
-      + 'GROUP BY (date_col) ORDER BY date_col',
-      [bookingId]
-    ));
-
-    const comparison = new Date(Date.now());
-    comparison.setHours(comparison.getHours() - 2);
-    const validTimeslots = [];
-    for (dateSlot of timeslots.rows) {
-      const pgDate = dateSlot.date_col;
-      const validTimes = dateSlot.array_agg.filter(time => {
-        const hour = time.split(':')[0];
-        const pgCopy = new Date(pgDate);
-        pgCopy.setHours(hour);
-        return pgCopy <= comparison;
-      });
-      if (validTimes.length === 0) {
-        continue;
-      }
-      const dateItem = {
-        date: pgDate,
-        timings: validTimes
-      };
-      validTimeslots.push(dateItem);
-    }
-
-    if (validTimeslots.length === 0) {
-      continue;
-    }
-
-    const date = parseDateForFE(validTimeslots[0].date);
-    const time = parseTimeForFE(validTimeslots[0].timings[0]);
 
     const topic = (await pool.query(
       'SELECT topic_name FROM topics WHERE topic_id = $1',
@@ -100,6 +67,58 @@ const pastInterviewsIn = async (bookings) => {
       'SELECT title, content, solution, hint FROM questions WHERE question_id = $1',
       [questionId]
     )).rows[0];
+
+    const timeslots = (await pool.query(
+      'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
+      + 'GROUP BY (date_col) ORDER BY date_col',
+      [bookingId]
+    ));
+
+    const givenFeedback = await pool.query(
+      'SELECT booking_id FROM feedbacks WHERE booking_id = $1',
+      [booking.other_booking_id]
+    );
+
+    if (givenFeedback.rowCount > 0) {
+      // past interview should show up as long as user has given feedback, regardless of timing
+      pastInterviews.push({
+        bookingId,
+        date: parseDateForFE(timeslots.rows[0].date_col),
+        time: parseTimeForFE(timeslots.rows[0].array_agg[0]),
+        topic,
+        question,
+        feedback
+      });
+      continue;
+    }
+
+    const comparison = new Date(Date.now());
+    comparison.setHours(comparison.getHours() - 2);
+    const validTimeslots = [];
+    for (dateSlot of timeslots.rows) {
+      const pgDate = dateSlot.date_col;
+      const validTimes = dateSlot.array_agg.filter(time => {
+        const hour = time.split(':')[0];
+        const pgCopy = new Date(pgDate);
+        pgCopy.setHours(hour);
+        return pgCopy <= comparison;
+      });
+      if (validTimes.length === 0) {
+        continue;
+      }
+      const dateItem = {
+        date: pgDate,
+        timings: validTimes
+      };
+      validTimeslots.push(dateItem);
+    }
+
+    if (validTimeslots.length === 0) {
+      continue;
+    }
+
+    const date = parseDateForFE(validTimeslots[0].date);
+    const time = parseTimeForFE(validTimeslots[0].timings[0]);
 
     pastInterviews.push({
       bookingId,

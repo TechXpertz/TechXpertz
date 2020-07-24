@@ -8,6 +8,7 @@ import axios from 'axios';
 const Header = (props) => {
 
     const onExit = () => {
+        props.onExit();
         removeOtherTimeslots();
         history.push({
             pathname: '/feedback-form-page',

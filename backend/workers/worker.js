@@ -7,6 +7,7 @@ const task = () => {
   if (!validHours.includes(hour)) {
     return;
   }
+  now.setMinutes(0);
   doTaskAtTime(now);
 }
 

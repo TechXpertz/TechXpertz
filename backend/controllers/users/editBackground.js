@@ -8,8 +8,9 @@ const editNormalBackground = async (req, res) => {
     return res.sendStatus(401);
   }
 
-  const { education, hasExperience, interviewLevel, progLanguages, topics } = req.body;
-  if (!education || !hasExperience || interviewLevel === undefined || !progLanguages || !topics) {
+  const { username, education, hasExperience, interviewLevel, progLanguages, topics } = req.body;
+  if (!username || !education || hasExperience === undefined
+    || interviewLevel === undefined || !progLanguages || !topics) {
     return res.sendStatus(400);
   }
 
@@ -20,7 +21,7 @@ const editNormalBackground = async (req, res) => {
 
   const hasExperienceBool = hasExperienceLowerCase === 'yes' ? true : false;
   const userId = await getUserId(req.user);
-  normal(userId, education, hasExperienceBool, interviewLevel);
+  normal(userId, username, education, hasExperienceBool, interviewLevel);
   updateTopics(userId, topics);
   updateProgLangs(userId, progLanguages);
   return res.sendStatus(200);
@@ -32,33 +33,33 @@ const editExpertBackground = async (req, res) => {
     return res.sendStatus(401);
   }
 
-  const { company, companyRole, workingExp, topics, progLanguages } = req.body;
-  if (!company || !companyRole || !workingExp || !topics || !progLanguages) {
+  const { username, company, companyRole, workingExp, topics, progLanguages } = req.body;
+  if (!username || !company || !companyRole || !workingExp || !topics || !progLanguages) {
     return res.sendStatus(400);
   }
 
   const userId = await getUserId(req.user);
 
-  expert(userId, company, companyRole, workingExp);
+  expert(userId, username, company, companyRole, workingExp);
   updateProgLangs(userId, progLanguages);
   updateTopics(userId, topics);
   return res.sendStatus(200);
 
 }
 
-const expert = async (userId, company, companyRole, workingExp) => {
+const expert = async (userId, username, company, companyRole, workingExp) => {
   pool.query(
-    'UPDATE expert_backgrounds SET company = $1, company_role = $2, working_exp = $3 '
-    + 'WHERE user_id  = $4',
-    [company, companyRole, workingExp, userId]
+    'UPDATE expert_backgrounds SET company = $1, company_role = $2, working_exp = $3, username = $4 '
+    + 'WHERE user_id  = $5',
+    [company, companyRole, workingExp, username, userId]
   );
 }
 
-const normal = async (userId, education, hasExperience, interviewLevel) => {
+const normal = async (userId, username, education, hasExperience, interviewLevel) => {
   pool.query(
     'UPDATE normal_backgrounds SET education = $1, has_experience = $2, '
-    + 'interview_level = $3 WHERE user_id = $4',
-    [education, hasExperience, interviewLevel, userId]
+    + 'interview_level = $3, username = $4 WHERE user_id = $5',
+    [education, hasExperience, interviewLevel, username, userId]
   );
 }
 

@@ -11,49 +11,30 @@ import './InterviewRoom.css';
 
 const CodeEditor = props => {
   const [js, setJs] = useState('');
-  const [socket, setSocket] = useState();
 
-  const { getTokenSilently, loading } = useAuth0();
-  const endpoint = '/editor';
-  const bookingId = props.bookingId;
+  const { loading } = useAuth0();
+  const socket = props.socket;
 
   useEffect(() => {
     try {
-      if (!loading) {
-        getTokenSilently().then(tokenRes => {
-          const socket = io.connect(endpoint, {
-            query: {
-              bookingId
-            },
-            transportOptions: {
-              polling: {
-                extraHeaders: {
-                  Authorization: `Bearer ${tokenRes}`
-                }
-              }
-            }
-          });
+      if (socket) {
+        socket.on('error', error => {
+          console.log('error', error);
+        });
 
-          setSocket(socket);
+        socket.on('message', msg => {
+          console.log(msg);
+        });
 
-          socket.on('error', error => {
-            console.log('error', error);
-          });
-
-          socket.on('message', msg => {
-            console.log(msg);
-          });
-
-          socket.on('receive code', payload => {
-            setJs(payload.newCode);
-            console.log(payload.newCode);
-          });
+        socket.on('receive code', payload => {
+          setJs(payload.newCode);
+          console.log(payload.newCode);
         });
       }
     } catch (err) {
       console.log(err);
     }
-  }, [loading]);
+  }, [socket]);
 
   const codeMirrorOptions = {
     theme: 'material',

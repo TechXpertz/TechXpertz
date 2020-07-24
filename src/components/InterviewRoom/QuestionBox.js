@@ -18,12 +18,6 @@ const QuestionBox = props => {
   const question = props.question;
   console.log(question);
 
-  if (!question) {
-    return (
-      <LoaderPage />
-    );
-  }
-
   const tabHandler = value => {
     switch (value) {
       case 'QUESTION':

@@ -4,7 +4,7 @@ import { Rating } from 'semantic-ui-react';
 import LoaderPage from '../LoaderPage';
 import DropdownMenu from '../DropdownMenu';
 import './index.css';
-import { getBackground } from '../../api_callers/apis.json';
+import { getBackground, normalBackground, expertBackground } from '../../api_callers/apis.json';
 import axios from 'axios';
 
 const ProfileContent = () => {
@@ -24,7 +24,10 @@ const ProfileContent = () => {
   ];
   const [background, setBackground] = useState();
   const [isEdit, setIsEdit] = useState(false);
-  const [editedBackground, setEditedBackground] = useState(null);
+
+  const workingExpStr = (exp) => {
+    return exp === undefined ? exp : period[exp].label;
+  };
 
   const getUserBackground = async () => {
     try {
@@ -98,7 +101,7 @@ const ProfileContent = () => {
             >
               <div className='three wide column information-content'>Name</div>
               <div className='four wide column information-content'>
-                {user.name}
+                {background.background.username}
               </div>
             </div>
             <div
@@ -201,8 +204,7 @@ const ProfileContent = () => {
                   Total Working Experience
                 </div>
                 <div className='four wide column information-content'>
-                  {background.background.workingExp}{' '}
-                  {background.background.workingExp <= 1 ? 'year' : 'years'}
+                  {workingExpStr(background.background.workingExp)}
                 </div>
               </div>
             )}
@@ -293,7 +295,10 @@ const ProfileContent = () => {
     const [editedCompany, setEditedCompany] = useState(userCompany);
     const [editedCompanyRole, setEditedCompanyRole] = useState(userCompanyRole);
     const [editedInterview, setEditedInterview] = useState(userInterviewLevel);
-    const [editedWorkingExp, setEditedWorkingExp] = useState(userWorkingExp);
+    const [editedWorkingExp, setEditedWorkingExp] = useState({
+      value: userWorkingExp,
+      label: workingExpStr(userWorkingExp)
+    });
 
     const onNameChange = event => {
       setEditedName(event.target.value);
@@ -323,19 +328,68 @@ const ProfileContent = () => {
       setEditedWorkingExp(event);
     };
 
-    //This is the event handler you need to hook up to submit the edited user info
-    //If no info is edited still submit because all the default values are the original values
-    const onSubmit = event => {
+    const onSubmit = async event => {
       setIsEdit(!isEdit);
-      setEditedBackground({
-        name: editedName,
-        email: editedEmail,
-        company: editedCompany,
-        companyRole: editedCompanyRole,
-        workingExp: editedWorkingExp,
-        interviewLevel: editedInterview,
-        isExpert: background.isExpert
+      const token = await getTokenSilently();
+      const topics = background.topics.map(topic => {
+        return {
+          topicName: topic
+        };
       });
+      const progLanguages = background.progLanguages.map(lang => {
+        return {
+          progName: lang
+        };
+      });
+      const header = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      if (background.isExpert) {
+        const editedExpertBackground = {
+          username: editedName,
+          company: editedCompany,
+          companyRole: editedCompanyRole,
+          workingExp: editedWorkingExp.value,
+          topics,
+          progLanguages
+        };
+        setBackground({
+          background: {
+            username: editedName,
+            company: editedCompany,
+            companyRole: editedCompanyRole,
+            workingExp: editedWorkingExp.value
+          },
+          isExpert: background.isExpert,
+          topics: background.topics,
+          progLanguages: background.progLanguages
+        });
+        await axios.patch(expertBackground, editedExpertBackground, header);
+      } else {
+        const editedNormalBackground = {
+          username: editedName,
+          education: editedEducation,
+          interviewLevel: editedInterview,
+          hasExperience: background.background.hasExperience,
+          topics,
+          progLanguages
+        };
+        setBackground({
+          background: {
+            username: editedName,
+            education: editedEducation,
+            interviewLevel: editedInterview,
+            hasExperience: background.background.hasExperience
+          },
+          isExpert: background.isExpert,
+          topics: background.topics,
+          progLanguages: background.progLanguages
+        });
+        await axios.patch(normalBackground, editedNormalBackground, header);
+      }
     };
 
     if (loading || !user) {
@@ -508,8 +562,7 @@ const ProfileContent = () => {
                           {
                             value: userWorkingExp,
                             label:
-                              userWorkingExp +
-                              (userWorkingExp <= 1 ? ' year' : ' years')
+                              (workingExpStr(userWorkingExp))
                           }
                         ]}
                         array={period}
@@ -584,7 +637,7 @@ const ProfileContent = () => {
   } else {
     return (
       <ProfileEditPage
-        userName={user.name}
+        userName={background.background.username}
         userEmail={user.email}
         userCompany={background.background.company}
         userCompanyRole={background.background.companyRole}

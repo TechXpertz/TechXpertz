@@ -26,13 +26,13 @@ const NormalForm = props => {
   ];
   const submitButton =
     check !== '' &&
-    username !== '' &&
-    educationType &&
-    educationType.length !== 0 &&
-    topics &&
-    topics.length !== 0 &&
-    lang &&
-    lang.length !== 0
+      username !== '' &&
+      educationType &&
+      educationType.length !== 0 &&
+      topics &&
+      topics.length !== 0 &&
+      lang &&
+      lang.length !== 0
       ? 'ui primary button'
       : 'ui primary disabled button';
 
@@ -68,7 +68,7 @@ const NormalForm = props => {
     });
   }, [interestArray, progLangArray, props.type]);
 
-  const sendForm = async (topics, progLang, educationType, check) => {
+  const sendForm = async (username, topics, progLang, educationType, check) => {
     try {
       const token = await getTokenSilently();
       const header = {
@@ -86,6 +86,7 @@ const NormalForm = props => {
       });
 
       const data = {
+        username,
         education: educationType.value,
         hasExperience: check,
         topics: myTopics,
@@ -107,7 +108,7 @@ const NormalForm = props => {
 
   const handleClick = async value => {
     setIsSubmit(value);
-    await sendForm(topics, lang, educationType, check);
+    await sendForm(username, topics, lang, educationType, check);
   };
 
   const usernameHandler = value => {
