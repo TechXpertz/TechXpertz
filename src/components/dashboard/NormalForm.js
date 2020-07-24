@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Rating } from 'semantic-ui-react';
 import Modal from '../Modal';
-import StarRating from '../StarRating';
 import DropdownMenu from '../DropdownMenu';
+import InputBox from '../InputBox';
 import Axios from 'axios';
 import { normalBackground, postAccType } from '../../api_callers/apis.json';
 import { useAuth0 } from '../../react-auth0-spa';
@@ -11,6 +11,7 @@ import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
 const NormalForm = props => {
   const [check, setCheck] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
+  const [username, setUsername] = useState('');
   const [educationType, setEducationType] = useState([]);
   const [topics, setTopics] = useState([]);
   const [lang, setLang] = useState([]);
@@ -18,8 +19,14 @@ const NormalForm = props => {
   const { getTokenSilently } = useAuth0();
   const interestArray = [];
   const progLangArray = [];
+  const educationArray = [
+    { value: 'No Degree', label: 'No Degree' },
+    { value: 'Undergraduate', label: 'Undergraduate' },
+    { value: 'Graduate', label: 'Graduate' }
+  ];
   const submitButton =
     check !== '' &&
+    username !== '' &&
     educationType &&
     educationType.length !== 0 &&
     topics &&
@@ -29,13 +36,9 @@ const NormalForm = props => {
       ? 'ui primary button'
       : 'ui primary disabled button';
 
-  const educationArray = [
-    { value: 'No Degree', label: 'No Degree' },
-    { value: 'Undergraduate', label: 'Undergraduate' },
-    { value: 'Graduate', label: 'Graduate' }
-  ];
+  console.log(username);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.type !== 'Normal') {
       return;
     }
@@ -90,8 +93,6 @@ const NormalForm = props => {
         interviewLevel: currentLevel
       };
 
-      console.log('data', data);
-
       const normBackground = Axios.post(normalBackground, data, header);
       const accType = Axios.post(
         postAccType,
@@ -107,6 +108,10 @@ const NormalForm = props => {
   const handleClick = async value => {
     setIsSubmit(value);
     await sendForm(topics, lang, educationType, check);
+  };
+
+  const usernameHandler = value => {
+    setUsername(value);
   };
 
   const checkType = value => {
@@ -128,7 +133,6 @@ const NormalForm = props => {
   const handleRate = (e, { rating, maxRating }) => {
     setCurrentLevel(rating);
   };
-  console.log(currentLevel);
 
   useEffect(() => {
     props.onSubmitClick(isSubmit);
@@ -156,6 +160,12 @@ const NormalForm = props => {
         </p>
       </div>
     </>
+  );
+
+  const usernameField = (
+    <div className='row'>
+      <InputBox description='Username' valueChanged={usernameHandler} />
+    </div>
   );
 
   const education = (
@@ -187,8 +197,8 @@ const NormalForm = props => {
             <div className='ui checkbox'>
               <input
                 type='checkbox'
-                onClick={() => (check ? setCheck('') : setCheck('Yes'))}
-                disabled={check && check !== 'Yes' ? 'disabled' : null}
+                onChange={() => setCheck('Yes')}
+                checked={check === 'Yes' ? 'Yes' : ''}
               />
               <label style={{ fontSize: '16px' }}>Yes</label>
             </div>
@@ -197,8 +207,8 @@ const NormalForm = props => {
             <div className='ui checkbox'>
               <input
                 type='checkbox'
-                onClick={() => (check ? setCheck('') : setCheck('No'))}
-                disabled={check && check !== 'No' ? 'disabled' : null}
+                onChange={() => setCheck('No')}
+                checked={check === 'No' ? 'No' : ''}
               />
               <label style={{ fontSize: '16px' }}>No</label>
             </div>
@@ -266,6 +276,7 @@ const NormalForm = props => {
   const content = (
     <>
       <div className='ui grid'>
+        {usernameField}
         {education}
         {interview}
         {interests}
