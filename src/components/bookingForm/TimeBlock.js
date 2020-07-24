@@ -8,10 +8,12 @@ const TimeBlock = props => {
       : { value: props.value, set: false }
   );
   const buttonColor =
-    click === false ? 'ui blue basic button' : 'ui blue button';
+    click === false
+      ? 'fluid tiny ui blue basic button'
+      : 'fluid tiny ui blue button';
 
   const isButtonDisabled = props.isDisabled
-    ? 'ui disabled blue basic button'
+    ? 'fluid tiny ui disabled blue basic button'
     : buttonColor;
 
   const handleButtonClick = value => {
@@ -28,7 +30,6 @@ const TimeBlock = props => {
   return (
     <button
       className={isButtonDisabled}
-      style={{ width: '8em' }}
       onClick={() => handleButtonClick(props.value)}
     >
       <h5>{props.value}</h5>

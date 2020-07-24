@@ -15,7 +15,6 @@ const UserDashboard = () => {
   const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
   const [loader, setLoader] = useState(true);
   const { loading, isAuthenticated, getTokenSilently } = useAuth0();
-  console.log(type);
 
   useEffect(() => {
     const fetchHasSubmittedForm = async () => {

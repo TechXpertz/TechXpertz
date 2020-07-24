@@ -43,19 +43,16 @@ const DaysColumn = props => {
   }, [timings]);
 
   return (
-    <div className='one wide column' style={{ paddingLeft: '2px' }}>
+    <div>
       <div className='row'>
-        <h3
-          className='ui center aligned header'
-          style={{ marginRight: '18px' }}
-        >
+        <h3 className='ui center aligned header'>
           {props.dateObj.format('ddd')}
         </h3>
       </div>
       <div className='row'>
         <h3
           className='ui center aligned grey header'
-          style={{ fontWeight: 'lighter', marginRight: '18px' }}
+          style={{ fontWeight: 'lighter' }}
         >
           {props.dateObj.format('MMM')}
           &nbsp;
