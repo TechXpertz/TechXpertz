@@ -331,7 +331,7 @@ const InterviewRequestFrom = props => {
       <NavBar />
       <div className='row' style={{ height: '3em' }} />
       <div className='ui two column grid' style={{ marginTop: '2em' }}>
-        <div className='five wide column'>
+        <div className='four wide column'>
           <div className='row' style={{ height: '16em' }} />
           <div className='ui three column grid' style={{ paddingLeft: '25px' }}>
             <div className='seven wide column'>
@@ -375,7 +375,7 @@ const InterviewRequestFrom = props => {
           </div>
         </div>
         <div
-          className='eleven wide column'
+          className='twelve wide column'
           style={{ height: '95vh', borderLeft: '1px solid' }}
         >
           <div className='row' style={{ height: '9em' }} />

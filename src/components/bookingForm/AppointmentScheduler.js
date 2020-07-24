@@ -51,7 +51,7 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
     });
     return newArr.map(index => {
       return (
-        <div className='two wide column'>
+        <div key={index} className='two wide column'>
           <DaysColumn
             key={index}
             dateObj={moment.clone().add(index, 'days')}
