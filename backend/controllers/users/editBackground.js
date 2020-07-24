@@ -9,7 +9,8 @@ const editNormalBackground = async (req, res) => {
   }
 
   const { education, hasExperience, interviewLevel, progLanguages, topics } = req.body;
-  if (!education || !hasExperience || interviewLevel === undefined || !progLanguages || !topics) {
+  console.log(req.body);
+  if (!education || hasExperience === undefined || interviewLevel === undefined || !progLanguages || !topics) {
     return res.sendStatus(400);
   }
 

@@ -74,9 +74,10 @@ const getBackground = async (userId, isExpert) => {
       return { error: 'User has not submitted background' };
     } else {
       const { education, has_experience, interview_level } = normalRes.rows[0];
+      const hasExperience = has_experience ? 'Yes' : 'No';
       return {
         education,
-        hasExperience: has_experience,
+        hasExperience,
         interviewLevel: interview_level
       };
     }
