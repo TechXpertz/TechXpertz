@@ -9,11 +9,11 @@ const TimeBlock = props => {
   );
   const buttonColor =
     click === false
-      ? 'fluid tiny ui blue basic button'
-      : 'fluid tiny ui blue button';
+      ? 'fluid mini ui blue basic button'
+      : 'fluid mini ui blue button';
 
   const isButtonDisabled = props.isDisabled
-    ? 'fluid tiny ui disabled blue basic button'
+    ? 'fluid mini ui disabled blue basic button'
     : buttonColor;
 
   const handleButtonClick = value => {
