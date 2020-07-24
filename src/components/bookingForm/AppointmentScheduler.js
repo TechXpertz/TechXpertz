@@ -51,46 +51,42 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
     });
     return newArr.map(index => {
       return (
-        <DaysColumn
-          key={index}
-          dateObj={moment.clone().add(index, 'days')}
-          onDaysChange={dateHandler}
-          slotsSelected={
-            period.filter(
-              item =>
-                item.date ===
-                moment
-                  .clone()
-                  .add(index, 'days')
-                  .format('DD/MM/YYYY')
-            ).length === 1
-              ? period.filter(
-                  x =>
-                    x.date ===
-                    moment
-                      .clone()
-                      .add(index, 'days')
-                      .format('DD/MM/YYYY')
-                )
-              : [{ date: '', timeSlots: '' }]
-          }
-        />
+        <div className='two wide column'>
+          <DaysColumn
+            key={index}
+            dateObj={moment.clone().add(index, 'days')}
+            onDaysChange={dateHandler}
+            slotsSelected={
+              period.filter(
+                item =>
+                  item.date ===
+                  moment
+                    .clone()
+                    .add(index, 'days')
+                    .format('DD/MM/YYYY')
+              ).length === 1
+                ? period.filter(
+                    x =>
+                      x.date ===
+                      moment
+                        .clone()
+                        .add(index, 'days')
+                        .format('DD/MM/YYYY')
+                  )
+                : [{ date: '', timeSlots: '' }]
+            }
+          />
+        </div>
       );
     });
   };
 
   return (
-    <div
-      className='ui ten column grid'
-      style={{ width: '180%', paddingRight: '5px' }}
-    >
+    <div className='ui nine column grid container'>
       <div
         className='one wide right aligned column'
         style={{
-          marginLeft: '1em',
-          marginTop: '6px',
-          paddingRight: 'px',
-          paddingLeft: '0px'
+          marginTop: '6px'
         }}
       >
         <i
@@ -102,7 +98,7 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
       {renderDays(shiftArr)}
       <div
         className='one wide left aligned column'
-        style={{ marginTop: '6px', paddingRight: '0px', paddingLeft: '0px' }}
+        style={{ marginTop: '6px' }}
       >
         <i
           className='large angle right icon'
