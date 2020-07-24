@@ -23,7 +23,6 @@ const CommentSection = props => {
   useEffect(() => {
     try {
       if (!loading && socket) {
-
         socket.on('error', error => {
           console.log('error', error);
         });
@@ -75,7 +74,7 @@ const CommentSection = props => {
 
   return (
     <>
-      <div className='ui comments' style={{ padding: '20px 10px 0px' }}>
+      <div className='ui comments' style={{ padding: '20px 20px 0px' }}>
         <div className='ui dividing header'>Comment Section</div>
       </div>
       <div
@@ -84,7 +83,7 @@ const CommentSection = props => {
           minHeight: '22vh',
           maxHeight: '22vh',
           overflow: 'auto',
-          padding: '0px 10px'
+          padding: '0px 25px'
         }}
       >
         {comments.map(item => {
@@ -98,10 +97,10 @@ const CommentSection = props => {
           );
         })}
       </div>
-      <div className='ui container'>
+      <div className='ui fluid container'>
         <form
           className='ui reply form'
-          style={{ padding: '20px 18px' }}
+          style={{ padding: '20px 18px 5px' }}
           onSubmit={handleComment}
         >
           <div className='field'>
