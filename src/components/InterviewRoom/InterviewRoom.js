@@ -19,7 +19,7 @@ const InterviewRoom = props => {
       ? 'interviewee'
       : 'interviewer'
   );
-  const [switchedRole, setSwitchedRole] = useState(false);
+  const [disableSwitch, setdisableSwitch] = useState(true);
   const [question, setQuestion] = useState();
   const [qnSocket, setQnSocket] = useState();
   const [commentSocket, setCommentSocket] = useState();
@@ -37,7 +37,7 @@ const InterviewRoom = props => {
   //handlers
   const onChangeRoleHandler = childProp => {
     setUserRole(childProp);
-    setSwitchedRole(true);
+    setdisableSwitch(true);
     qnSocket.emit('switch');
   };
 
@@ -105,7 +105,7 @@ const InterviewRoom = props => {
         qnSocket.on('receive switch', () => {
           console.log('other user switched roles');
           setUserRole(userRole === 'interviewee' ? 'interviewer' : 'interviewee');
-          setSwitchedRole(true);
+          setdisableSwitch(true);
         });
 
         if (userRole === 'interviewee') {
@@ -148,7 +148,7 @@ const InterviewRoom = props => {
           role='interviewee'
           otherRole='Interviewee'
           onClick={onChangeRoleHandler}
-          hasSwitched={switchedRole}
+          hasSwitched={disableSwitch}
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
@@ -194,7 +194,7 @@ const InterviewRoom = props => {
         <SubHeader
           role='interviewer'
           onClick={onChangeRoleHandler}
-          hasSwitched={switchedRole}
+          hasSwitched={disableSwitch}
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
