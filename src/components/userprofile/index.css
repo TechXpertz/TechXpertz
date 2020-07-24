@@ -49,9 +49,10 @@
   background: orange;
   border-radius: 40px;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 0 40px;
+  padding: 0 10px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
@@ -63,4 +64,10 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.edit-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

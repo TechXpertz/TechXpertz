@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import moment from 'moment';
 import TimeBlock from './TimeBlock';
 
 const DaysColumn = props => {
@@ -17,6 +18,7 @@ const DaysColumn = props => {
     date: props.dateObj.format('DD/MM/YYYY'),
     timeSlots: []
   });
+  const currentTime = moment(new Date());
 
   const callbackForTime = useCallback(timeValues => {
     setTimings(prevState => {
@@ -37,9 +39,6 @@ const DaysColumn = props => {
   }, []);
 
   useEffect(() => {
-    // if (timings.timeSlots.length <= 0) {
-    //   return;
-    // }
     props.onDaysChange(timings);
   }, [timings]);
 
@@ -64,7 +63,14 @@ const DaysColumn = props => {
         </h3>
       </div>
       {timeArr.map((time, index) => {
-        //console.log('slotsSelected', props.slotsSelected[0]);
+        let difference = 3;
+        if (moment.duration(props.dateObj.diff(currentTime)).asDays() <= 0) {
+          const momentTime = moment(time, ['h:mm A']);
+          const differenceMoment = moment.duration(
+            momentTime.diff(currentTime)
+          );
+          difference = differenceMoment.asHours();
+        }
         const result =
           props.slotsSelected[0].timeSlots &&
           props.slotsSelected[0].timeSlots.filter(x => x === time);
@@ -73,7 +79,7 @@ const DaysColumn = props => {
             <TimeBlock
               value={time}
               callbackFromDays={callbackForTime}
-              disableButton={props.disableButton}
+              isDisabled={difference <= 2}
               selected={result.length === 1}
             />
           </div>
