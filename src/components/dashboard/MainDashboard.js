@@ -375,8 +375,8 @@ const MainDashboard = () => {
         <div className='twelve wide column'>
           {button}
           {header}
-          {bookings && interviewItem}
-          {!bookings && <LoaderPage />}
+          {(bookings && accType !== '') && interviewItem}
+          {(!bookings || accType === '') && <LoaderPage />}
         </div>
         <div className='two wide column' />
       </div>
@@ -384,7 +384,8 @@ const MainDashboard = () => {
         <div className='two wide column' />
         <div className='twelve wide column'>
           {completedInterviewHeader}
-          {completedInterviewItem}
+          {accType !== '' && completedInterviewItem}
+          {accType === '' && <LoaderPage />}
         </div>
         <div className='two wide column' />
       </div>
