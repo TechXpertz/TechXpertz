@@ -12,6 +12,8 @@ const DropdownMenu = props => {
         className='basic-multi-select'
         isClearable
         onChange={value => props.valueChanged(value)}
+        minMenuHeight={200}
+        maxMenuHeight={300}
       />
     );
   } else {

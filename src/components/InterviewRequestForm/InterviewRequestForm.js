@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import NavBar from './NavBar';
 import DropdownMenu from '../DropdownMenu';
 import AppointmentScheduler from '../bookingForm/AppointmentScheduler';
@@ -14,6 +14,7 @@ const InterviewRequestFrom = props => {
   const currentMoment = moment();
   const interestArray = [];
   const progLangArray = [];
+  console.log(props.location.state);
 
   React.useEffect(() => {
     const fetchTopics = async () => {
@@ -49,7 +50,12 @@ const InterviewRequestFrom = props => {
   const [lang, setLang] = useState([]);
   const [userTiming, setUserTiming] = useState([]);
   const [isSubmit, setIsSubmit] = useState(false);
-  const [otherAccType, setOtherAccType] = useState('');
+  const [otherAccType, setOtherAccType] = useState(
+    props.location.state.accType === 'Expert' ? 'Normal' : ''
+  );
+  console.log(otherAccType);
+
+  //TODO for expert, set otherAccType to be normal
 
   const submitButton =
     topicsState.length === 0 ||
@@ -95,12 +101,8 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
-              otherAccType ? setOtherAccType('') : setOtherAccType('Normal')
-            }
-            disabled={
-              otherAccType && otherAccType !== 'Normal' ? 'disabled' : null
-            }
+            onChange={() => setOtherAccType('Normal')}
+            checked={otherAccType === 'Normal' ? 'Normal' : ''}
           />
           <label>Normal</label>
         </div>
@@ -109,12 +111,8 @@ const InterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onClick={() =>
-              otherAccType ? setOtherAccType('') : setOtherAccType('Expert')
-            }
-            disabled={
-              otherAccType && otherAccType !== 'Expert' ? 'disabled' : null
-            }
+            onChange={() => setOtherAccType('Expert')}
+            checked={otherAccType === 'Expert' ? 'Expert' : ''}
           />
           <label>Expert</label>
         </div>
@@ -123,34 +121,36 @@ const InterviewRequestFrom = props => {
   );
 
   const topics = (
-    <>
-      <div className='row'>
-        <h3>Topic</h3>
-      </div>
-      <div className='row' style={{ paddingTop: '6px' }}>
-        <DropdownMenu
-          array={interestArray}
-          content='Please select one topic'
-          valueChanged={topicHandler}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch'
+      }}
+    >
+      <DropdownMenu
+        array={interestArray}
+        content='Please select one topic'
+        valueChanged={topicHandler}
+      />
+    </div>
   );
 
   const progLang = (
-    <>
-      <div className='row'>
-        <h3>Programming Languages</h3>
-      </div>
-      <div className='row' style={{ paddingTop: '6px' }}>
-        <DropdownMenu
-          array={progLangArray}
-          content='Choose your programming languages'
-          multi={true}
-          valueChanged={langHandler}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch'
+      }}
+    >
+      <DropdownMenu
+        array={progLangArray}
+        content='Choose your programming languages'
+        multi={true}
+        valueChanged={langHandler}
+      />
+    </div>
   );
 
   const actions = (
@@ -213,7 +213,7 @@ const InterviewRequestFrom = props => {
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
-                    {item.value}
+                    {item.value} &nbsp;
                   </span>
                 );
               })}
@@ -227,7 +227,7 @@ const InterviewRequestFrom = props => {
           >
             Date & Timeslots:
           </div>
-          <div className='four wide column'>
+          <div className='four wide column' style={{ overflow: 'auto' }}>
             {userTiming.length > 0 &&
               userTiming.map((item, position) => {
                 return (
@@ -330,44 +330,52 @@ const InterviewRequestFrom = props => {
       )}
       <NavBar />
       <div className='row' style={{ height: '3em' }} />
-      <div
-        className='ui two column grid'
-        style={{ marginTop: '2em', marginLeft: '20px', width: '100vw' }}
-      >
-        <div className='four wide column'>
+      <div className='ui two column grid' style={{ marginTop: '2em' }}>
+        <div className='five wide column'>
           <div className='row' style={{ height: '16em' }} />
-          <div className='ui three column grid'>
-            <div className='one wide column' />
-            <div className='seven wide column'>{accountHeader}</div>
-            <div
-              className='six wide column'
-              style={{ marginTop: '4px', paddingRight: '8px' }}
-            >
-              {accountCheckbox}
+          <div className='ui three column grid' style={{ paddingLeft: '25px' }}>
+            <div className='seven wide column'>
+              {props.location.state.accType === 'Normal' && accountHeader}
+            </div>
+            <div className='six wide column' style={{ marginTop: '4px' }}>
+              {props.location.state.accType === 'Normal' && accountCheckbox}
             </div>
           </div>
-          <div className='row' style={{ paddingTop: '2em' }}>
-            <div className='ui two column grid'>
-              <div className='one wide column' />
-              <div className='twelve wide column'>{topics}</div>
+          <div
+            className='row'
+            style={{ paddingTop: '2em', paddingLeft: '20px' }}
+          >
+            <div>
+              <h3>Topic</h3>
+              {topics}
             </div>
           </div>
-          <div className='row' style={{ paddingTop: '2em' }}>
-            <div className='ui two column grid'>
-              <div className='one wide column' />
-              <div className='twelve wide column'>{progLang}</div>
+          <div
+            className='row'
+            style={{
+              paddingTop: '2em',
+              paddingLeft: '20px'
+            }}
+          >
+            <div className='ui container'>
+              <h3>Programming Languages</h3>
+              {progLang}
             </div>
           </div>
-          <div className='row' style={{ paddingTop: '4em' }}>
-            <div className='ui two column grid'>
-              <div className='three wide column' />
-              <div className='ten wide column'>{actions}</div>
-            </div>
+          <div
+            className='row'
+            style={{
+              paddingTop: '4em',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center'
+            }}
+          >
+            {actions}
           </div>
         </div>
-
         <div
-          className='twelve wide column'
+          className='eleven wide column'
           style={{ height: '95vh', borderLeft: '1px solid' }}
         >
           <div className='row' style={{ height: '9em' }} />
@@ -382,4 +390,4 @@ const InterviewRequestFrom = props => {
   );
 };
 
-export default InterviewRequestFrom;
+export default memo(InterviewRequestFrom);

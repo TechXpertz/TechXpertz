@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import DaysColumn from './DaysColumn';
 
 const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
@@ -114,4 +114,4 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
   );
 };
 
-export default AppointmentScheduler;
+export default memo(AppointmentScheduler);
