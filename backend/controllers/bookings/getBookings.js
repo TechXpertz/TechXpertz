@@ -37,6 +37,18 @@ const getBookingsAfterNow = async (bookings) => {
   const result = [];
   for (booking of bookings) {
     const bookingId = booking.booking_id;
+
+    // check if user has given feedback for this interview session
+    if (booking.other_booking_id !== null) {
+      const feedback = await pool.query(
+        'SELECT booking_id FROM feedbacks WHERE booking_id = $1',
+        [booking.other_booking_id]
+      );
+      if (feedback.rowCount > 0) {
+        continue;
+      }
+    }
+
     const timeslotsRes = (await pool.query(
       'SELECT date_col, ARRAY_AGG(time_start ORDER BY time_start) FROM timeslots WHERE booking_id = $1 '
       + 'GROUP BY (date_col) ORDER BY date_col',

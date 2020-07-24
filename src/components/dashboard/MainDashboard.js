@@ -141,6 +141,7 @@ const MainDashboard = () => {
 
         const response = (await axios.get(getPastInterviews, header)).data;
         setPastInterviews(response.pastInterviews);
+        console.log('past', response.pastInterviews);
         return response;
       } catch (err) {
         console.log(err);
