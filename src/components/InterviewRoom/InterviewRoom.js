@@ -50,7 +50,7 @@ const InterviewRoom = props => {
 
   const { getTokenSilently, loading } = useAuth0();
 
-  const getQuestion = async (token) => {
+  const getQuestion = async token => {
     const header = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -65,11 +65,9 @@ const InterviewRoom = props => {
   };
 
   useEffect(() => {
-
     if (!loading && first) {
       setFirst(false);
       getTokenSilently().then(token => {
-
         const config = {
           query: {
             bookingId: props.location.state.bookingId
@@ -104,12 +102,14 @@ const InterviewRoom = props => {
 
         qnSocket.on('receive switch', () => {
           console.log('other user switched roles');
-          setUserRole(userRole === 'interviewee' ? 'interviewer' : 'interviewee');
+          setUserRole(
+            userRole === 'interviewee' ? 'interviewer' : 'interviewee'
+          );
           setdisableSwitch(true);
         });
 
         if (userRole === 'interviewee') {
-          getQuestion(token).then(function (qn) {
+          getQuestion(token).then(function(qn) {
             setQuestion(qn);
             console.log(qn);
             qnSocket.emit('question', qn);
@@ -117,7 +117,6 @@ const InterviewRoom = props => {
             qnSocket.on('receive get question', () => {
               qnSocket.emit('question', qn);
             });
-
           });
         }
 
@@ -128,15 +127,17 @@ const InterviewRoom = props => {
     }
   }, [loading, userRole]);
 
-  const questionBox = <QuestionBox
-    bookingId={props.location.state.bookingId}
-    role={userRole}
-    question={question}
-  />;
+  const questionBox = (
+    <QuestionBox
+      bookingId={props.location.state.bookingId}
+      role={userRole}
+      question={question}
+    />
+  );
 
   if (userRole === 'interviewee') {
     return (
-      <div>
+      <div style={{ overflow: 'hidden' }}>
         <Header
           otherBookingId={props.location.state.otherBookingId}
           bookingId={props.location.state.bookingId}
@@ -152,10 +153,8 @@ const InterviewRoom = props => {
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
-            <div className='row' style={{ height: '40vh' }}>
-              {questionBox}
-            </div>
-            <div className='row' style={{ height: '40vh' }}>
+            <div className='row'>{questionBox}</div>
+            <div className='row'>
               <div className='ui container'>
                 <CommentSection
                   bookingId={props.location.state.bookingId}
@@ -183,7 +182,7 @@ const InterviewRoom = props => {
 
   if (userRole === 'interviewer') {
     return (
-      <div>
+      <div style={{ overflow: 'hidden' }}>
         <Header
           otherBookingId={props.location.state.otherBookingId}
           bookingId={props.location.state.bookingId}
@@ -198,10 +197,8 @@ const InterviewRoom = props => {
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
-            <div className='row' style={{ height: '40vh' }}>
-              {question && questionBox}
-            </div>
-            <div className='row' style={{ height: '40vh' }}>
+            <div className='row'>{question && questionBox}</div>
+            <div className='row'>
               <div className='ui container'>
                 <CommentSection
                   bookingId={props.location.state.bookingId}
