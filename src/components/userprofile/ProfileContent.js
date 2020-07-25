@@ -43,6 +43,7 @@ const ProfileContent = () => {
       };
 
       const response = await axios.get(getBackground, header);
+      console.log(response.data);
       setBackground(response.data);
     } catch (err) {
       console.log(err);
@@ -322,7 +323,7 @@ const ProfileContent = () => {
     };
 
     const onEducationChange = value => {
-      setEditedEducation(value);
+      setEditedEducation(value.value);
     };
 
     const onInterviewLevelChange = (e, { rating }) => {
@@ -627,6 +628,8 @@ const ProfileContent = () => {
       );
     }
   };
+
+  console.log(background);
 
   if (loading || !user || !background) {
     return <LoaderPage />;
