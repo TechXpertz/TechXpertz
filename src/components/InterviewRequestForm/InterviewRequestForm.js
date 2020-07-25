@@ -326,9 +326,15 @@ const InterviewRequestFrom = props => {
   return (
     <div style={{ overflow: 'hidden' }}>
       <NavBar />
-      <div className='ui two column grid'>
+      <div
+        className='ui two column grid'
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
         <div className='four wide column'>
-          <div className='row' style={{ height: '16em' }} />
           <div className='ui three column grid' style={{ paddingLeft: '25px' }}>
             <div className='seven wide column'>
               {props.location.state.accType === 'Normal' && accountHeader}
@@ -353,7 +359,7 @@ const InterviewRequestFrom = props => {
               paddingLeft: '20px'
             }}
           >
-            <div className='ui container'>
+            <div>
               <h3>Programming Languages</h3>
               {progLang}
             </div>
@@ -372,9 +378,13 @@ const InterviewRequestFrom = props => {
         </div>
         <div
           className='twelve wide column'
-          style={{ height: '93vh', borderLeft: '1px solid' }}
+          style={{
+            borderLeft: '1px solid',
+            display: 'flex',
+            alignItems: 'center'
+          }}
         >
-          <div className='row' style={{ height: '9em' }} />
+          <div className='row' />
           <AppointmentScheduler
             moment={currentMoment}
             userTimingCallback={userTimingHandler}

@@ -1,3 +1,4 @@
+import './index.css';
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import DaysColumn from './DaysColumn';
 
@@ -82,7 +83,10 @@ const AppointmentScheduler = ({ moment, userTimingCallback, userTiming }) => {
   };
 
   return (
-    <div className='ui nine column grid container'>
+    <div
+      className='ui nine column grid container'
+      style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
+    >
       <div
         className='one wide right aligned column'
         style={{

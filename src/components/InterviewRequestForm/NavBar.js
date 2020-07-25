@@ -3,7 +3,7 @@ import Logo from '../../images/Logo.png';
 
 const NavBar = () => {
   return (
-    <div className='ui inverted top menu borderless'>
+    <div className='ui inverted top fixed menu borderless'>
       <img
         src={Logo}
         alt='Application logo'
