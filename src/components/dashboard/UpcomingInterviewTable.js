@@ -4,7 +4,10 @@ import moment from 'moment';
 import { lang } from 'moment';
 
 const UpcomingInterviewTable = props => {
+  const now = moment(new Date());
+
   const joinRoom = ({ bookingId, otherBookingId, date, time }) => {
+    console.log(time);
     history.push({
       pathname: '/interview-room',
       state: {
@@ -37,7 +40,12 @@ const UpcomingInterviewTable = props => {
 
   const joinRoomButton = value => (
     <>
-      <button className='ui green button' onClick={() => joinRoom(value)}>
+      <button
+        className={
+          'ui green' + (value.disabled ? ' disabled button' : ' button')
+        }
+        onClick={() => joinRoom(value)}
+      >
         Join
       </button>
     </>
@@ -96,6 +104,10 @@ const UpcomingInterviewTable = props => {
             topic,
             langs
           } = booking;
+          const interviewTime = moment(timings[0], ['h:mm A']);
+          const diff = moment.duration(interviewTime.diff(now)).asMinutes();
+          const disabled = diff > 5;
+          console.log(disabled);
           return (
             <tr key={index}>
               <td>{date}</td>
@@ -108,7 +120,8 @@ const UpcomingInterviewTable = props => {
                     bookingId: bookingId,
                     otherBookingId: otherBookingId,
                     date,
-                    time: timings
+                    time: timings,
+                    disabled: disabled
                   })}
               </td>
               <td>
