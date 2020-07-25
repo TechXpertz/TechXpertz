@@ -35,7 +35,7 @@ const getAllBookingsOfUser = async (userId) => {
 const getBookingsAfterNow = async (bookings) => {
 
   const result = [];
-  for (booking of bookings) {
+  for (const booking of bookings) {
     const bookingId = booking.booking_id;
 
     // check if user has given feedback for this interview session
