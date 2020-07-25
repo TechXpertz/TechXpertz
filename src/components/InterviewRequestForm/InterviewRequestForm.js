@@ -61,9 +61,9 @@ const InterviewRequestFrom = props => {
 
   const submitButton =
     topicsState.length === 0 ||
-      lang.length === 0 ||
-      otherAccType === '' ||
-      userTiming.length === 0
+    lang.length === 0 ||
+    otherAccType === '' ||
+    userTiming.length === 0
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -320,11 +320,11 @@ const InterviewRequestFrom = props => {
   };
 
   if (interestArray.length === 0 || progLangArray.length === 0) {
-    return <LoaderPage />
+    return <LoaderPage />;
   }
 
   return (
-    <div>
+    <div style={{ overflow: 'hidden' }}>
       {showModal && (
         <Modal
           color='#003EB6'
@@ -335,8 +335,7 @@ const InterviewRequestFrom = props => {
         />
       )}
       <NavBar />
-      <div className='row' style={{ height: '3em' }} />
-      <div className='ui two column grid' style={{ marginTop: '2em' }}>
+      <div className='ui two column grid'>
         <div className='four wide column'>
           <div className='row' style={{ height: '16em' }} />
           <div className='ui three column grid' style={{ paddingLeft: '25px' }}>

@@ -365,7 +365,6 @@ const UpdateInterviewRequestFrom = props => {
         />
       )}
       <NavBar />
-      <div className='row' style={{ height: '3em' }} />
       <div
         className='ui two column grid'
         style={{ marginTop: '2em', marginLeft: '20px', width: '100vw' }}
