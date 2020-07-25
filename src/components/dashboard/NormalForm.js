@@ -7,6 +7,7 @@ import Axios from 'axios';
 import { normalBackground, postAccType } from '../../api_callers/apis.json';
 import { useAuth0 } from '../../react-auth0-spa';
 import { topicsAPI, progsAPI } from '../../api_callers/apis.json';
+import LoaderPage from '../LoaderPage';
 
 const NormalForm = props => {
   const [check, setCheck] = useState('');
@@ -17,8 +18,8 @@ const NormalForm = props => {
   const [lang, setLang] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(0);
   const { getTokenSilently } = useAuth0();
-  const interestArray = [];
-  const progLangArray = [];
+  const [interestArray, setInterestArray] = useState([]);
+  const [progLangArray, setProgLangArray] = useState([]);
   const educationArray = [
     { value: 'No Degree', label: 'No Degree' },
     { value: 'Undergraduate', label: 'Undergraduate' },
@@ -38,35 +39,35 @@ const NormalForm = props => {
 
   console.log(username);
 
+  const fetchTopics = async () => {
+    const response = await Axios.get(topicsAPI);
+    const topics = response.data.topics.map(element => {
+      return {
+        value: element.topicName,
+        label: element.topicName
+      };
+    });
+    setInterestArray(topics);
+  };
+
+  const fetchProgLanguages = async () => {
+    const response = await Axios.get(progsAPI);
+    const langs = response.data.progLanguages.map(element => {
+      return {
+        value: element.progName,
+        label: element.progName
+      };
+    });
+    setProgLangArray(langs);
+  };
+
   useEffect(() => {
-    if (props.type !== 'Normal') {
-      return;
+
+    if (props.type === 'Normal') {
+      fetchTopics();
+      fetchProgLanguages();
     }
-
-    const fetchTopics = async () => {
-      const response = await Axios.get(topicsAPI);
-      return response.data;
-    };
-
-    fetchTopics().then(data => {
-      const topics = data.topics.map(element => element.topicName);
-      topics.forEach(topic =>
-        interestArray.push({ value: topic, label: topic })
-      );
-    });
-
-    const fetchProgLanguages = async () => {
-      const response = await Axios.get(progsAPI);
-      return response.data;
-    };
-
-    fetchProgLanguages().then(data => {
-      const progLanguages = data.progLanguages.map(element => element.progName);
-      progLanguages.forEach(prog =>
-        progLangArray.push({ value: prog, label: prog })
-      );
-    });
-  }, [interestArray, progLangArray, props.type]);
+  }, [props.type]);
 
   const sendForm = async (username, topics, progLang, educationType, check) => {
     try {
@@ -288,6 +289,10 @@ const NormalForm = props => {
 
   if (props.type !== 'Normal' || props.hasSubmittedForm) {
     return null;
+  }
+
+  if (interestArray.length === 0 || progLangArray.length === 0) {
+    return <LoaderPage />;
   }
 
   return (

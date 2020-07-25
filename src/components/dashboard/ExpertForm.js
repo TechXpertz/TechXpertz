@@ -10,6 +10,7 @@ import {
     postAccType
 } from '../../api_callers/apis.json';
 import { useAuth0 } from '../../react-auth0-spa';
+import LoaderPage from '../LoaderPage';
 
 const ExpertForm = props => {
     const [hasSubmit, setHasSubmit] = useState(false);
@@ -19,8 +20,9 @@ const ExpertForm = props => {
     const [experience, setExperience] = useState(0);
     const [topics, setTopics] = useState([]);
     const [lang, setLang] = useState([]);
-    const interestArray = [];
-    const progLangArray = [];
+    const [loader, setLoader] = useState(false);
+    const [interestArray, setInterestArray] = useState([]);
+    const [progLangArray, setProgLangArray] = useState([]);
     const period = [
         { value: '0', label: 'Less than 1 year' },
         { value: '1', label: '1 year' },
@@ -39,29 +41,34 @@ const ExpertForm = props => {
 
     const fetchTopics = async () => {
         const response = await Axios.get(topicsAPI);
-        return response.data;
+        const topics = response.data.topics.map(element => {
+            return {
+                value: element.topicName,
+                label: element.topicName
+            };
+        });
+        setInterestArray(topics);
     };
 
     const fetchProgLanguages = async () => {
         const response = await Axios.get(progsAPI);
-        return response.data;
+        const langs = response.data.progLanguages.map(element => {
+            return {
+                value: element.progName,
+                label: element.progName
+            };
+        });
+        setProgLangArray(langs);
     };
 
-    if (props.type === 'Expert') {
-        fetchTopics().then(data => {
-            const topics = data.topics.map(element => element.topicName);
-            topics.forEach(topic =>
-                interestArray.push({ value: topic, label: topic })
-            );
-        });
+    useEffect(() => {
 
-        fetchProgLanguages().then(data => {
-            const progLanguages = data.progLanguages.map(element => element.progName);
-            progLanguages.forEach(prog =>
-                progLangArray.push({ value: prog, label: prog })
-            );
-        });
-    }
+        if (props.type === 'Expert') {
+            fetchTopics();
+            fetchProgLanguages();
+        }
+
+    }, [props.type]);
 
     const { getTokenSilently } = useAuth0();
 
@@ -273,6 +280,10 @@ const ExpertForm = props => {
 
     if (props.type !== 'Expert' || props.hasSubmittedForm) {
         return null;
+    }
+
+    if (interestArray.length === 0 || progLangArray.length === 0) {
+        return <LoaderPage />
     }
 
     return (
