@@ -34,32 +34,32 @@ const MainDashboard = () => {
       ? 'Book an interview'
       : 'Indicate your preferred timings';
 
-  function debounce(fn, ms) {
-    let timer;
-    return _ => {
-      clearTimeout(timer);
-      timer = setTimeout(_ => {
-        timer = null;
-        fn.apply(this, arguments);
-      }, ms);
-    };
-  }
+  // function debounce(fn, ms) {
+  //   let timer;
+  //   return _ => {
+  //     clearTimeout(timer);
+  //     timer = setTimeout(_ => {
+  //       timer = null;
+  //       fn.apply(this, arguments);
+  //     }, ms);
+  //   };
+  // }
 
   //used to dynamically resize the ui segment for the upcoming interview items
-  useEffect(() => {
-    const debouncedHandleResize = debounce(function handlResize() {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth
-      });
-    }, 20);
+  // useEffect(() => {
+  //   const debouncedHandleResize = debounce(function handlResize() {
+  //     setDimensions({
+  //       height: window.innerHeight,
+  //       width: window.innerWidth
+  //     });
+  //   }, 20);
 
-    window.addEventListener('resize', debouncedHandleResize);
+  //   window.addEventListener('resize', debouncedHandleResize);
 
-    return _ => {
-      window.removeEventListener('resize', debouncedHandleResize);
-    };
-  });
+  //   return _ => {
+  //     window.removeEventListener('resize', debouncedHandleResize);
+  //   };
+  // });
 
   const splitBookingIntoSeparateDates = booking => {
     const {
@@ -200,10 +200,10 @@ const MainDashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const width = headerRef.current.offsetWidth;
-    setHeaderWidth(width);
-  }, [headerRef, headerWidth, dimensions]);
+  // useEffect(() => {
+  //   const width = headerRef.current.offsetWidth;
+  //   setHeaderWidth(width);
+  // }, [headerRef, headerWidth, dimensions]);
 
   const button = (
     <>
@@ -273,8 +273,6 @@ const MainDashboard = () => {
       <div
         className='ui container'
         style={{
-          backgroundColor: '#F9F9F9',
-          minWidth: `${headerWidth}px`,
           minHeight: '35vh',
           maxHeight: '35vh',
           overflowY: 'auto',
@@ -296,10 +294,8 @@ const MainDashboard = () => {
   const haveUpcomingInterview = (
     <>
       <div
-        className='ui container'
+        className='ui fluid container'
         style={{
-          backgroundColor: '#F9F9F9',
-          minWidth: `${headerWidth}px`,
           minHeight: '35vh',
           maxHeight: '35vh',
           overflowY: 'auto',
@@ -348,10 +344,8 @@ const MainDashboard = () => {
   const noCompletedInterviewItem = (
     <>
       <div
-        className='ui container'
+        className='ui fluid container'
         style={{
-          backgroundColor: '#F9F9F9',
-          minWidth: `${headerWidth}px`,
           minHeight: '35vh',
           maxHeight: '35vh',
           display: 'flex',
@@ -371,10 +365,8 @@ const MainDashboard = () => {
   const haveCompletedInterviewItem = (
     <>
       <div
-        className='ui container'
+        className='ui fluid container'
         style={{
-          backgroundColor: '#F9F9F9',
-          minWidth: `${headerWidth}px`,
           minHeight: '35vh',
           maxHeight: '35vh'
         }}
@@ -391,29 +383,31 @@ const MainDashboard = () => {
     </>
   );
 
-  return (
-    <div className='ui five column grid'>
-      <div className='row' style={{ marginTop: '10px' }}>
-        <div className='two wide column' />
-        <div className='twelve wide column'>
-          {button}
-          {header}
-          {(bookings && accType !== '') && interviewItem}
-          {(!bookings || accType === '') && <LoaderPage />}
+  if (accType === '') {
+    return <LoaderPage />;
+  } else {
+    return (
+      <div className='ui five column grid'>
+        <div className='row' style={{ marginTop: '10px' }}>
+          <div className='two wide column' />
+          <div className='twelve wide column'>
+            {button}
+            {header}
+            {interviewItem}
+          </div>
+          <div className='two wide column' />
         </div>
-        <div className='two wide column' />
-      </div>
-      <div className='row' style={{ marginBottom: '10px' }}>
-        <div className='two wide column' />
-        <div className='twelve wide column'>
-          {completedInterviewHeader}
-          {accType !== '' && completedInterviewItem}
-          {accType === '' && <LoaderPage />}
+        <div className='row' style={{ marginBottom: '10px' }}>
+          <div className='two wide column' />
+          <div className='twelve wide column'>
+            {completedInterviewHeader}
+            {completedInterviewItem}
+          </div>
+          <div className='two wide column' />
         </div>
-        <div className='two wide column' />
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default MainDashboard;
