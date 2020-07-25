@@ -33,12 +33,12 @@ const CommentSection = props => {
         socket.on('receive comment', data => {
           setComments(prevState => {
             return [
-              ...prevState,
               {
                 commentContent: data.comment,
                 commentTime: currentTime,
                 commentAuthor: data.author
-              }
+              },
+              ...prevState
             ];
           });
           console.log(newComment);
@@ -49,6 +49,38 @@ const CommentSection = props => {
     }
   }, [loading, socket]);
 
+  const handleNewComment = event => {
+    setNewComment(event.target.value);
+  };
+
+  //submitting comment by pressing enter key
+  const onKeyPress = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      socket.emit('comment', {
+        bookingId,
+        comment: newComment,
+        date: currentDate,
+        timeStamp: currentTime,
+        author: `${props.username} (${role})`
+      });
+      setComments(prevState => {
+        return [
+          {
+            commentContent: newComment,
+            commentTime: currentTime,
+            commentAuthor: `You (${role})`
+          },
+          ...prevState
+        ];
+      });
+      setNewComment('');
+    } else {
+      return;
+    }
+  };
+
+  //submitting button by clicking submit button
   const handleComment = event => {
     event.preventDefault();
     socket.emit('comment', {
@@ -60,20 +92,21 @@ const CommentSection = props => {
     });
     setComments(prevState => {
       return [
-        ...prevState,
         {
           commentContent: newComment,
           commentTime: currentTime,
           commentAuthor: `You (${role})`
-        }
+        },
+        ...prevState
       ];
     });
     setNewComment('');
   };
 
-  const btnClass = newComment === ''
-    ? 'ui primary submit labeled icon disabled button'
-    : 'ui primary submit labeled icon button';
+  const btnClass =
+    newComment === ''
+      ? 'ui primary submit labeled icon disabled button'
+      : 'ui primary submit labeled icon button';
 
   return (
     <>
@@ -93,7 +126,7 @@ const CommentSection = props => {
           return (
             <CommentItem
               time={item.commentTime}
-              key={Math.random()}
+              key={item.comemntContent}
               comment={item.commentContent}
               role={item.commentAuthor}
             />
@@ -109,14 +142,13 @@ const CommentSection = props => {
           <div className='field'>
             <textarea
               placeholder='Please type in your comment here'
+              type='text'
               value={newComment}
-              onChange={event => setNewComment(event.target.value)}
+              onChange={handleNewComment}
+              onKeyPress={onKeyPress}
             />
           </div>
-          <button
-            className={btnClass}
-            type='submit'
-          >
+          <button className={btnClass} type='submit'>
             <i className='icon edit'></i> Add Comment
           </button>
         </form>
