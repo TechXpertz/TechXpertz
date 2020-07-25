@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 const Modal = props => {
   return ReactDOM.createPortal(
     <div className='ui dimmer modals visible active'>
-      <div className='ui standard modal visible active'>
+      <div className='ui standard full screen modal visible active'>
         <div
           className='ui center aligned header'
           style={{

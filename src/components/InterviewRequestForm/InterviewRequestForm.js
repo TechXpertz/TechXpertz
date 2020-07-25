@@ -325,15 +325,6 @@ const InterviewRequestFrom = props => {
 
   return (
     <div style={{ overflow: 'hidden' }}>
-      {showModal && (
-        <Modal
-          color='#003EB6'
-          headerColor='white'
-          description={modalHeader}
-          content={modalContent}
-          actions={modalActions}
-        />
-      )}
       <NavBar />
       <div className='ui two column grid'>
         <div className='four wide column'>
@@ -381,7 +372,7 @@ const InterviewRequestFrom = props => {
         </div>
         <div
           className='twelve wide column'
-          style={{ height: '95vh', borderLeft: '1px solid' }}
+          style={{ height: '93vh', borderLeft: '1px solid' }}
         >
           <div className='row' style={{ height: '9em' }} />
           <AppointmentScheduler
@@ -391,6 +382,15 @@ const InterviewRequestFrom = props => {
           />
         </div>
       </div>
+      {showModal && (
+        <Modal
+          color='#003EB6'
+          headerColor='white'
+          description={modalHeader}
+          content={modalContent}
+          actions={modalActions}
+        />
+      )}
     </div>
   );
 };
