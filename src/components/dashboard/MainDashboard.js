@@ -34,33 +34,6 @@ const MainDashboard = () => {
       ? 'Book an interview'
       : 'Indicate your preferred timings';
 
-  // function debounce(fn, ms) {
-  //   let timer;
-  //   return _ => {
-  //     clearTimeout(timer);
-  //     timer = setTimeout(_ => {
-  //       timer = null;
-  //       fn.apply(this, arguments);
-  //     }, ms);
-  //   };
-  // }
-
-  //used to dynamically resize the ui segment for the upcoming interview items
-  // useEffect(() => {
-  //   const debouncedHandleResize = debounce(function handlResize() {
-  //     setDimensions({
-  //       height: window.innerHeight,
-  //       width: window.innerWidth
-  //     });
-  //   }, 20);
-
-  //   window.addEventListener('resize', debouncedHandleResize);
-
-  //   return _ => {
-  //     window.removeEventListener('resize', debouncedHandleResize);
-  //   };
-  // });
-
   const splitBookingIntoSeparateDates = booking => {
     const {
       bookingId,
@@ -109,7 +82,6 @@ const MainDashboard = () => {
     return finalBookings;
   };
 
-  // getting upcoming bookings:
   useEffect(() => {
     const getBookings = async () => {
       try {
@@ -121,7 +93,6 @@ const MainDashboard = () => {
         };
 
         const response = (await axios.get(getUpcomingBookings, header)).data;
-        console.log('response', response.bookings);
         setBookings(splitBookings(response.bookings));
       } catch (err) {
         console.log(err);
@@ -147,7 +118,6 @@ const MainDashboard = () => {
 
         const response = (await axios.get(getPastInterviews, header)).data;
         setPastInterviews(response.pastInterviews);
-        console.log('past', response.pastInterviews);
         return response;
       } catch (err) {
         console.log(err);
@@ -199,11 +169,6 @@ const MainDashboard = () => {
       callUsername();
     }
   }, []);
-
-  // useEffect(() => {
-  //   const width = headerRef.current.offsetWidth;
-  //   setHeaderWidth(width);
-  // }, [headerRef, headerWidth, dimensions]);
 
   const button = (
     <>
@@ -297,6 +262,7 @@ const MainDashboard = () => {
       <div
         className='ui fluid container'
         style={{
+          backgroundColor: '#F9F9F9',
           minHeight: '35vh',
           maxHeight: '35vh',
           overflowY: 'auto',
@@ -352,7 +318,9 @@ const MainDashboard = () => {
           maxHeight: '35vh',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}
       >
         <div>
@@ -369,8 +337,11 @@ const MainDashboard = () => {
       <div
         className='ui fluid container'
         style={{
+          backgroundColor: '#F9F9F9',
           minHeight: '35vh',
-          maxHeight: '35vh'
+          maxHeight: '35vh',
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}
       >
         <CompletedInterviewTable pastInterviewArray={pastInterviews} />
