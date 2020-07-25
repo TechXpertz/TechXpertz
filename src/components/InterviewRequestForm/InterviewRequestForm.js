@@ -15,7 +15,6 @@ const InterviewRequestFrom = props => {
   const currentMoment = moment();
   const [interestArray, setInterestArray] = useState([]);
   const [progLangArray, setProgLangArray] = useState([]);
-  console.log(props.location.state);
 
   const fetchTopics = async () => {
     const response = await Axios.get(topicsAPI);
@@ -55,15 +54,12 @@ const InterviewRequestFrom = props => {
   const [otherAccType, setOtherAccType] = useState(
     props.location.state.accType === 'Expert' ? 'Normal' : ''
   );
-  console.log(otherAccType);
-
-  //TODO for expert, set otherAccType to be normal
 
   const submitButton =
     (topicsState && topicsState.length === 0) ||
-      (lang && lang.length === 0) ||
-      otherAccType === '' ||
-      (userTiming && userTiming.length === 0)
+    (lang && lang.length === 0) ||
+    otherAccType === '' ||
+    (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -211,7 +207,8 @@ const InterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang && lang.length > 0 &&
+            {lang &&
+              lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
