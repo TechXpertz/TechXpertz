@@ -5,4 +5,47 @@ Your task is to output another array which reverses the order of the words using
 
 For example, 
 Input: [""c"", ""a"", ""t"", "" "", ""a"", ""n"", ""d"", "" "", ""d"", ""o"", ""g""]
-Output: [""d"", ""o"", ""g"", "" "", ""a"", ""n"", ""d"", "" "", ""c"", ""a"", ""t""]",<solution goes here>,<hints>
+Output: [""d"", ""o"", ""g"", "" "", ""a"", ""n"", ""d"", "" "", ""c"", ""a"", ""t""]",<solution>,<hints>
+Nth Fibonacci,1,"The Fibonacci sequence is defined as follows: the first number is 0, the second number is 1, and the nth number is the sum of the (n-1)th and (n-2)th numbers. Write a function that takesin an integer n and returns the nth fibonacci number.
+
+For example,
+getNthFib(0) = 0
+getNthFib(1) = 1
+getNthFib(6) = 8",<solution>,The formula to generate the nth Fibonacci number can be written as F(n) = F(n-1) + F(n-2). Can you think of the case(s) where this formula does not apply? Try to implement a simple recursive solution.
+Two Sum,1,"Given an array of integers, return indices of the two numbers such that they add up to a specific target. You may assume that each input would have exactly one solution and you may not use the same elemet twice.
+
+For example,
+Given nums = [2, 7, 11, 15], target = 9,
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1]",<solution>,"If we fix one number, say x, we have to scan the entire array to find the next number, which is target - x. Can we use additional space, perhaps a hash map, to speed up the search?"
+Build A Click Counter,2,"Build a click counter with any of your preferred framework (such as React). By default, the counter should display 0. Every time the user clicks on the counter, it should increment by 1.",<solution>,<hints>
+Pokemon's Personal Website,2,Create a personal website for your favourite Pokemon using the colours of the Pokemon as your website colour scheme. Must include an image and description of your pokemon. Must include at least one list. Choose a career that your pokemon would excel at.,<solution>,<hints>
+Login Page,2,"Build a login form with at least username and password input fields. Verify that the password is at least 8 characters long, contains both upper and lower case letters, and contains special characters. Disable the submit button if fields are empty, or if password is invalid.",<solution>,<hints>
+Combine 2 Tables,3,"Table: person
+Columns:
+person_id int primary key
+first_name varchar
+last_name varchar
+
+Table: address
+address_id int primary key
+person_id int 
+city varchar
+state varchar
+
+Write a SQL query for a report that provides the following information for each person in the person table, regardless if there is an address for each of those people:
+first_name, last_name, city, state",<solution>,<hints>
+Second Highest Salary,3,"Write a SQL query to get the second highest salary from the employee table.
+
+Id, Salary
+1, 100
+2, 200
+3, 300
+
+For example, given the above employee table, the query should return 200 as the second highest salary. If there is no second highest salary, the query should return null. ",<solution>,<hints>
+API Calls,3,"First, create a SQL table users with columns user_id, first_name and last_name. Prepopulate the table with your values. 
+
+Create an API with the endpoint ""/users"", which accepts the following requests:
+GET: returns all users' first and last names as response in JSON format
+PUT: inserts a new user with the specified first and last name in the request body
+PATCH: updates the user with the specified user_id with the new first and last name, as provided in the request body",<solution>,<hints>
