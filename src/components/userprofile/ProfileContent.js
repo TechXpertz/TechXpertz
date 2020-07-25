@@ -4,7 +4,11 @@ import { Rating } from 'semantic-ui-react';
 import LoaderPage from '../LoaderPage';
 import DropdownMenu from '../DropdownMenu';
 import './index.css';
-import { getBackground, normalBackground, expertBackground } from '../../api_callers/apis.json';
+import {
+  getBackground,
+  normalBackground,
+  expertBackground
+} from '../../api_callers/apis.json';
 import axios from 'axios';
 
 const ProfileContent = () => {
@@ -25,7 +29,7 @@ const ProfileContent = () => {
   const [background, setBackground] = useState();
   const [isEdit, setIsEdit] = useState(false);
 
-  const workingExpStr = (exp) => {
+  const workingExpStr = exp => {
     return exp === undefined ? exp : period[exp].label;
   };
 
@@ -299,13 +303,16 @@ const ProfileContent = () => {
       value: userWorkingExp,
       label: workingExpStr(userWorkingExp)
     });
+    const educationArray = [
+      { value: 'No Degree', label: 'No Degree' },
+      { value: 'Undergraduate', label: 'Undergraduate' },
+      { value: 'Graduate', label: 'Graduate' }
+    ];
+
+    console.log(editedEducation);
 
     const onNameChange = event => {
       setEditedName(event.target.value);
-    };
-
-    const onEmailChange = event => {
-      setEditedEmail(event.target.value);
     };
 
     const onCompanyChange = event => {
@@ -316,8 +323,8 @@ const ProfileContent = () => {
       setEditedCompanyRole(event.target.value);
     };
 
-    const onEducationChange = event => {
-      setEditedEducation(event.target.value);
+    const onEducationChange = value => {
+      setEditedEducation(value);
     };
 
     const onInterviewLevelChange = (e, { rating }) => {
@@ -345,7 +352,7 @@ const ProfileContent = () => {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }
+      };
 
       if (background.isExpert) {
         const editedExpertBackground = {
@@ -417,7 +424,7 @@ const ProfileContent = () => {
                   <div className='three wide column information-content'>
                     Name
                   </div>
-                  <div className='four wide column information-content'>
+                  <div className='five wide column information-content'>
                     <div className='ui mini input'>
                       <input
                         type='Name'
@@ -438,14 +445,8 @@ const ProfileContent = () => {
                   <div className='three wide column information-content'>
                     Email
                   </div>
-                  <div className='four wide column information-content'>
-                    <div className='ui mini input'>
-                      <input
-                        type='Email'
-                        value={editedEmail}
-                        onChange={onEmailChange}
-                      />
-                    </div>
+                  <div className='five wide column information-content'>
+                    {editedEmail}
                   </div>
                 </div>
                 {!background.isExpert && (
@@ -460,14 +461,14 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Education
                     </div>
-                    <div className='four wide column information-content'>
-                      <div className='ui mini input'>
-                        <input
-                          type='Education'
-                          value={editedEducation}
-                          onChange={onEducationChange}
-                        />
-                      </div>
+                    <div className='five wide column information-content'>
+                      <DropdownMenu
+                        defaultValue={[
+                          { value: editedEducation, label: editedEducation }
+                        ]}
+                        valueChanged={onEducationChange}
+                        array={educationArray}
+                      />
                     </div>
                   </div>
                 )}
@@ -483,7 +484,7 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Company
                     </div>
-                    <div className='four wide column information-content'>
+                    <div className='five wide column information-content'>
                       <div className='ui mini input'>
                         <input
                           type='Company'
@@ -506,7 +507,7 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Company Role
                     </div>
-                    <div className='four wide column information-content'>
+                    <div className='five wide column information-content'>
                       <div className='ui mini input'>
                         <input
                           type='Company-Role'
@@ -530,7 +531,7 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Interview Confidence Level
                     </div>
-                    <div className='four wide column information-content'>
+                    <div className='five wide column information-content'>
                       <Rating
                         icon='star'
                         maxRating={5}
@@ -555,14 +556,13 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Total Working Eperience
                     </div>
-                    <div className='four wide column information-content'>
+                    <div className='five wide column information-content'>
                       <DropdownMenu
                         multi={false}
                         defaultValue={[
                           {
                             value: userWorkingExp,
-                            label:
-                              (workingExpStr(userWorkingExp))
+                            label: workingExpStr(userWorkingExp)
                           }
                         ]}
                         array={period}
@@ -583,7 +583,7 @@ const ProfileContent = () => {
                     Interests
                   </div>
                   <div
-                    className='eight wide column'
+                    className='ten wide column'
                     style={{ display: 'flex', flexDirection: 'row' }}
                   >
                     {background.topics.map((value, index) => (
@@ -605,7 +605,7 @@ const ProfileContent = () => {
                     Programming Languages
                   </div>
                   <div
-                    className='eight wide column'
+                    className='ten wide column'
                     style={{ display: 'flex', flexDirection: 'row' }}
                   >
                     {background.progLanguages.map((value, index) => (
