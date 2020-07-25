@@ -60,10 +60,10 @@ const InterviewRequestFrom = props => {
   //TODO for expert, set otherAccType to be normal
 
   const submitButton =
-    topicsState.length === 0 ||
-    lang.length === 0 ||
-    otherAccType === '' ||
-    userTiming.length === 0
+    (topicsState && topicsState.length === 0) ||
+      (lang && lang.length === 0) ||
+      otherAccType === '' ||
+      (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -211,7 +211,7 @@ const InterviewRequestFrom = props => {
             Programming Languages:
           </div>
           <div className='three wide column'>
-            {lang.length > 0 &&
+            {lang && lang.length > 0 &&
               lang.map((item, index) => {
                 return (
                   <span key={index} style={{ fontSize: '17px' }}>
