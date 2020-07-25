@@ -231,6 +231,7 @@ const MainDashboard = () => {
         (booking.bookingId !== bookingId)
         || (booking.bookingId === bookingId
           && booking.date !== date)));
+
       await axios.delete(bookingsUrl, { headers, data });
     } catch (err) {
       console.log(err);
