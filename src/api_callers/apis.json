@@ -15,5 +15,6 @@
   "getOrInsertQuestion": "/api/questions",
   "getPastInterviews": "/api/bookings/past",
   "reschedule": "/api/bookings/reschedule",
-  "getBackground": "/api/user/background"
+  "getBackground": "/api/user/background",
+  "getUsername": "/api/user/username"
 }

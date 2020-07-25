@@ -198,6 +198,7 @@ const InterviewRoom = props => {
                   bookingId={props.location.state.bookingId}
                   role='Interviewee'
                   socket={commentSocket}
+                  username={props.location.state.username}
                 />
               </div>
             </div>
@@ -242,6 +243,7 @@ const InterviewRoom = props => {
                   bookingId={props.location.state.bookingId}
                   role='Interviewer'
                   socket={commentSocket}
+                  username={props.location.state.username}
                 />
               </div>
             </div>

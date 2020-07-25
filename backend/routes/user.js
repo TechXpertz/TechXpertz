@@ -7,6 +7,7 @@ const { checkUserBackgroundSubmission } = require('../controllers/users/hasSubmi
 const { getUserBackground } = require('../controllers/users/getBackgrounds');
 const { accountType } = require('../controllers/users/accountType');
 const { editNormalBackground, editExpertBackground } = require('../controllers/users/editBackground');
+const { getUsername } = require('../controllers/users/username');
 
 router.route('/dashboard').get(checkJwt, dashboard);
 router.route('/account-type').post(checkJwt, submitAccountType);
@@ -17,5 +18,6 @@ router.route('/has-submitted-background').get(checkJwt, checkUserBackgroundSubmi
 router.route('/account-type').get(checkJwt, accountType);
 router.route('/normal-background').patch(checkJwt, editNormalBackground);
 router.route('/expert-background').patch(checkJwt, editExpertBackground);
+router.route('/username').get(checkJwt, getUsername);
 
 module.exports = router;

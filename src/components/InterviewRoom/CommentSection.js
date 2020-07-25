@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import moment from 'moment';
 import { useAuth0 } from '../../react-auth0-spa';
-import io from 'socket.io-client';
 import './InterviewRoom.css';
 
 const CommentSection = props => {
@@ -57,7 +56,7 @@ const CommentSection = props => {
       comment: newComment,
       date: currentDate,
       timeStamp: currentTime,
-      author: role
+      author: `${props.username} (${role})`
     });
     setComments(prevState => {
       return [
@@ -65,12 +64,16 @@ const CommentSection = props => {
         {
           commentContent: newComment,
           commentTime: currentTime,
-          commentAuthor: role
+          commentAuthor: `You (${role})`
         }
       ];
     });
     setNewComment('');
   };
+
+  const btnClass = newComment === ''
+    ? 'ui primary submit labeled icon disabled button'
+    : 'ui primary submit labeled icon button';
 
   return (
     <>
@@ -111,7 +114,7 @@ const CommentSection = props => {
             />
           </div>
           <button
-            className='ui primary submit labeled icon button'
+            className={btnClass}
             type='submit'
           >
             <i className='icon edit'></i> Add Comment
