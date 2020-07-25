@@ -100,10 +100,10 @@ const QuestionBox = props => {
           <span>{question && question.content}</span>
         </div>
         <div className={hintTabState.tabContent}>
-          <span>Hint</span>
+          <span>{question && question.hint}</span>
         </div>
         <div className={answerTabState.tabContent}>
-          <span>Answer</span>
+          <span>{question && question.solution}</span>
         </div>
       </>
     );
