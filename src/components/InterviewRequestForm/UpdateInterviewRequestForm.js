@@ -286,7 +286,7 @@ const UpdateInterviewRequestFrom = props => {
     setUserTiming(value);
   }, []);
 
-  const handleClick = value => {
+  const handleClick = async value => {
     setIsSubmit(value);
     if (
       props &&
@@ -296,7 +296,7 @@ const UpdateInterviewRequestFrom = props => {
     ) {
       handleReschedule(props.location.state.bookingId);
     }
-    submitBookingForm(otherAccType, topicsState, lang, userTiming);
+    await submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
   };
 

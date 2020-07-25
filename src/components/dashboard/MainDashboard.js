@@ -104,6 +104,7 @@ const MainDashboard = () => {
       getBookings();
       setRefresh(false);
     }
+
   }, []);
 
   useEffect(() => {

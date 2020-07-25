@@ -57,9 +57,9 @@ const InterviewRequestFrom = props => {
 
   const submitButton =
     (topicsState && topicsState.length === 0) ||
-    (lang && lang.length === 0) ||
-    otherAccType === '' ||
-    (userTiming && userTiming.length === 0)
+      (lang && lang.length === 0) ||
+      otherAccType === '' ||
+      (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -267,7 +267,7 @@ const InterviewRequestFrom = props => {
     setUserTiming(value);
   }, []);
 
-  const handleClick = value => {
+  const handleClick = async value => {
     setIsSubmit(value);
     if (
       props &&
@@ -277,7 +277,7 @@ const InterviewRequestFrom = props => {
     ) {
       handleReschedule(props.location.state.bookingId);
     }
-    submitBookingForm(otherAccType, topicsState, lang, userTiming);
+    await submitBookingForm(otherAccType, topicsState, lang, userTiming);
     history.push('/dashboard');
   };
 
