@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS bookings(
     topic_id INTEGER REFERENCES topics(topic_id) NOT NULL,
     other_is_expert BOOLEAN NOT NULL,
     other_booking_id INTEGER REFERENCES bookings(booking_id) ON DELETE SET NULL,
-    is_confirmed BOOLEAN NOT NULL
+    is_confirmed BOOLEAN NOT NULL,
+    role TEXT CHECK (role IN ('interviewee', 'interviewer'))
 );
 
 CREATE TABLE IF NOT EXISTS booking_prog_languages(

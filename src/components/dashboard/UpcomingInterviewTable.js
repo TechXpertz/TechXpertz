@@ -11,7 +11,8 @@ const UpcomingInterviewTable = props => {
         bookingId: bookingId,
         otherBookingId: otherBookingId,
         date,
-        time
+        time,
+        username: props.username
       }
     });
   };

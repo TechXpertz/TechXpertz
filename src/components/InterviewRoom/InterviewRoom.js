@@ -19,7 +19,7 @@ const InterviewRoom = props => {
       ? 'interviewee'
       : 'interviewer'
   );
-  const [disableSwitch, setdisableSwitch] = useState(true);
+  const [disableSwitch, setDisableSwitch] = useState(true);
   const [question, setQuestion] = useState();
   const [qnSocket, setQnSocket] = useState();
   const [commentSocket, setCommentSocket] = useState();
@@ -37,8 +37,8 @@ const InterviewRoom = props => {
   //handlers
   const onChangeRoleHandler = childProp => {
     setUserRole(childProp);
-    setdisableSwitch(true);
-    qnSocket.emit('switch');
+    setDisableSwitch(true);
+    qnSocket.emit('switch', props.location.state.bookingId);
   };
 
   const onExitHandler = () => {
@@ -94,6 +94,32 @@ const InterviewRoom = props => {
           console.log(msg);
         });
 
+        qnSocket.on('connect', () => {
+          qnSocket.emit('role', {
+            bookingId: props.location.state.bookingId,
+            role: userRole
+          });
+        });
+
+        qnSocket.on('receive role', data => {
+          setUserRole(data.role);
+          if (data.hasSwitched) {
+            setDisableSwitch(true);
+          }
+        });
+
+        qnSocket.on('other user connected', () => {
+          qnSocket.emit('receive other connection', props.location.state.bookingId);
+        });
+
+        qnSocket.on('present', () => {
+          qnSocket.emit('receive present', props.location.state.bookingId);
+        });
+
+        qnSocket.on('hasSwitched', hasSwitched => {
+          setDisableSwitch(hasSwitched);
+        });
+
         qnSocket.on('receive question', qn => {
           console.log('receive question', qn);
           setQuestion(qn);
@@ -105,11 +131,23 @@ const InterviewRoom = props => {
           setUserRole(
             userRole === 'interviewee' ? 'interviewer' : 'interviewee'
           );
-          setdisableSwitch(true);
+          setDisableSwitch(true);
         });
 
+        qnSocket.on('user disconnected', () => {
+          setDisableSwitch(true);
+        });
+
+      });
+    }
+  }, [loading, userRole]);
+
+  useEffect(() => {
+    if (!loading && qnSocket) {
+      getTokenSilently().then(token => {
         if (userRole === 'interviewee') {
-          getQuestion(token).then(function(qn) {
+          console.log('interviewee');
+          getQuestion(token).then(function (qn) {
             setQuestion(qn);
             console.log(qn);
             qnSocket.emit('question', qn);
@@ -120,12 +158,12 @@ const InterviewRoom = props => {
           });
         }
 
-        if (userRole === 'interviewer' && !question) {
+        if (userRole === 'interviewer') {
           qnSocket.emit('get question');
         }
       });
     }
-  }, [loading, userRole]);
+  }, [loading, userRole, qnSocket])
 
   const questionBox = (
     <QuestionBox
@@ -149,7 +187,7 @@ const InterviewRoom = props => {
           role='interviewee'
           otherRole='Interviewee'
           onClick={onChangeRoleHandler}
-          hasSwitched={disableSwitch}
+          disableSwitch={disableSwitch}
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
@@ -160,6 +198,7 @@ const InterviewRoom = props => {
                   bookingId={props.location.state.bookingId}
                   role='Interviewee'
                   socket={commentSocket}
+                  username={props.location.state.username}
                 />
               </div>
             </div>
@@ -193,7 +232,7 @@ const InterviewRoom = props => {
         <SubHeader
           role='interviewer'
           onClick={onChangeRoleHandler}
-          hasSwitched={disableSwitch}
+          disableSwitch={disableSwitch}
         />
         <div className='ui two column grid'>
           <div className='five wide column'>
@@ -204,6 +243,7 @@ const InterviewRoom = props => {
                   bookingId={props.location.state.bookingId}
                   role='Interviewer'
                   socket={commentSocket}
+                  username={props.location.state.username}
                 />
               </div>
             </div>

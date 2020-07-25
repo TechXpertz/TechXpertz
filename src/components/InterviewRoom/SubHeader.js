@@ -2,10 +2,9 @@ import React from 'react';
 import './InterviewRoom.css';
 
 const SubHeader = props => {
-  const { onClick, role, hasSwitched } = props;
-  console.log(hasSwitched);
+  const { onClick, role, disableSwitch } = props;
 
-  const switchButton = !hasSwitched
+  const switchButton = !disableSwitch
     ? 'compact ui medium right labeled icon button'
     : 'compact ui medium right labeled icon disabled button';
   return (

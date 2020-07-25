@@ -8,7 +8,8 @@ import {
   getUpcomingBookings,
   bookingsUrl,
   getPastInterviews,
-  getAccType
+  getAccType,
+  getUsername
 } from '../../api_callers/apis.json';
 import axios from 'axios';
 import { useAuth0 } from '../../react-auth0-spa';
@@ -18,6 +19,7 @@ const MainDashboard = () => {
   const [headerWidth, setHeaderWidth] = useState(0);
   const [bookings, setBookings] = useState([]);
   const [pastInterviews, setPastInterviews] = useState([]);
+  const [username, setUsername] = useState('');
   const [refresh, setRefresh] = useState(false);
   const [dimensions, setDimensions] = useState({
     height: window.innerHeight,
@@ -179,6 +181,26 @@ const MainDashboard = () => {
   }, []);
 
   useEffect(() => {
+    const callUsername = async () => {
+      try {
+        const token = await getTokenSilently();
+        const header = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+        const username = (await axios.get(getUsername, header)).data;
+        setUsername(username);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (!loading) {
+      callUsername();
+    }
+  }, []);
+
+  useEffect(() => {
     const width = headerRef.current.offsetWidth;
     setHeaderWidth(width);
   }, [headerRef, headerWidth, dimensions]);
@@ -287,6 +309,7 @@ const MainDashboard = () => {
         <UpcomingInterviewTable
           bookingArray={bookings}
           onDelete={handleDelete}
+          username={username}
         />
       </div>
     </>
@@ -375,8 +398,8 @@ const MainDashboard = () => {
         <div className='twelve wide column'>
           {button}
           {header}
-          {bookings && interviewItem}
-          {!bookings && <LoaderPage />}
+          {(bookings && accType !== '') && interviewItem}
+          {(!bookings || accType === '') && <LoaderPage />}
         </div>
         <div className='two wide column' />
       </div>
@@ -384,7 +407,8 @@ const MainDashboard = () => {
         <div className='two wide column' />
         <div className='twelve wide column'>
           {completedInterviewHeader}
-          {completedInterviewItem}
+          {accType !== '' && completedInterviewItem}
+          {accType === '' && <LoaderPage />}
         </div>
         <div className='two wide column' />
       </div>
