@@ -107,13 +107,6 @@ const MainDashboard = () => {
 
   }, []);
 
-  useEffect(() => {
-    if (!loading && refresh) {
-      getBookings();
-      setRefresh(false);
-    }
-  }, [refresh]);
-
   //getting past interviews (must check for undefined feedback)
   useEffect(() => {
     const callPastInterviews = async () => {
@@ -234,8 +227,11 @@ const MainDashboard = () => {
         bookingId,
         date
       };
+      setBookings(bookings.filter(booking =>
+        (booking.bookingId !== bookingId)
+        || (booking.bookingId === bookingId
+          && booking.date !== date)));
       await axios.delete(bookingsUrl, { headers, data });
-      setRefresh(true);
     } catch (err) {
       console.log(err);
     }
