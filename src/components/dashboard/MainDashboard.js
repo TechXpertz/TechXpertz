@@ -228,8 +228,10 @@ const MainDashboard = () => {
         date
       };
       setBookings(bookings.filter(booking =>
-        booking.bookingId !== bookingId
-        || (booking.bookingId === bookingId && booking.date !== date)));
+        (booking.bookingId !== bookingId)
+        || (booking.bookingId === bookingId
+          && booking.date !== date)));
+
       await axios.delete(bookingsUrl, { headers, data });
     } catch (err) {
       console.log(err);
