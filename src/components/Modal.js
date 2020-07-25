@@ -3,10 +3,7 @@ import ReactDOM from 'react-dom';
 
 const Modal = props => {
   return ReactDOM.createPortal(
-    <div
-      className='ui dimmer modals visible active'
-      style={{ height: '120vh' }}
-    >
+    <div className='ui dimmer modals visible active'>
       <div className='ui standard modal visible active'>
         <div
           className='ui center aligned header'
