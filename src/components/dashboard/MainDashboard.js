@@ -82,28 +82,36 @@ const MainDashboard = () => {
     return finalBookings;
   };
 
-  useEffect(() => {
-    const getBookings = async () => {
-      try {
-        const token = await getTokenSilently();
-        const header = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
+  const getBookings = async () => {
+    try {
+      const token = await getTokenSilently();
+      const header = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
 
-        const response = (await axios.get(getUpcomingBookings, header)).data;
-        setBookings(splitBookings(response.bookings));
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      const response = (await axios.get(getUpcomingBookings, header)).data;
+      setBookings(splitBookings(response.bookings));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
 
     if (!loading) {
       getBookings();
       setRefresh(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!loading && refresh) {
+      getBookings();
+      setRefresh(false);
+    }
+  }, [refresh]);
 
   //getting past interviews (must check for undefined feedback)
   useEffect(() => {
