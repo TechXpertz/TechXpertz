@@ -80,7 +80,10 @@ const UpdateInterviewRequestFrom = props => {
   }, []);
 
   const submitButton =
-    !topicsState || !lang || otherAccType === '' || userTiming.length === 0
+    (topicsState && topicsState.length === 0) ||
+      (lang && lang.length === 0) ||
+      otherAccType === '' ||
+      (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
