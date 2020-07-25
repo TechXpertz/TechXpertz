@@ -9,38 +9,40 @@ import history from '../../history';
 import { useAuth0 } from '../../react-auth0-spa';
 import { bookingsUrl } from '../../api_callers/apis.json';
 import { topicsAPI, progsAPI, reschedule } from '../../api_callers/apis.json';
+import LoaderPage from '../LoaderPage';
 
 const InterviewRequestFrom = props => {
   const currentMoment = moment();
-  const interestArray = [];
-  const progLangArray = [];
+  const [interestArray, setInterestArray] = useState([]);
+  const [progLangArray, setProgLangArray] = useState([]);
   console.log(props.location.state);
 
+  const fetchTopics = async () => {
+    const response = await Axios.get(topicsAPI);
+    const topics = response.data.topics.map(element => {
+      return {
+        value: element.topicName,
+        label: element.topicName
+      };
+    });
+    setInterestArray(topics);
+  };
+
+  const fetchProgLanguages = async () => {
+    const response = await Axios.get(progsAPI);
+    const langs = response.data.progLanguages.map(element => {
+      return {
+        value: element.progName,
+        label: element.progName
+      };
+    });
+    setProgLangArray(langs);
+  };
+
   React.useEffect(() => {
-    const fetchTopics = async () => {
-      const response = await Axios.get(topicsAPI);
-      return response.data;
-    };
-
-    fetchTopics().then(data => {
-      const topics = data.topics.map(element => element.topicName);
-      topics.forEach(topic =>
-        interestArray.push({ value: topic, label: topic })
-      );
-    });
-
-    const fetchProgLanguages = async () => {
-      const response = await Axios.get(progsAPI);
-      return response.data;
-    };
-
-    fetchProgLanguages().then(data => {
-      const progLanguages = data.progLanguages.map(element => element.progName);
-      progLanguages.forEach(prog =>
-        progLangArray.push({ value: prog, label: prog })
-      );
-    });
-  }, [interestArray, progLangArray]);
+    fetchTopics();
+    fetchProgLanguages();
+  }, []);
 
   const [topicsState, setTopicsState] = useState({
     value: '',
@@ -59,9 +61,9 @@ const InterviewRequestFrom = props => {
 
   const submitButton =
     topicsState.length === 0 ||
-    lang.length === 0 ||
-    otherAccType === '' ||
-    userTiming.length === 0
+      lang.length === 0 ||
+      otherAccType === '' ||
+      userTiming.length === 0
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -316,6 +318,10 @@ const InterviewRequestFrom = props => {
       console.log(err);
     }
   };
+
+  if (interestArray.length === 0 || progLangArray.length === 0) {
+    return <LoaderPage />
+  }
 
   return (
     <div>

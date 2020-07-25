@@ -13,42 +13,38 @@ import {
   progsAPI,
   reschedule
 } from '../../api_callers/apis.json';
+import LoaderPage from '../LoaderPage';
 
 const UpdateInterviewRequestFrom = props => {
   const currentMoment = moment();
   const [progLangArray, setProgLangArray] = useState([]);
   const [interestArray, setInterestArray] = useState([]);
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      const response = await Axios.get(topicsAPI);
-      return response.data;
-    };
-
-    fetchTopics().then(data => {
-      const topics = data.topics.map(element => element.topicName);
-      topics.forEach(topic => {
-        setInterestArray(prevState => {
-          return [...prevState, { value: topic, label: topic }];
-        });
-      });
+  const fetchTopics = async () => {
+    const response = await Axios.get(topicsAPI);
+    const topics = response.data.topics.map(element => {
+      return {
+        value: element.topicName,
+        label: element.topicName
+      };
     });
-  }, []);
+    setInterestArray(topics);
+  };
+
+  const fetchProgLanguages = async () => {
+    const response = await Axios.get(progsAPI);
+    const langs = response.data.progLanguages.map(element => {
+      return {
+        value: element.progName,
+        label: element.progName
+      };
+    });
+    setProgLangArray(langs);
+  };
 
   useEffect(() => {
-    const fetchProgLanguages = async () => {
-      const response = await Axios.get(progsAPI);
-      return response.data;
-    };
-
-    fetchProgLanguages().then(data => {
-      const progLanguages = data.progLanguages.map(element => element.progName);
-      progLanguages.forEach(prog =>
-        setProgLangArray(prevState => {
-          return [...prevState, { value: prog, label: prog }];
-        })
-      );
-    });
+    fetchTopics();
+    fetchProgLanguages();
   }, []);
 
   const [topicsState, setTopicsState] = useState({
@@ -352,6 +348,10 @@ const UpdateInterviewRequestFrom = props => {
       console.log(err);
     }
   };
+
+  if (interestArray.length === 0 || progLangArray.length === 0) {
+    return <LoaderPage />;
+  }
 
   return (
     <div>
