@@ -271,8 +271,9 @@ const MainDashboard = () => {
   const noUpcomingInterview = (
     <>
       <div
-        className='ui container'
+        className='ui fluid container'
         style={{
+          backgroundColor: '#F9F9F9',
           minHeight: '35vh',
           maxHeight: '35vh',
           overflowY: 'auto',
@@ -346,6 +347,7 @@ const MainDashboard = () => {
       <div
         className='ui fluid container'
         style={{
+          backgroundColor: '#F9F9F9',
           minHeight: '35vh',
           maxHeight: '35vh',
           display: 'flex',
