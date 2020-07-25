@@ -309,8 +309,6 @@ const ProfileContent = () => {
       { value: 'Graduate', label: 'Graduate' }
     ];
 
-    console.log(editedEducation);
-
     const onNameChange = event => {
       setEditedName(event.target.value);
     };
