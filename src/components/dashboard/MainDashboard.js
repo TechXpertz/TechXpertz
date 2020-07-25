@@ -235,7 +235,6 @@ const MainDashboard = () => {
         date
       };
       await axios.delete(bookingsUrl, { headers, data });
-      setBookings(bookings.filter(item => item.bookingId !== bookingId));
       setRefresh(true);
     } catch (err) {
       console.log(err);
