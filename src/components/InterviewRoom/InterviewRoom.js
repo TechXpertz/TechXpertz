@@ -109,7 +109,10 @@ const InterviewRoom = props => {
         });
 
         qnSocket.on('other user connected', () => {
-          qnSocket.emit('receive other connection', props.location.state.bookingId);
+          qnSocket.emit(
+            'receive other connection',
+            props.location.state.bookingId
+          );
         });
 
         qnSocket.on('present', () => {
@@ -137,7 +140,6 @@ const InterviewRoom = props => {
         qnSocket.on('user disconnected', () => {
           setDisableSwitch(true);
         });
-
       });
     }
   }, [loading, userRole]);
@@ -147,7 +149,7 @@ const InterviewRoom = props => {
       getTokenSilently().then(token => {
         if (userRole === 'interviewee') {
           console.log('interviewee');
-          getQuestion(token).then(function (qn) {
+          getQuestion(token).then(function(qn) {
             setQuestion(qn);
             console.log(qn);
             qnSocket.emit('question', qn);
@@ -163,7 +165,7 @@ const InterviewRoom = props => {
         }
       });
     }
-  }, [loading, userRole, qnSocket])
+  }, [loading, userRole, qnSocket]);
 
   const questionBox = (
     <QuestionBox
@@ -215,6 +217,11 @@ const InterviewRoom = props => {
             />
           </div>
         </div>
+        {/* <VideoComponent
+          bookingId={props.location.state.bookingId}
+          otherBookingId={props.location.state.otherBookingId}
+          socket={videoSocket}
+        /> */}
       </div>
     );
   }
@@ -261,6 +268,11 @@ const InterviewRoom = props => {
             />
           </div>
         </div>
+        {/* <VideoComponent
+          bookingId={props.location.state.bookingId}
+          otherBookingId={props.location.state.otherBookingId}
+          socket={videoSocket}
+        /> */}
       </div>
     );
   }

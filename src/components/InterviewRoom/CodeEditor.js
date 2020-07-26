@@ -40,7 +40,8 @@ const CodeEditor = props => {
     theme: 'material',
     lineNumbers: true,
     scrollbarStyle: null,
-    lineWrapping: true
+    lineWrapping: true,
+    tabSize: 4
   };
 
   const syncCode = js => {
