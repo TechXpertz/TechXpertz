@@ -6,6 +6,12 @@ const SubHeader = props => {
   const [openModal, setOpenModal] = useState(false);
   const { onClick, role, disableSwitch } = props;
 
+  const instruction = role === 'interviewee'
+    ? "It’s your peer’s turn to interview you. "
+    + "Click on swap roles or exit session once you have completed the question."
+    : "It's your turn to interview your peer. "
+    + "Click on swap roles or exit session once your peer has completed the question";
+
   const actions = (
     <>
       <button className='ui button' onClick={() => setOpenModal(!openModal)}>
@@ -56,8 +62,7 @@ const SubHeader = props => {
       <div className='subheader-text'>
         <div className='ui right aligned container'>
           <p style={{ fontSize: '18px' }}>
-            It’s your peer’s turn to interview you. Click on swap roles once you
-            have completed the question.
+            {instruction}
           </p>
         </div>
         <div className='ui right aligned container' style={{ width: '270px' }}>
