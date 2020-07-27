@@ -81,9 +81,9 @@ const UpdateInterviewRequestFrom = props => {
 
   const submitButton =
     (topicsState && topicsState.length === 0) ||
-      (lang && lang.length === 0) ||
-      otherAccType === '' ||
-      (userTiming && userTiming.length === 0)
+    (lang && lang.length === 0) ||
+    otherAccType === '' ||
+    (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
@@ -107,13 +107,8 @@ const UpdateInterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onChange={() =>
-              otherAccType ? setOtherAccType('') : setOtherAccType('Normal')
-            }
-            disabled={
-              otherAccType && otherAccType !== 'Normal' ? 'disabled' : null
-            }
-            checked={otherAccType === 'Normal' ? 'checked' : ''}
+            onChange={() => setOtherAccType('Normal')}
+            checked={otherAccType === 'Normal' ? 'Normal' : ''}
           />
           <label>Normal</label>
         </div>
@@ -122,52 +117,48 @@ const UpdateInterviewRequestFrom = props => {
         <div className='ui checkbox'>
           <input
             type='checkbox'
-            onChange={() =>
-              otherAccType ? setOtherAccType('') : setOtherAccType('Expert')
-            }
-            disabled={
-              otherAccType && otherAccType !== 'Expert' ? 'disabled' : null
-            }
-            checked={otherAccType === 'Expert' ? 'checked' : ''}
+            onChange={() => setOtherAccType('Expert')}
+            checked={otherAccType === 'Expert' ? 'Expert' : ''}
           />
           <label>Expert</label>
         </div>
       </div>
     </>
   );
+
   const topics = (
-    <>
-      <div className='row'>
-        <h3>Topic</h3>
-      </div>
-      <div className='row' style={{ paddingTop: '6px' }}>
-        <DropdownMenu
-          defaultValue={[
-            { value: topicsState.value, label: topicsState.value }
-          ]}
-          array={interestArray}
-          content='Please select one topic'
-          valueChanged={topicHandler}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch'
+      }}
+    >
+      <DropdownMenu
+        defaultValue={[{ value: topicsState.value, label: topicsState.value }]}
+        array={interestArray}
+        content='Please select one topic'
+        valueChanged={topicHandler}
+      />
+    </div>
   );
 
   const progLang = (
-    <>
-      <div className='row'>
-        <h3>Programming Languages</h3>
-      </div>
-      <div className='row' style={{ paddingTop: '6px' }}>
-        <DropdownMenu
-          defaultValue={lang}
-          array={progLangArray}
-          content='Choose your programming languages'
-          multi={true}
-          valueChanged={langHandler}
-        />
-      </div>
-    </>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch'
+      }}
+    >
+      <DropdownMenu
+        defaultValue={lang}
+        array={progLangArray}
+        content='Choose your programming languages'
+        multi={true}
+        valueChanged={langHandler}
+      />
+    </div>
   );
 
   const actions = (
@@ -357,7 +348,72 @@ const UpdateInterviewRequestFrom = props => {
   }
 
   return (
-    <div>
+    <div style={{ overflow: 'hidden' }}>
+      <NavBar />
+      <div
+        className='ui two column grid'
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
+        <div className='four wide column'>
+          <div className='ui three column grid' style={{ paddingLeft: '25px' }}>
+            <div className='seven wide column'>{accountHeader}</div>
+            <div className='six wide column' style={{ marginTop: '4px' }}>
+              {accountCheckbox}
+            </div>
+          </div>
+          <div
+            className='row'
+            style={{ paddingTop: '2em', paddingLeft: '20px' }}
+          >
+            <div>
+              <h3>Topic</h3>
+              {topics}
+            </div>
+          </div>
+          <div
+            className='row'
+            style={{
+              paddingTop: '2em',
+              paddingLeft: '20px'
+            }}
+          >
+            <div>
+              <h3>Programming Languages</h3>
+              {progLang}
+            </div>
+          </div>
+          <div
+            className='row'
+            style={{
+              paddingTop: '4em',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center'
+            }}
+          >
+            {actions}
+          </div>
+        </div>
+        <div
+          className='twelve wide column'
+          style={{
+            borderLeft: '1px solid',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <div className='row' />
+          <AppointmentScheduler
+            moment={currentMoment}
+            userTimingCallback={userTimingHandler}
+            userTiming={userTiming}
+          />
+        </div>
+      </div>
       {showModal && (
         <Modal
           color='#003EB6'
@@ -367,54 +423,6 @@ const UpdateInterviewRequestFrom = props => {
           actions={modalActions}
         />
       )}
-      <NavBar />
-      <div
-        className='ui two column grid'
-        style={{ marginTop: '2em', marginLeft: '20px', width: '100vw' }}
-      >
-        <div className='four wide column'>
-          <div className='row' style={{ height: '16em' }} />
-          <div className='ui three column grid'>
-            <div className='one wide column' />
-            <div className='seven wide column'>{accountHeader}</div>
-            <div
-              className='six wide column'
-              style={{ marginTop: '4px', paddingRight: '8px' }}
-            >
-              {accountCheckbox}
-            </div>
-          </div>
-          <div className='row' style={{ paddingTop: '2em' }}>
-            <div className='ui two column grid'>
-              <div className='one wide column' />
-              <div className='twelve wide column'>{topics}</div>
-            </div>
-          </div>
-          <div className='row' style={{ paddingTop: '2em' }}>
-            <div className='ui two column grid'>
-              <div className='one wide column' />
-              <div className='twelve wide column'>{progLang}</div>
-            </div>
-          </div>
-          <div className='row' style={{ paddingTop: '4em' }}>
-            <div className='ui two column grid'>
-              <div className='three wide column' />
-              <div className='ten wide column'>{actions}</div>
-            </div>
-          </div>
-        </div>
-        <div
-          className='twelve wide column'
-          style={{ height: '95vh', borderLeft: '1px solid' }}
-        >
-          <div className='row' style={{ height: '9em' }} />
-          <AppointmentScheduler
-            moment={currentMoment}
-            userTimingCallback={userTimingHandler}
-            userTiming={userTiming}
-          />
-        </div>
-      </div>
     </div>
   );
 };

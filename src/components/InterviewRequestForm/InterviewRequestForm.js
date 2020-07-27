@@ -57,9 +57,9 @@ const InterviewRequestFrom = props => {
 
   const submitButton =
     (topicsState && topicsState.length === 0) ||
-      (lang && lang.length === 0) ||
-      otherAccType === '' ||
-      (userTiming && userTiming.length === 0)
+    (lang && lang.length === 0) ||
+    otherAccType === '' ||
+    (userTiming && userTiming.length === 0)
       ? 'ui primary disabled button'
       : 'ui primary button';
 
