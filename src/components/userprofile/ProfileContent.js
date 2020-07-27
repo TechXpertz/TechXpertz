@@ -326,9 +326,15 @@ const ProfileContent = () => {
       { value: 'Undergraduate', label: 'Undergraduate' },
       { value: 'Graduate', label: 'Graduate' }
     ];
+    console.log(editedCompany);
 
-    console.log(topic);
-    console.log(editedUserTopic);
+    const submitButton =
+      !editedName ||
+      (background.isExpert && (!editedCompany || !editedCompanyRole)) ||
+      editedUserTopic === null ||
+      editedUserProgLang === null
+        ? 'ui primary large disabled button'
+        : 'ui primary large button';
 
     const fetchTopics = async () => {
       const response = await Axios.get(topicsAPI);
@@ -675,7 +681,7 @@ const ProfileContent = () => {
             </div>
           </div>
           <div className='actions-style'>
-            <button className='ui primary large button' onClick={onSubmit}>
+            <button className={submitButton} onClick={onSubmit}>
               Submit
             </button>
             <button className='ui red large button'>Delete</button>
