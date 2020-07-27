@@ -5,7 +5,7 @@ const Modal = props => {
   return ReactDOM.createPortal(
     <div
       className='ui dimmer modals visible active'
-      style={{ maxHeight: '100vh', overflow: 'hidden' }}
+      style={{ position: 'fixed', overflow: 'hidden' }}
     >
       <div className='ui standard full screen modal visible active'>
         <div
