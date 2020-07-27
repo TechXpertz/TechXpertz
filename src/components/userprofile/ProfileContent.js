@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 import { useAuth0 } from '../../react-auth0-spa';
 import { Rating } from 'semantic-ui-react';
 import LoaderPage from '../LoaderPage';
@@ -7,7 +8,9 @@ import './index.css';
 import {
   getBackground,
   normalBackground,
-  expertBackground
+  expertBackground,
+  topicsAPI,
+  progsAPI
 } from '../../api_callers/apis.json';
 import axios from 'axios';
 
@@ -28,6 +31,8 @@ const ProfileContent = () => {
   ];
   const [background, setBackground] = useState();
   const [isEdit, setIsEdit] = useState(false);
+
+  console.log(background);
 
   const workingExpStr = exp => {
     return exp === undefined ? exp : period[exp].label;
@@ -292,8 +297,16 @@ const ProfileContent = () => {
       userCompanyRole,
       userEducation,
       userInterviewLevel,
-      userWorkingExp
+      userWorkingExp,
+      userProgLangs,
+      userTopics
     } = props;
+    const topic = userTopics.map(topic => {
+      return { value: topic, label: topic };
+    });
+    const lang = userProgLangs.map(lang => {
+      return { value: lang, label: lang };
+    });
     const [editedName, setEditedName] = useState(userName);
     const [editedEmail, setEditedEmail] = useState(userEmail);
     const [editedEducation, setEditedEducation] = useState(userEducation);
@@ -304,11 +317,45 @@ const ProfileContent = () => {
       value: userWorkingExp,
       label: workingExpStr(userWorkingExp)
     });
+    const [editedUserTopic, setEditedUserTopic] = useState(topic);
+    const [editedUserProgLang, setEditedUserProgLang] = useState(lang);
+    const [interestArray, setInterestArray] = useState([]);
+    const [progLangArray, setProgLangArray] = useState([]);
     const educationArray = [
       { value: 'No Degree', label: 'No Degree' },
       { value: 'Undergraduate', label: 'Undergraduate' },
       { value: 'Graduate', label: 'Graduate' }
     ];
+
+    console.log(topic);
+    console.log(editedUserTopic);
+
+    const fetchTopics = async () => {
+      const response = await Axios.get(topicsAPI);
+      const topics = response.data.topics.map(element => {
+        return {
+          value: element.topicName,
+          label: element.topicName
+        };
+      });
+      setInterestArray(topics);
+    };
+
+    const fetchProgLanguages = async () => {
+      const response = await Axios.get(progsAPI);
+      const langs = response.data.progLanguages.map(element => {
+        return {
+          value: element.progName,
+          label: element.progName
+        };
+      });
+      setProgLangArray(langs);
+    };
+
+    useEffect(() => {
+      fetchTopics();
+      fetchProgLanguages();
+    }, []);
 
     const onNameChange = event => {
       setEditedName(event.target.value);
@@ -334,17 +381,25 @@ const ProfileContent = () => {
       setEditedWorkingExp(event);
     };
 
+    const handleTopics = value => {
+      setEditedUserTopic(value);
+    };
+
+    const handleProgLang = value => {
+      setEditedUserProgLang(value);
+    };
+
     const onSubmit = async event => {
       setIsEdit(!isEdit);
       const token = await getTokenSilently();
-      const topics = background.topics.map(topic => {
+      const topics = editedUserTopic.map(topic => {
         return {
-          topicName: topic
+          topicName: topic.value
         };
       });
-      const progLanguages = background.progLanguages.map(lang => {
+      const progLanguages = editedUserProgLang.map(lang => {
         return {
-          progName: lang
+          progName: lang.value
         };
       });
       const header = {
@@ -352,6 +407,12 @@ const ProfileContent = () => {
           Authorization: `Bearer ${token}`
         }
       };
+      const topicSelected = editedUserTopic.map(topic => {
+        return topic.value;
+      });
+      const langSelected = editedUserProgLang.map(lang => {
+        return lang.value;
+      });
 
       if (background.isExpert) {
         const editedExpertBackground = {
@@ -370,8 +431,8 @@ const ProfileContent = () => {
             workingExp: editedWorkingExp.value
           },
           isExpert: background.isExpert,
-          topics: background.topics,
-          progLanguages: background.progLanguages
+          topics: topicSelected,
+          progLanguages: langSelected
         });
         await axios.patch(expertBackground, editedExpertBackground, header);
       } else {
@@ -391,8 +452,8 @@ const ProfileContent = () => {
             hasExperience: background.background.hasExperience
           },
           isExpert: background.isExpert,
-          topics: background.topics,
-          progLanguages: background.progLanguages
+          topics: topicSelected,
+          progLanguages: langSelected
         });
         await axios.patch(normalBackground, editedNormalBackground, header);
       }
@@ -536,7 +597,6 @@ const ProfileContent = () => {
                         maxRating={5}
                         size='massive'
                         defaultRating={editedInterview}
-                        //rating={editedInterview}
                         onRate={onInterviewLevelChange}
                       />
                     </div>
@@ -555,7 +615,7 @@ const ProfileContent = () => {
                     <div className='three wide column information-content'>
                       Total Working Eperience
                     </div>
-                    <div className='five wide column information-content'>
+                    <div className='seven wide column information-content'>
                       <DropdownMenu
                         multi={false}
                         defaultValue={[
@@ -581,15 +641,13 @@ const ProfileContent = () => {
                   <div className='three wide column information-content'>
                     Interests
                   </div>
-                  <div
-                    className='ten wide column'
-                    style={{ display: 'flex', flexDirection: 'row' }}
-                  >
-                    {background.topics.map((value, index) => (
-                      <div className='interest-button' key={index}>
-                        {value}
-                      </div>
-                    ))}
+                  <div className='nine wide column information-content'>
+                    <DropdownMenu
+                      multi={true}
+                      defaultValue={editedUserTopic}
+                      valueChanged={handleTopics}
+                      array={interestArray}
+                    />
                   </div>
                 </div>
                 <div
@@ -603,15 +661,13 @@ const ProfileContent = () => {
                   <div className='three wide column information-content'>
                     Programming Languages
                   </div>
-                  <div
-                    className='ten wide column'
-                    style={{ display: 'flex', flexDirection: 'row' }}
-                  >
-                    {background.progLanguages.map((value, index) => (
-                      <div className='interest-button' key={index}>
-                        {value}
-                      </div>
-                    ))}
+                  <div className='nine wide column information-content'>
+                    <DropdownMenu
+                      multi={true}
+                      defaultValue={editedUserProgLang}
+                      array={progLangArray}
+                      valueChanged={handleProgLang}
+                    />
                   </div>
                 </div>
                 <div className='row' />
@@ -629,8 +685,6 @@ const ProfileContent = () => {
     }
   };
 
-  console.log(background);
-
   if (loading || !user || !background) {
     return <LoaderPage />;
   } else if (!isEdit) {
@@ -645,6 +699,8 @@ const ProfileContent = () => {
         userEducation={background.background.education}
         userInterviewLevel={background.background.interviewLevel}
         userWorkingExp={background.background.workingExp}
+        userProgLangs={background.progLanguages}
+        userTopics={background.topics}
       />
     );
   }
