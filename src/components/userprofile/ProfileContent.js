@@ -326,13 +326,12 @@ const ProfileContent = () => {
       { value: 'Undergraduate', label: 'Undergraduate' },
       { value: 'Graduate', label: 'Graduate' }
     ];
-    console.log(editedCompany);
 
     const submitButton =
       !editedName ||
-      (background.isExpert && (!editedCompany || !editedCompanyRole)) ||
-      editedUserTopic === null ||
-      editedUserProgLang === null
+        (background.isExpert && (!editedCompany || !editedCompanyRole)) ||
+        (editedUserTopic === null || (editedUserTopic && editedUserTopic.length === 0)) ||
+        (editedUserProgLang === null || (editedUserProgLang && editedUserProgLang.length === 0))
         ? 'ui primary large disabled button'
         : 'ui primary large button';
 
