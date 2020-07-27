@@ -19,22 +19,32 @@ const NavBar = props => {
         onClick={() => history.push('/dashboard')}
       />
       <div className='right menu'>
-        <Link
+        {/* <Link
           to='/about'
           className='item'
           id='fonts'
           style={{ paddingRight: '30px', paddingLeft: '30px' }}
+        > */}
+        <div
+          className='item'
+          style={{ paddingRight: '30px', paddingLeft: '30px' }}
         >
           About us
-        </Link>
-        <Link
+        </div>
+        {/* </Link> */}
+        {/* <Link
           to='/FAQ'
           className={props.selected.FAQ ? 'active item' : 'item'}
           id='fonts'
           style={{ paddingRight: '30px', paddingLeft: '30px' }}
+        > */}
+        <div
+          className='item'
+          style={{ paddingRight: '30px', paddingLeft: '30px' }}
         >
           FAQ
-        </Link>
+        </div>
+        {/* </Link> */}
         <div className='item'>
           <i className='grey bell icon'></i>
         </div>
