@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^7.1.2",
     "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.5.6",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "axois": "0.0.1-security",
     "backend": "file:backend",
     "chai": "^4.2.0",
